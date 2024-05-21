@@ -12,3 +12,22 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+// schema.prisma
+model User {
+  id              Int       @id @default(autoincrement())
+  birthDate       DateTime
+  firstname       String
+  lastname        String
+  email           String    @unique
+  password        String
+  phone           String
+  address         String    
+  city            String    
+  postalCode      String    
+  latitude        Float     
+  longitude       Float     
+  nomOrganisation String    
+  profilePicture  String?   
+}
+
