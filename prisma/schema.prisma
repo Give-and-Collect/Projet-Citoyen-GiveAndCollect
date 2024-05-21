@@ -31,3 +31,15 @@ model User {
   profilePicture  String?   
 }
 
+model CollectionPoint {
+  id              Int       @id @default(autoincrement())
+  address         String    
+  city            String    
+  postalCode      String    
+  latitude        Float     
+  longitude       Float   
+  description     String
+  isActive        Boolean   @default(true)
+}
+
+
