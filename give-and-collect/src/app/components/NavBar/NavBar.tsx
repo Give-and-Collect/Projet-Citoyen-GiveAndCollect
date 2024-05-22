@@ -14,13 +14,15 @@ import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
+import Image from 'next/image';
 
-const pages = ['Products', 'Pricing', 'Blog'];
-const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
+import { useTheme } from '@mui/material/styles';
 
 function ResponsiveAppBar() {
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
+
+  const theme = useTheme();
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
@@ -41,24 +43,9 @@ function ResponsiveAppBar() {
     <AppBar position="static">
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-          <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
-          <Typography
-            variant="h6"
-            noWrap
-            component="a"
-            href="#app-bar-with-responsive-menu"
-            sx={{
-              mr: 2,
-              display: { xs: 'none', md: 'flex' },
-              fontFamily: 'monospace',
-              fontWeight: 700,
-              letterSpacing: '.3rem',
-              color: 'inherit',
-              textDecoration: 'none',
-            }}
-          >
-            LOGO
-          </Typography>
+          <Box sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }}>
+            <Image src={'/assets/images/logo2.png'} alt="logo" width={200} height={200} />
+          </Box>
 
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
             <IconButton
@@ -89,42 +76,63 @@ function ResponsiveAppBar() {
                 display: { xs: 'block', md: 'none' },
               }}
             >
-              {pages.map((page) => (
-                <MenuItem key={page} onClick={handleCloseNavMenu}>
-                  <Typography textAlign="center">{page}</Typography>
-                </MenuItem>
-              ))}
+              <MenuItem key={'Home'} onClick={handleCloseNavMenu}>
+                <Typography textAlign="center">Accueil</Typography>
+              </MenuItem>
+              <MenuItem key={'CollectionPoint'} onClick={handleCloseNavMenu}>
+                <Typography textAlign="center">Points de collecte</Typography>
+              </MenuItem>
+              <MenuItem key={'Events'} onClick={handleCloseNavMenu}>
+                <Typography textAlign="center">Evènements</Typography>
+              </MenuItem>
+              <MenuItem key={'Posts'} onClick={handleCloseNavMenu}>
+                <Typography textAlign="center">Annonces</Typography>
+              </MenuItem>
+              <MenuItem key={'About'} onClick={handleCloseNavMenu}>
+                <Typography textAlign="center">Qui sommes-nous ?</Typography>
+              </MenuItem>
             </Menu>
           </Box>
-          <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
-          <Typography
-            variant="h5"
-            noWrap
-            component="a"
-            href="#app-bar-with-responsive-menu"
-            sx={{
-              mr: 2,
-              display: { xs: 'flex', md: 'none' },
-              flexGrow: 1,
-              fontFamily: 'monospace',
-              fontWeight: 700,
-              letterSpacing: '.3rem',
-              color: 'inherit',
-              textDecoration: 'none',
-            }}
-          >
-            LOGO
-          </Typography>
+          <Box sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }}>
+            <Image src={'/assets/images/logo2.png'} alt="logo" width={200} height={200} />
+          </Box>
+          
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-            {pages.map((page) => (
-              <Button
-                key={page}
-                onClick={handleCloseNavMenu}
-                sx={{ my: 2, color: 'white', display: 'block' }}
-              >
-                {page}
-              </Button>
-            ))}
+            <Button
+              key={'Home'}
+              onClick={handleCloseNavMenu}
+              sx={{ my: 2, color: theme.palette.primary.contrastText, display: 'block' }}
+            >
+              Accueil
+            </Button>
+            <Button
+              key={'CollectionPoint'}
+              onClick={handleCloseNavMenu}
+              sx={{ my: 2, color: 'white', display: 'block' }}
+            >
+              Points de collecte
+            </Button>
+            <Button
+              key={'Events'}
+              onClick={handleCloseNavMenu}
+              sx={{ my: 2, color: 'white', display: 'block' }}
+            >
+              Evènements
+            </Button>
+            <Button
+              key={'Posts'}
+              onClick={handleCloseNavMenu}
+              sx={{ my: 2, color: 'white', display: 'block' }}
+            >
+              Annonces
+            </Button>
+            <Button
+              key={'About'}
+              onClick={handleCloseNavMenu}
+              sx={{ my: 2, color: 'white', display: 'block' }}
+            >
+              Qui sommes-nous ?
+            </Button>
           </Box>
 
           <Box sx={{ flexGrow: 0 }}>
@@ -149,11 +157,16 @@ function ResponsiveAppBar() {
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
             >
-              {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                  <Typography textAlign="center">{setting}</Typography>
-                </MenuItem>
-              ))}
+              
+              <MenuItem key={'Profile'} onClick={handleCloseUserMenu}>
+                <Typography textAlign="center">Mon profil</Typography>
+              </MenuItem>
+              <MenuItem key={'Settings'} onClick={handleCloseUserMenu}>
+                <Typography textAlign="center">Réglages</Typography>
+              </MenuItem>
+              <MenuItem key={'Logout'} onClick={handleCloseUserMenu}>
+                <Typography textAlign="center">Se déconnecter</Typography>
+              </MenuItem>
             </Menu>
           </Box>
         </Toolbar>
