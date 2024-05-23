@@ -3,6 +3,8 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v14-appRouter";
 import ResponsiveAppBar from "./components/NavBar/NavBar";
+import theme from "@/utils/theme";
+import { ThemeProvider } from "@mui/material";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -12,18 +14,20 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({
-  children,
-}: Readonly<{
+                                     children,
+                                   }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+      <html lang="en">
       <body className={inter.className}>
-        <AppRouterCacheProvider>
+      <AppRouterCacheProvider>
+        <ThemeProvider theme={theme}>
           <ResponsiveAppBar />
           {children}
-        </AppRouterCacheProvider>
+        </ThemeProvider>
+      </AppRouterCacheProvider>
       </body>
-    </html>
+      </html>
   );
 }
