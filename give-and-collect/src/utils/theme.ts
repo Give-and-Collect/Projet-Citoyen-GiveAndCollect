@@ -48,7 +48,7 @@ const theme = createTheme({
     divider: 'rgba(140,110,110,0.12)',
   },
   typography: {
-    fontFamily: 'League Spartan',
+    fontFamily: '"league spartam", "Helvetica", "Arial", sans-serif',
   },
 });
 
