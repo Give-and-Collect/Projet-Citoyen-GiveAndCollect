@@ -110,8 +110,7 @@ export default function Signup() {
 
     return (
         <Container component="main" maxWidth="xs">
-            <Card
-                variant="outlined"
+            <Box
                 sx={{
                     marginTop: 8,
                     marginBottom: 8,
