@@ -26,10 +26,54 @@ export default function Signup() {
         setFormData({ ...formData, [event.target.name]: event.target.value });
     };
 
+    const isEmailValid = (email: string): boolean => {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email);
+    };
+
+    const isPhoneValid = (phone: string): boolean => {
+        const phoneRegex = /^(?:0|\+33|0033)[1-9][0-9]{8}$/;
+        return phoneRegex.test(phone);
+    };
+
+    const isPasswordStrong = (password:string) => {
+
+        const containsUppercase = /[A-Z]/.test(password);
+        const containsSpecialCharacter = /[^A-Za-z0-9]/.test(password);
+
+        const isStrongEnough = password.length >= 8 && containsUppercase && containsSpecialCharacter;
+
+        return { isStrongEnough, containsUppercase, containsSpecialCharacter };
+    };
+
+    const evaluatePasswordStrength = (password: string) => {
+
+        const passwordLength = password.length;
+        let strength = 'Faible';
+        if (passwordLength >= 12) {
+            strength = 'Fort';
+        } else if (passwordLength >= 8) {
+            strength = 'Moyen';
+        }
+
+        return strength;
+    };
+
+
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         if (formData.password !== formData.confirmPassword) {
             alert("Les mots de passe ne correspondent pas");
+            return;
+        }
+
+        if (!isEmailValid(formData.email)) {
+            alert("L'adresse e-mail n'est pas valide");
+            return;
+        }
+
+        if (!isPhoneValid(formData.phone)) {
+            alert("Le numéro de téléphone n'est pas valide");
             return;
         }
 
@@ -176,6 +220,19 @@ export default function Signup() {
                             value={formData.password}
                             onChange={handleChange}
                         />
+                        {/* Afficher la force du mot de passe */}
+                        <Typography variant="body2" color="textSecondary">
+                            Force du mot de passe : {evaluatePasswordStrength(formData.password)}
+                        </Typography>
+                        {/* Afficher les critères de validation du mot de passe */}
+                        <Typography variant="body2" color="textSecondary">
+                            {isPasswordStrong(formData.password).containsUppercase ? <span style={{color: 'green'}}>&#10004;</span> : <span style={{color: 'red'}}>&#10060;</span>} Contient une majuscule
+                        </Typography>
+                        <Typography variant="body2" color="textSecondary">
+                            {isPasswordStrong(formData.password).containsSpecialCharacter ? <span style={{color: 'green'}}>&#10004;</span> : <span style={{color: 'red'}}>&#10060;</span>} Contient un caractère spécial
+                        </Typography>
+
+
                         <TextField
                             variant="outlined"
                             margin="normal"
@@ -192,6 +249,11 @@ export default function Signup() {
                             value={formData.confirmPassword}
                             onChange={handleChange}
                         />
+                        {formData.password !== formData.confirmPassword && (
+                            <Typography variant="body2" color="error">
+                                Les mots de passe ne correspondent pas
+                            </Typography>
+                        )}
                         <TextField
                             variant="outlined"
                             margin="normal"
