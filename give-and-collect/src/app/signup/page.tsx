@@ -62,7 +62,6 @@ export default function Signup() {
         return strength;
     };
 
-    // Ajouter un état pour gérer la visibilité du mot de passe
     const [showPassword, setShowPassword] = useState(false);
 
     const togglePasswordVisibility = () => {
@@ -143,13 +142,18 @@ export default function Signup() {
                         alignItems: 'center',
                     }}
                 >
-                    <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
-                        <AccountCircleSharpIcon />
-                    </Avatar>
+                    <img
+                        src="/assets/icones/profile-darkgreen.png"
+                        alt="Image de profil"
+                        style={{
+                            width: 170,
+                            height: 170,
+                        }}
+                    />
                     <Typography component="h1" variant="h5">
                         S'inscrire
                     </Typography>
-                    <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+                    <Box component="form" onSubmit={handleSubmit} noValidate sx={{mt: 1}}>
                         <LocalizationProvider dateAdapter={AdapterDateFns}>
                             <DesktopDatePicker
                                 label="Date de naissance"
@@ -235,7 +239,7 @@ export default function Signup() {
                                         onClick={togglePasswordVisibility}
                                         edge="end"
                                     >
-                                        {showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
+                                        {showPassword ? <VisibilityOffIcon/> : <VisibilityIcon/>}
                                     </IconButton>
                                 ),
                             }}
@@ -246,10 +250,14 @@ export default function Signup() {
                         </Typography>
                         {/* Afficher les critères de validation du mot de passe */}
                         <Typography variant="body2" color="textSecondary">
-                            {isPasswordStrong(formData.password).containsUppercase ? <span style={{color: 'green'}}>&#10004;</span> : <span style={{color: 'red'}}>&#10060;</span>} Contient une majuscule
+                            {isPasswordStrong(formData.password).containsUppercase ?
+                                <span style={{color: 'green'}}>&#10004;</span> :
+                                <span style={{color: 'red'}}>&#10060;</span>} Contient une majuscule
                         </Typography>
                         <Typography variant="body2" color="textSecondary">
-                            {isPasswordStrong(formData.password).containsSpecialCharacter ? <span style={{color: 'green'}}>&#10004;</span> : <span style={{color: 'red'}}>&#10060;</span>} Contient un caractère spécial
+                            {isPasswordStrong(formData.password).containsSpecialCharacter ?
+                                <span style={{color: 'green'}}>&#10004;</span> :
+                                <span style={{color: 'red'}}>&#10060;</span>} Contient un caractère spécial
                         </Typography>
 
 
@@ -375,7 +383,7 @@ export default function Signup() {
                             fullWidth
                             variant="contained"
                             color="primary"
-                            sx={{ mt: 3, mb: 3, padding: '15px' }}
+                            sx={{mt: 3, mb: 3, padding: '15px'}}
                         >
                             S'inscrire
                         </Button>
