@@ -5,6 +5,9 @@ import { Container, TextField, Button, Typography, Box, Link, Grid, Avatar, Menu
 import AccountCircleSharpIcon from '@mui/icons-material/AccountCircleSharp';
 import { LocalizationProvider, DesktopDatePicker } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
+import IconButton from '@mui/material/IconButton';
 
 export default function Signup() {
     const [userType, setUserType] = useState('');
@@ -59,6 +62,12 @@ export default function Signup() {
         return strength;
     };
 
+    // Ajouter un état pour gérer la visibilité du mot de passe
+    const [showPassword, setShowPassword] = useState(false);
+
+    const togglePasswordVisibility = () => {
+        setShowPassword(!showPassword);
+    };
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -108,9 +117,11 @@ export default function Signup() {
             });
     };
 
+
     return (
         <Container component="main" maxWidth="xs">
-            <Box
+            <Card
+                variant="outlined"
                 sx={{
                     marginTop: 8,
                     marginBottom: 8,
@@ -210,7 +221,7 @@ export default function Signup() {
                             fullWidth
                             name="password"
                             label="Mot de passe"
-                            type="password"
+                            type={showPassword ? "text" : "password"}
                             id="password"
                             autoComplete="new-password"
                             InputLabelProps={{
@@ -218,6 +229,16 @@ export default function Signup() {
                             }}
                             value={formData.password}
                             onChange={handleChange}
+                            InputProps={{
+                                endAdornment: (
+                                    <IconButton
+                                        onClick={togglePasswordVisibility}
+                                        edge="end"
+                                    >
+                                        {showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
+                                    </IconButton>
+                                ),
+                            }}
                         />
                         {/* Afficher la force du mot de passe */}
                         <Typography variant="body2" color="textSecondary">
