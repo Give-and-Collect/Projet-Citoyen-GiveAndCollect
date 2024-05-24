@@ -8,11 +8,60 @@ import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 
 export default function Signup() {
     const [userType, setUserType] = useState('');
-    const [dob, setDob] = useState(null);
+    const [dob, setDob] = useState<Date | null>(null);
+    const [formData, setFormData] = useState({
+        firstname: '',
+        lastname: '',
+        email: '',
+        password: '',
+        confirmPassword: '',
+        phone: '',
+        address: '',
+        city: '',
+        postalCode: '',
+        nomOrganisation: '',
+    });
 
-    const handleSubmit = (event) => {
+    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setFormData({ ...formData, [event.target.name]: event.target.value });
+    };
+
+    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        // Handle form submission logic here
+        if (formData.password !== formData.confirmPassword) {
+            alert("Les mots de passe ne correspondent pas");
+            return;
+        }
+
+        fetch('/api/signup', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ ...formData, birthDate: dob, userType }),
+        })
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    return response.json().then(data => {
+                        throw new Error(data.error);
+                    });
+                }
+            })
+            .then(data => {
+                window.alert('Votre compte a bien été enregistré');
+                window.location.href = '/signin';
+            })
+            .catch(error => {
+                if (error.message === 'Email already exists') {
+                    window.alert('L\'adresse email est déjà utilisée');
+                } else if (error.message === 'Phone number already exists') {
+                    window.alert('Le numéro de téléphone est déjà utilisé');
+                } else {
+                    window.alert('L\'inscription a échoué. Veuillez réessayer plus tard.');
+                }
+            });
     };
 
     return (
@@ -21,7 +70,7 @@ export default function Signup() {
                 variant="outlined"
                 sx={{
                     marginTop: 8,
-                    marginBottom: 8, // Correction de "marginButton" à "marginBottom"
+                    marginBottom: 8,
                     display: 'flex',
                     flexDirection: 'column',
                     alignItems: 'center',
@@ -70,27 +119,31 @@ export default function Signup() {
                             margin="normal"
                             required
                             fullWidth
-                            id="firstName"
+                            id="firstname"
                             label="Prénom"
-                            name="firstName"
+                            name="firstname"
                             autoComplete="given-name"
                             autoFocus
                             InputLabelProps={{
                                 shrink: true,
                             }}
+                            value={formData.firstname}
+                            onChange={handleChange}
                         />
                         <TextField
                             variant="outlined"
                             margin="normal"
                             required
                             fullWidth
-                            id="lastName"
+                            id="lastname"
                             label="Nom"
-                            name="lastName"
+                            name="lastname"
                             autoComplete="family-name"
                             InputLabelProps={{
                                 shrink: true,
                             }}
+                            value={formData.lastname}
+                            onChange={handleChange}
                         />
                         <TextField
                             variant="outlined"
@@ -104,6 +157,8 @@ export default function Signup() {
                             InputLabelProps={{
                                 shrink: true,
                             }}
+                            value={formData.email}
+                            onChange={handleChange}
                         />
                         <TextField
                             variant="outlined"
@@ -118,6 +173,8 @@ export default function Signup() {
                             InputLabelProps={{
                                 shrink: true,
                             }}
+                            value={formData.password}
+                            onChange={handleChange}
                         />
                         <TextField
                             variant="outlined"
@@ -132,6 +189,8 @@ export default function Signup() {
                             InputLabelProps={{
                                 shrink: true,
                             }}
+                            value={formData.confirmPassword}
+                            onChange={handleChange}
                         />
                         <TextField
                             variant="outlined"
@@ -146,6 +205,56 @@ export default function Signup() {
                             InputLabelProps={{
                                 shrink: true,
                             }}
+                            value={formData.phone}
+                            onChange={handleChange}
+                        />
+                        <TextField
+                            variant="outlined"
+                            margin="normal"
+                            required
+                            fullWidth
+                            name="address"
+                            label="Adresse"
+                            type="text"
+                            id="address"
+                            autoComplete="street-address"
+                            InputLabelProps={{
+                                shrink: true,
+                            }}
+                            value={formData.address}
+                            onChange={handleChange}
+                        />
+                        <TextField
+                            variant="outlined"
+                            margin="normal"
+                            required
+                            fullWidth
+                            name="city"
+                            label="Ville"
+                            type="text"
+                            id="city"
+                            autoComplete="address-level2"
+                            InputLabelProps={{
+                                shrink: true,
+                            }}
+                            value={formData.city}
+                            onChange={handleChange}
+                        />
+                        <TextField
+                            variant="outlined"
+                            margin="normal"
+                            required
+                            fullWidth
+                            name="postalCode"
+                            label="Code postal"
+                            type="text"
+                            id="postalCode"
+                            autoComplete="postal-code"
+                            InputLabelProps={{
+                                shrink: true,
+                            }}
+                            value={formData.postalCode}
+                            onChange={handleChange}
                         />
                         <TextField
                             variant="outlined"
@@ -182,16 +291,15 @@ export default function Signup() {
                         <Button
                             type="submit"
                             fullWidth
-                            padding="30px"
                             variant="contained"
                             color="primary"
-                            sx={{ mt: 3, mb: 3 }}
+                            sx={{ mt: 3, mb: 3, padding: '15px' }}
                         >
                             S'inscrire
                         </Button>
                         <Grid container justifyContent="flex-end">
                             <Grid item>
-                                <Link href="/login" variant="body2">
+                                <Link href="/singin" variant="body2">
                                     Déjà inscrit? Connectez-vous
                                 </Link>
                             </Grid>
