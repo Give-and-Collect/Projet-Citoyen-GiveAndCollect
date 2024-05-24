@@ -46,11 +46,11 @@ function ResponsiveAppBar() {
     <AppBar position="static" sx={{ color: theme.palette.background.paper }}>
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-          <Box sx={{ display: { xs: 'none', md: 'flex' }, mr: 1, my: 1 }}>
+          <Box sx={{ display: { xs: 'none', lg: 'flex' }, mr: 1, my: 1 }}>
             <Image src={'/assets/images/logo2.png'} alt="logo" width={200} height={62} />
           </Box>
 
-          <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
+          <Box sx={{ flexGrow: 1, display: { xs: 'flex', lg: 'none' } }}>
             <IconButton
               size="large"
               aria-label="account of current user"
@@ -76,7 +76,7 @@ function ResponsiveAppBar() {
               open={Boolean(anchorElNav)}
               onClose={handleCloseNavMenu}
               sx={{
-                display: { xs: 'block', md: 'none' },
+                display: { xs: 'block', lg: 'none' },
               }}
             >
               <MenuItem key={'Home'} onClick={handleCloseNavMenu}>
@@ -121,13 +121,13 @@ function ResponsiveAppBar() {
               </MenuItem>
             </Menu>
           </Box>
-          <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' }, my: 1 }}>
+          <Box sx={{ flexGrow: 1, display: { xs: 'flex', lg: 'none' }, my: 1 }}>
             <Image src={'/assets/images/logo2.png'} alt="logo" width={200} height={62} />
           </Box>
           
           <Box sx={{ 
             flexGrow: 1, 
-            display: { xs: 'none', md: 'flex' },
+            display: { xs: 'none', lg: 'flex' },
             flexWrap: 'wrap',
             alignItems: 'flex-start',
           }}>
