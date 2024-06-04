@@ -23,7 +23,7 @@ const Footer = () => {
       textAlign={'center'}
       alignItems={'center'}
       display={'flex'}
-      bottom={0}
+      bottom={'-200px'}
       width={'100%'}
       height={'450px'}
     > 
