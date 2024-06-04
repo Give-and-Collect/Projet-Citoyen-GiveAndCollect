@@ -1,2 +1,7 @@
-declare module 'leaflet';
+declare module 'leaflet'
+
+export class LeafletEvent {
+}
+
+;
 declare module 'react-leaflet';
