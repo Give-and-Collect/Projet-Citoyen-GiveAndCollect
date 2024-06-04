@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import Footer from "./components/Footer/Footer";
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v14-appRouter";
 import ResponsiveAppBar from "./components/NavBar/NavBar";
+import Footer from "./components/Footer/Footer";
 import theme from "@/utils/theme";
 import { ThemeProvider } from "@mui/material";
 
@@ -26,6 +26,7 @@ export default function RootLayout({
         <ThemeProvider theme={theme}>
           <ResponsiveAppBar />
           {children}
+          <Footer />
         </ThemeProvider>
       </AppRouterCacheProvider>
       </body>
