@@ -17,7 +17,7 @@ interface CollectionPoint {
 
 const defaultCenter: [number, number] = [49.4431, 1.0993]; // Rouen coordinates
 
-const MainPage: React.FC = () => {
+const CollectPointPage: React.FC = () => {
     const [pointsDeCollecte, setPointsDeCollecte] = useState<CollectionPoint[]>([]);
     const [currentPosition, setCurrentPosition] = useState<[number, number]>(defaultCenter);
     const [selectedCity, setSelectedCity] = useState<string>('Toutes');
@@ -65,4 +65,4 @@ const MainPage: React.FC = () => {
     );
 };
 
-export default MainPage;
+export default CollectPointPage;

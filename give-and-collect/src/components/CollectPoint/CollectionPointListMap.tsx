@@ -54,13 +54,13 @@ const customMarkerIcon = L.icon({
 });
 
 const CollectionPointListMap: React.FC<Props> = ({
-                                                     pointsDeCollecte,
+                                                     pointsDeCollecte = [],
                                                      currentPosition,
                                                      selectedCity,
                                                      handleCityChange,
                                                      handleMarkerClick,
                                                      handleListClick,
-                                                     cities
+                                                     cities = []
                                                  }) => {
     const isSmallScreen = useMediaQuery((theme: Theme) => theme.breakpoints.down('md'));
 
@@ -98,8 +98,8 @@ const CollectionPointListMap: React.FC<Props> = ({
                             <Typography variant="h6">Liste des points de collecte</Typography>
                         </AccordionSummary>
                         <AccordionDetails>
-                            <List>
-                                {filteredPoints.map((point) => (
+                            <List sx={{ maxHeight: '30vh', overflowY: 'auto' }}>
+                                {filteredPoints.map((point: CollectionPoint) => (
                                     <Card key={point.id} sx={{ marginBottom: '10px', borderRadius: '8px', boxShadow: 3 }}>
                                         <ListItem button onClick={() => handleListClick([point.latitude, point.longitude])}>
                                             <Avatar alt="Point de collecte" src="/assets/icones/ping-darkgreen.png" sx={{ bgcolor: 'transparent' }} />
@@ -123,7 +123,7 @@ const CollectionPointListMap: React.FC<Props> = ({
                                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                                 attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
                             />
-                            {filteredPoints.map((point) => (
+                            {filteredPoints.map((point: CollectionPoint) => (
                                 <Marker
                                     key={point.id}
                                     position={[point.latitude, point.longitude]}
@@ -152,8 +152,8 @@ const CollectionPointListMap: React.FC<Props> = ({
                     {/* Left side: List of collection points */}
                     <Box sx={{ flex: '0 0 30%', overflowY: 'auto', paddingRight: '20px' }}>
                         <Typography variant="h6" sx={{ marginBottom: '10px', color: '#333' }}>Liste des points de collecte</Typography>
-                        <List>
-                            {filteredPoints.map((point) => (
+                        <List sx={{ maxHeight: 'calc(100vh - 160px)', overflowY: 'auto' }}>
+                            {filteredPoints.map((point: CollectionPoint) => (
                                 <Card key={point.id} sx={{ marginBottom: '10px', borderRadius: '8px', boxShadow: 3 }}>
                                     <ListItem button onClick={() => handleListClick([point.latitude, point.longitude])}>
                                         <Avatar alt="Point de collecte" src="/assets/icones/ping-darkgreen.png" sx={{ bgcolor: 'transparent' }} />
@@ -184,7 +184,7 @@ const CollectionPointListMap: React.FC<Props> = ({
                                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                                 attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
                             />
-                            {filteredPoints.map((point) => (
+                            {filteredPoints.map((point: CollectionPoint) => (
                                 <Marker
                                     key={point.id}
                                     position={[point.latitude, point.longitude]}
