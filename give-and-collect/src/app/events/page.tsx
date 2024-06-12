@@ -7,10 +7,27 @@ import * as React from "react";
 
 export default function Events() {
     const [city, setCity] = React.useState('');
+    const [events, setEvents] = React.useState([]);
 
-    const cityHandleChange = (event: SelectChangeEvent) => {
+    const cityHandleChange = async (event: SelectChangeEvent) => {
       setCity(event.target.value);
     };
+
+    React.useEffect(() => {
+      const fetchEvents = async () => {
+        try {
+          const url = city ? `api/events/${city}` : 'api/events';
+          const response = await fetch(url);
+          const data = await response.json();
+          setEvents(data);
+        } catch (error) {
+          console.error('An error occurred while fetching events:', error);
+        } finally {
+        }
+      };
+  
+      fetchEvents();
+    }, [city]);
 
     return (
       <>
@@ -28,42 +45,28 @@ export default function Events() {
               <MenuItem value={""}>Tous les évènements</MenuItem>
               <MenuItem value={"Rouen"}>Rouen</MenuItem>
               <MenuItem value={"PetitQ"}>Petit Q</MenuItem>
-              <MenuItem value={'"GrandQ'}>Grand Q</MenuItem>
+              <MenuItem value={'GrandQ'}>Grand Q</MenuItem>
               <MenuItem value={"Barentin"}>Barentin</MenuItem>
             </Select>
           </FormControl>
         </Box>
 
         <Box sx={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center' }}>
-          {(city === 'Rouen' || city === '') && (
+          {events.map((event, index) => (
             <EventsCard
-              title="Collecte de vêtements pour les enfants orphelins de Rouen"
-              description="Collecte de vêtements pour les enfants orphelins de Rouen. Besoin de Vestes, pantalons, chaussures (Garçon / Fille / Unisexe)"
-              address="13 Rue de l'Hôpital"
-              city="Rouen"
-              postalCode="76000"
-              latitude={49.44452702868641}
-              longitude={1.0969934925248455}
-              startDate={new Date('2024-06-01 09:00:00')}
-              endDate={new Date('2024-06-01 17:00:00')}
-              phone="0235983154"
+              key={index}
+              title={event.title}
+              description={event.description}
+              address={event.address}
+              city={event.city}
+              postalCode={event.postalCode}
+              latitude={event.latitude}
+              longitude={event.longitude}
+              startDate={new Date(event.startDate)}
+              endDate={new Date(event.endDate)}
+              phone={event.phone}
             />
-          )}
-          
-          {(city === 'Barentin' || city === '') && (
-            <EventsCard
-              title="Collecte de vêtements à Barentin"
-              description="Collecte de vêtements à Barentin. Besoin de Vestes, pantalons, chaussures (Homme / Femme / Unisexe / taille enfant à partir de 5 ans) "
-              address="67 Rue de Verdun"
-              city="Barentin"
-              postalCode="76360"
-              latitude={49.5338177210948}
-              longitude={0.9616062065754171}
-              startDate={new Date('2024-06-01 09:00:00')}
-              endDate={new Date('2024-06-02 17:00:00')}
-              phone="0235983154"
-            />
-          )}
+          ))}
         </Box>
       </>
     );

@@ -44,19 +44,19 @@ const EventsCard: React.FC<Props> = (props) => {
             </Typography>
 
             <div style={{ display: 'flex', alignItems: 'center' }}>
-              <Image src={'/assets/icones/ping-darkgreen.png'} alt="Home" width={60} height={60} />
+              <Image src={'/assets/icones/ping-darkgreen.png'} alt="Home" width={50} height={50} />
               <a href={`https://www.google.com/maps/search/?api=1&query=${props.latitude},${props.longitude}`} target="_blank" rel="noopener noreferrer">
                 <Typography>{props.address}, {props.postalCode} {props.city}</Typography>
               </a>
             </div>
 
             <div style={{ display: 'flex', alignItems: 'center' }}>
-              <Image src={'/assets/icones/calendar-darkgreen.png'} alt="Home" width={60} height={60} />
+              <Image src={'/assets/icones/calendar-darkgreen.png'} alt="Home" width={50} height={50} />
               <Typography>{props.startDate.toLocaleString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric', hour: 'numeric', minute: 'numeric' })} - {props.endDate.toLocaleString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric', hour: 'numeric', minute: 'numeric' })}</Typography>
             </div>
 
             <div style={{ display: 'flex', alignItems: 'center' }}>
-              <Image src={'/assets/icones/phone-darkgreen.png'} alt="Home" width={60} height={60} />
+              <Image src={'/assets/icones/phone-darkgreen.png'} alt="Home" width={50} height={50} />
               <a href={"tel:" + props.phone}><Typography>{formatPhoneNumber(props.phone)}</Typography></a>
             </div>
           </CardContent>

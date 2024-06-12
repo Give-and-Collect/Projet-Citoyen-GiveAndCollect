@@ -8,8 +8,21 @@ export default function Login() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
-    const handleSubmit = () => {
-        alert('Email: ' + email + ' Password: ' + password);
+    const handleSubmit = async () => {
+        const response = await fetch('/api/users/login', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ email, password }),
+        });
+    
+        if (!response.ok) {
+            throw new Error(`An error has occurred: ${response.status}`);
+        }
+    
+        // Redirect to the home page
+        window.location.href = '/';
     };
 
     return (
