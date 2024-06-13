@@ -19,6 +19,8 @@ import { useTheme } from '@mui/material/styles';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
+import { useSession, signIn, signOut } from 'next-auth/react';
+
 function ResponsiveAppBar() {
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
@@ -26,6 +28,10 @@ function ResponsiveAppBar() {
   const theme = useTheme();
 
   const pathname = usePathname();
+
+  const { data: session } = useSession();
+
+  console.log('session', session);
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
@@ -229,16 +235,25 @@ function ResponsiveAppBar() {
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
             >
-              
-              <MenuItem key={'Profile'} onClick={handleCloseUserMenu}>
-                <Typography textAlign="center">Mon profil</Typography>
-              </MenuItem>
-              <MenuItem key={'Settings'} onClick={handleCloseUserMenu}>
-                <Typography textAlign="center">Réglages</Typography>
-              </MenuItem>
-              <MenuItem key={'Logout'} onClick={handleCloseUserMenu}>
-                <Typography textAlign="center">Se déconnecter</Typography>
-              </MenuItem>
+              {session && session.user ? (
+                <>
+                  <MenuItem key={'Profile'} onClick={handleCloseUserMenu}>
+                    <Typography textAlign="center">{session.user.firstname} {session.user.lastname}</Typography>
+                  </MenuItem>
+                  <MenuItem key={'Settings'} onClick={handleCloseUserMenu}>
+                    <Typography textAlign="center">Réglages</Typography>
+                  </MenuItem>
+                  <MenuItem key={'Logout'} onClick={handleCloseUserMenu}>
+                    <a onClick={() => signOut()}><Typography textAlign="center">Se déconnecter</Typography></a>
+                  </MenuItem>
+                </>
+              ) : (
+                <>
+                  <MenuItem key={'Login'} onClick={handleCloseUserMenu}>
+                    <a onClick={() => signIn()}><Typography textAlign="center">Se connecter</Typography></a>
+                  </MenuItem>
+                </>
+              )}
             </Menu>
           </Box>
         </Toolbar>

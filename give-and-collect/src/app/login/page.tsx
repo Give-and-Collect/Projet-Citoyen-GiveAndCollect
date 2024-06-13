@@ -3,26 +3,25 @@
 import React, { useState } from 'react';
 import { Container, TextField, Button, Typography, Box, Link, Grid, Card } from '@mui/material';
 import Image from 'next/image';
+import { signIn } from 'next-auth/react';
 
 export default function Login() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [error, setError] = useState(false);
 
     const handleSubmit = async () => {
-        const response = await fetch('/api/users/login', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ email, password }),
-        });
-    
-        if (!response.ok) {
-            throw new Error(`An error has occurred: ${response.status}`);
+        try {
+            await signIn('credentials', {
+                email,
+                password,
+                redirect: true,
+                callbackUrl: '/',
+            });
+
+        } catch (error) {
+            setError(true);
         }
-    
-        // Redirect to the home page
-        window.location.href = '/';
     };
 
     return (
@@ -85,6 +84,11 @@ export default function Login() {
                             }}
                             onChange={(e) => setPassword(e.target.value)}
                         />
+                        {error && (
+                            <Typography variant="body2" color="error">
+                                Email ou mot de passe incorrect
+                            </Typography>
+                        )}
                         <Button
                             fullWidth
                             padding="30px"
