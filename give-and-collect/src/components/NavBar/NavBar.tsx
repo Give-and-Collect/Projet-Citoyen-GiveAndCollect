@@ -31,8 +31,6 @@ function ResponsiveAppBar() {
 
   const { data: session } = useSession();
 
-  console.log('session', session);
-
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
   };
@@ -219,42 +217,56 @@ function ResponsiveAppBar() {
                 <Avatar alt="Profile" src="/assets/icones/profile-beige.png" />
               </IconButton>
             </Tooltip>
-            <Menu
-              sx={{ mt: '45px' }}
-              id="menu-appbar"
-              anchorEl={anchorElUser}
-              anchorOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-              }}
-              open={Boolean(anchorElUser)}
-              onClose={handleCloseUserMenu}
-            >
-              {session && session.user ? (
-                <>
-                  <MenuItem key={'Profile'} onClick={handleCloseUserMenu}>
-                    <Typography textAlign="center">{session.user.firstname} {session.user.lastname}</Typography>
-                  </MenuItem>
-                  <MenuItem key={'Settings'} onClick={handleCloseUserMenu}>
-                    <Typography textAlign="center">Réglages</Typography>
-                  </MenuItem>
-                  <MenuItem key={'Logout'} onClick={handleCloseUserMenu}>
-                    <a onClick={() => signOut()}><Typography textAlign="center">Se déconnecter</Typography></a>
-                  </MenuItem>
-                </>
-              ) : (
-                <>
-                  <MenuItem key={'Login'} onClick={handleCloseUserMenu}>
-                    <a onClick={() => signIn()}><Typography textAlign="center">Se connecter</Typography></a>
-                  </MenuItem>
-                </>
-              )}
-            </Menu>
+          
+            {session && session.user ? (
+              <Menu
+                sx={{ mt: '45px' }}
+                id="menu-appbar"
+                anchorEl={anchorElUser}
+                anchorOrigin={{
+                  vertical: 'top',
+                  horizontal: 'right',
+                }}
+                keepMounted
+                transformOrigin={{
+                  vertical: 'top',
+                  horizontal: 'right',
+                }}
+                open={Boolean(anchorElUser)}
+                onClose={handleCloseUserMenu}
+              >
+                <MenuItem key={'Profile'} onClick={handleCloseUserMenu}>
+                  <Typography textAlign="center">{session.user.firstname} {session.user.lastname}</Typography>
+                </MenuItem>
+                <MenuItem key={'Logout'} onClick={handleCloseUserMenu}>
+                  <a onClick={() => signOut()}><Typography textAlign="center">Se déconnecter</Typography></a>
+                </MenuItem>
+              </Menu>
+            ) : (
+              <Menu
+                sx={{ mt: '45px' }}
+                id="menu-appbar"
+                anchorEl={anchorElUser}
+                anchorOrigin={{
+                  vertical: 'top',
+                  horizontal: 'right',
+                }}
+                keepMounted
+                transformOrigin={{
+                  vertical: 'top',
+                  horizontal: 'right',
+                }}
+                open={Boolean(anchorElUser)}
+                onClose={handleCloseUserMenu}
+              >
+                <MenuItem key={'Login'} onClick={handleCloseUserMenu}>
+                  <a onClick={() => signIn()}><Typography textAlign="center">Se connecter</Typography></a>
+                </MenuItem>
+                <MenuItem key={'Signup'} onClick={handleCloseUserMenu}>
+                  <a href='/signup'><Typography textAlign="center">S'inscrire</Typography></a>
+                </MenuItem>
+              </Menu>
+            )}
           </Box>
         </Toolbar>
       </Container>

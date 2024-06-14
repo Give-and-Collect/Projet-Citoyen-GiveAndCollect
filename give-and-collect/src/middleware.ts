@@ -1,25 +1,32 @@
-import { NextRequest, NextResponse } from "next/server";
-import jwt from "jsonwebtoken";
+import { getToken } from 'next-auth/jwt'
+import { NextRequest, NextResponse } from 'next/server'
 
-const JWT_SECRET = process.env.JWT_SECRET || "your-secret-key";
+export async function middleware(req: NextRequest) {
+  const secret = process.env.NEXTAUTH_SECRET
+  const token = await getToken({ req, secret })
 
-export function middleware(request: NextRequest) {
-  const token = request.cookies.get("token")?.value;
+  const signInPage = '/api/auth/signin'
 
-  if (!token) {
-    return NextResponse.next();
+  // -------------------API routes protection-------------------
+  if (req.nextUrl.pathname.startsWith('/api/users')) {
+    // Have to be authenticated
+    if (!token) {
+      return Response.json({ error: 'Unauthorized' }, { status: 401 })
+    } else {
+      // Have to be admin
+      if (token.roleId !== 1) {
+        return Response.json({ error: 'Unauthorized' }, { status: 401 })
+      }
+    }
   }
 
-  try {
-    const decoded = jwt.verify(token, JWT_SECRET);
-    request.user = decoded;
-  } catch (error) {
-    console.error("JWT verification failed:", error);
+  // -------------------Page routes protection-------------------
+  if (req.nextUrl.pathname.startsWith('/chat')) {
+    // Have to be authenticated
+    if (!token) {
+      return NextResponse.redirect(new URL(signInPage, req.url))
+    }
   }
 
-  return NextResponse.next();
+  return NextResponse.next()
 }
-
-export const config = {
-  matcher: ["/chat", "/api/protected/:path*"],
-};
