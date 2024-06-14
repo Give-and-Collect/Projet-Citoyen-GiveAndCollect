@@ -1,15 +1,23 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Container, TextField, Button, Typography, Box, Link, Grid, MenuItem, Card, IconButton } from '@mui/material';
 import { LocalizationProvider, DesktopDatePicker } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
+import Image from 'next/image'; // Import de next/image
+
+interface Role {
+    id: number;
+    name: string;
+}
 
 export default function Signup() {
-    const [userType, setUserType] = useState('');
+    const [role, setRole] = useState<Role[]>([]);
+    const [roleId, setRoleId] = useState<number>(0);  // Utiliser number pour l'ID de rôle
     const [dob, setDob] = useState<Date | null>(null);
+    const [showOrganisationNameField, setShowOrganisationNameField] = useState<boolean>(false);
     const [formData, setFormData] = useState({
         firstname: '',
         lastname: '',
@@ -23,8 +31,34 @@ export default function Signup() {
         nomOrganisation: '',
     });
 
+    useEffect(() => {
+        fetch('/api/role')
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                // Filtrer les rôles pour exclure le rôle admin (id = 1)
+                const filteredRoles = data.filter((role: Role) => role.id !== 1);
+                setRole(filteredRoles);
+            })
+            .catch(error => {
+                console.error('Erreur lors de la récupération des rôles:', error);
+            });
+    }, []);
+
+    // Gestionnaire de changement de sélection de rôle
+    const handleRoleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
+        const selectedRoleId = event.target.value as number;
+        setRoleId(selectedRoleId);
+        // Afficher le champ de l'organisation si le rôle est 'entreprise' (id 4) ou 'association' (id 3)
+        setShowOrganisationNameField(selectedRoleId === 4 || selectedRoleId === 3);
+    };
+
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setFormData({ ...formData, [event.target.name]: event.target.value });
+        const { name, value } = event.target;
+        setFormData(prevState => ({
+            ...prevState,
+            [name]: value
+        }));
     };
 
     const isEmailValid = (email: string): boolean => {
@@ -79,35 +113,32 @@ export default function Signup() {
             return;
         }
 
-        fetch('/api/signup', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ ...formData, birthDate: dob, userType }),
-        })
-            .then(response => {
-                if (response.ok) {
-                    return response.json();
-                } else {
-                    return response.json().then(data => {
-                        throw new Error(data.error);
-                    });
-                }
-            })
-            .then(data => {
+        try {
+            const response = await fetch('/api/signup', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ ...formData, birthDate: dob, roleId }),
+            });
+
+            if (response.ok) {
+                const data = await response.json();
                 window.alert('Votre compte a bien été enregistré');
                 window.location.href = '/signin';
-            })
-            .catch(error => {
-                if (error.message === 'Email already exists') {
-                    window.alert('L\'adresse email est déjà utilisée');
-                } else if (error.message === 'Phone number already exists') {
-                    window.alert('Le numéro de téléphone est déjà utilisé');
+            } else {
+                const errorData = await response.json();
+                if (errorData.error === 'Email already exists') {
+                    window.alert("L'adresse email est déjà utilisée");
+                } else if (errorData.error === 'Phone number already exists') {
+                    window.alert("Le numéro de téléphone est déjà utilisé");
                 } else {
                     window.alert('L\'inscription a échoué. Veuillez réessayer plus tard.');
                 }
-            });
+            }
+        } catch (error) {
+            window.alert('L\'inscription a échoué. Veuillez réessayer plus tard.');
+        }
     };
 
     return (
@@ -135,16 +166,14 @@ export default function Signup() {
                         alignItems: 'center',
                     }}
                 >
-                    <img
+                    <Image
                         src="/assets/icones/profile-darkgreen.png"
                         alt="Image de profil"
-                        style={{
-                            width: 170,
-                            height: 170,
-                        }}
+                        width={170}
+                        height={170}
                     />
                     <Typography component="h1" variant="h5">
-                        S'inscrire
+                        S&apos;inscrire
                     </Typography>
                     <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
                         <Grid container spacing={2}>
@@ -259,6 +288,16 @@ export default function Signup() {
                                     }}
                                     value={formData.confirmPassword}
                                     onChange={handleChange}
+                                    InputProps={{
+                                        endAdornment: (
+                                            <IconButton
+                                                onClick={togglePasswordVisibility}
+                                                edge="end"
+                                            >
+                                                {showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
+                                            </IconButton>
+                                        ),
+                                    }}
                                 />
                             </Grid>
                             {formData.password !== formData.confirmPassword && (
@@ -368,34 +407,39 @@ export default function Signup() {
                                     fullWidth
                                     select
                                     label="Vous êtes"
-                                    value={userType}
-                                    onChange={(e) => setUserType(e.target.value)}
+                                    value={roleId}
+                                    onChange={handleRoleChange}
                                     InputLabelProps={{
                                         shrink: true,
                                     }}
                                 >
-                                    <MenuItem value="particulier">Particulier</MenuItem>
-                                    <MenuItem value="entreprise">Entreprise</MenuItem>
-                                    <MenuItem value="association">Association</MenuItem>
+                                    {role.map(role => (
+                                        <MenuItem key={role.id} value={role.id}>
+                                            {role.name}
+                                        </MenuItem>
+                                    ))}
                                 </TextField>
                             </Grid>
-                            {(userType === 'entreprise' || userType === 'association') && (
+                            {showOrganisationNameField && (
                                 <Grid item xs={12}>
                                     <TextField
                                         variant="outlined"
                                         margin="normal"
                                         required
                                         fullWidth
-                                        id="organizationName"
-                                        label={userType === 'entreprise' ? "Nom de votre entreprise" : "Nom de votre association"}
-                                        name="organizationName"
+                                        id="nomOrganisation"
+                                        label={roleId === 4 ? "Nom de votre entreprise" : "Nom de votre association"}
+                                        name="nomOrganisation"
                                         autoComplete="organization"
                                         InputLabelProps={{
                                             shrink: true,
                                         }}
+                                        value={formData.nomOrganisation}
+                                        onChange={handleChange}
                                     />
                                 </Grid>
                             )}
+                            {/* Ajoutez ici les autres champs de formulaire nécessaires */}
                         </Grid>
                         <Button
                             type="submit"
@@ -404,7 +448,7 @@ export default function Signup() {
                             color="primary"
                             sx={{ mt: 3, mb: 3, padding: '15px' }}
                         >
-                            S'inscrire
+                            S&apos;inscrire
                         </Button>
                         <Grid container justifyContent="flex-end">
                             <Grid item>

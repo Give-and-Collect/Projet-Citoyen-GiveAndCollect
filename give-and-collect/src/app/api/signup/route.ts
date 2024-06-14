@@ -1,4 +1,3 @@
-import { NextApiRequest, NextApiResponse } from 'next';
 import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcrypt';
 import { NextRequest, NextResponse } from 'next/server';
@@ -18,10 +17,10 @@ export async function POST(req: NextRequest) {
         city,
         postalCode,
         nomOrganisation,
+        roleId,
     } = await req.json();
 
     try {
-        // Check if the user already exists
         const existingUser = await prisma.user.findFirst({
             where: {
                 OR: [
@@ -40,7 +39,6 @@ export async function POST(req: NextRequest) {
             }
         }
 
-        // Hash the password
         const hashedPassword = await bcrypt.hash(password, 15);
 
         const newUser = await prisma.user.create({
@@ -55,6 +53,7 @@ export async function POST(req: NextRequest) {
                 city,
                 postalCode,
                 nomOrganisation,
+                roleId,
             },
         });
         return NextResponse.json(newUser);
