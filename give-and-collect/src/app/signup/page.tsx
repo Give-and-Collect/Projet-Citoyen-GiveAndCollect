@@ -6,7 +6,8 @@ import { LocalizationProvider, DesktopDatePicker } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
-import Image from 'next/image'; // Import de next/image
+import Image from 'next/image';
+import { signIn } from 'next-auth/react';
 
 interface Role {
     id: number;
@@ -15,7 +16,7 @@ interface Role {
 
 export default function Signup() {
     const [role, setRole] = useState<Role[]>([]);
-    const [roleId, setRoleId] = useState<number>(0);  // Utiliser number pour l'ID de rôle
+    const [roleId, setRoleId] = useState<number>(0);
     const [dob, setDob] = useState<Date | null>(null);
     const [showOrganisationNameField, setShowOrganisationNameField] = useState<boolean>(false);
     const [formData, setFormData] = useState({
@@ -45,11 +46,9 @@ export default function Signup() {
             });
     }, []);
 
-    // Gestionnaire de changement de sélection de rôle
     const handleRoleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
         const selectedRoleId = event.target.value as number;
         setRoleId(selectedRoleId);
-        // Afficher le champ de l'organisation si le rôle est 'entreprise' (id 4) ou 'association' (id 3)
         setShowOrganisationNameField(selectedRoleId === 4 || selectedRoleId === 3);
     };
 
@@ -125,7 +124,7 @@ export default function Signup() {
             if (response.ok) {
                 const data = await response.json();
                 window.alert('Votre compte a bien été enregistré');
-                window.location.href = '/signin';
+                signIn();
             } else {
                 const errorData = await response.json();
                 if (errorData.error === 'Email already exists') {
@@ -175,9 +174,10 @@ export default function Signup() {
                     <Typography component="h1" variant="h5">
                         S&apos;inscrire
                     </Typography>
-                    <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+                    <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }} width="100%">
                         <Grid container spacing={2}>
-                            <Grid item xs={12} sm={6} md={6}>
+                            {/* Prénom */}
+                            <Grid item xs={12} sm={6}>
                                 <TextField
                                     variant="outlined"
                                     margin="normal"
@@ -195,7 +195,8 @@ export default function Signup() {
                                     onChange={handleChange}
                                 />
                             </Grid>
-                            <Grid item xs={12} sm={6} md={6}>
+                            {/* Nom */}
+                            <Grid item xs={12} sm={6}>
                                 <TextField
                                     variant="outlined"
                                     margin="normal"
@@ -212,7 +213,8 @@ export default function Signup() {
                                     onChange={handleChange}
                                 />
                             </Grid>
-                            <Grid item xs={12} sm={6} md={6}>
+                            {/* Email */}
+                            <Grid item xs={12}>
                                 <TextField
                                     variant="outlined"
                                     margin="normal"
@@ -229,7 +231,8 @@ export default function Signup() {
                                     onChange={handleChange}
                                 />
                             </Grid>
-                            <Grid item xs={12} sm={6} md={6}>
+                            {/* Mot de passe */}
+                            <Grid item xs={12}>
                                 <TextField
                                     variant="outlined"
                                     margin="normal"
@@ -257,6 +260,7 @@ export default function Signup() {
                                     }}
                                 />
                             </Grid>
+                            {/* Force du mot de passe */}
                             <Grid item xs={12}>
                                 <Typography variant="body2" color="textSecondary">
                                     Force du mot de passe : {evaluatePasswordStrength(formData.password)}
@@ -272,7 +276,8 @@ export default function Signup() {
                                         <span style={{ color: 'red' }}>&#10060;</span>} Contient un caractère spécial
                                 </Typography>
                             </Grid>
-                            <Grid item xs={12} sm={6} md={6}>
+                            {/* Confirmer le mot de passe */}
+                            <Grid item xs={12}>
                                 <TextField
                                     variant="outlined"
                                     margin="normal"
@@ -280,7 +285,7 @@ export default function Signup() {
                                     fullWidth
                                     name="confirmPassword"
                                     label="Confirmer le mot de passe"
-                                    type="password"
+                                    type={showPassword ? "text" : "password"}
                                     id="confirmPassword"
                                     autoComplete="new-password"
                                     InputLabelProps={{
@@ -300,6 +305,7 @@ export default function Signup() {
                                     }}
                                 />
                             </Grid>
+                            {/* Message d'erreur si les mots de passe ne correspondent pas */}
                             {formData.password !== formData.confirmPassword && (
                                 <Grid item xs={12}>
                                     <Typography variant="body2" color="error">
@@ -307,7 +313,8 @@ export default function Signup() {
                                     </Typography>
                                 </Grid>
                             )}
-                            <Grid item xs={12} sm={6} md={6}>
+                            {/* Date de naissance */}
+                            <Grid item xs={12} sm={6}>
                                 <LocalizationProvider dateAdapter={AdapterDateFns}>
                                     <DesktopDatePicker
                                         label="Date de naissance"
@@ -327,7 +334,8 @@ export default function Signup() {
                                     />
                                 </LocalizationProvider>
                             </Grid>
-                            <Grid item xs={12} sm={6} md={6}>
+                            {/* Numéro de téléphone */}
+                            <Grid item xs={12} sm={6}>
                                 <TextField
                                     variant="outlined"
                                     margin="normal"
@@ -345,7 +353,8 @@ export default function Signup() {
                                     onChange={handleChange}
                                 />
                             </Grid>
-                            <Grid item xs={12} sm={6} md={6}>
+                            {/* Adresse */}
+                            <Grid item xs={12} sm={6}>
                                 <TextField
                                     variant="outlined"
                                     margin="normal"
@@ -363,7 +372,8 @@ export default function Signup() {
                                     onChange={handleChange}
                                 />
                             </Grid>
-                            <Grid item xs={12} sm={6} md={6}>
+                            {/* Ville */}
+                            <Grid item xs={12} sm={6}>
                                 <TextField
                                     variant="outlined"
                                     margin="normal"
@@ -381,7 +391,8 @@ export default function Signup() {
                                     onChange={handleChange}
                                 />
                             </Grid>
-                            <Grid item xs={12} sm={6} md={6}>
+                            {/* Code postal */}
+                            <Grid item xs={12} sm={6}>
                                 <TextField
                                     variant="outlined"
                                     margin="normal"
@@ -399,6 +410,7 @@ export default function Signup() {
                                     onChange={handleChange}
                                 />
                             </Grid>
+                            {/* Vous êtes */}
                             <Grid item xs={12}>
                                 <TextField
                                     variant="outlined"
@@ -420,6 +432,7 @@ export default function Signup() {
                                     ))}
                                 </TextField>
                             </Grid>
+                            {/* Nom de l'organisation */}
                             {showOrganisationNameField && (
                                 <Grid item xs={12}>
                                     <TextField
@@ -439,8 +452,8 @@ export default function Signup() {
                                     />
                                 </Grid>
                             )}
-                            {/* Ajoutez ici les autres champs de formulaire nécessaires */}
                         </Grid>
+                        {/* Bouton S'inscrire */}
                         <Button
                             type="submit"
                             fullWidth
@@ -450,9 +463,10 @@ export default function Signup() {
                         >
                             S&apos;inscrire
                         </Button>
+                        {/* Lien vers la page de connexion */}
                         <Grid container justifyContent="flex-end">
                             <Grid item>
-                                <Link href="/signin" variant="body2">
+                                <Link href="#" variant="body2" onClick={() => signIn('credentials', { redirect: true })}>
                                     Déjà inscrit? Connectez-vous
                                 </Link>
                             </Grid>
@@ -462,4 +476,5 @@ export default function Signup() {
             </Card>
         </Container>
     );
+
 }

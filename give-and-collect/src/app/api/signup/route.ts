@@ -1,31 +1,28 @@
-import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcrypt';
 import { NextRequest, NextResponse } from 'next/server';
-
-const prisma = new PrismaClient();
+import prisma from '../../../utils/db';
 
 export async function POST(req: NextRequest) {
-    console.log('req.method', req.method);
-    const {
-        birthDate,
-        firstname,
-        lastname,
-        email,
-        password,
-        phone,
-        address,
-        city,
-        postalCode,
-        nomOrganisation,
-        roleId,
-    } = await req.json();
-
     try {
+        const {
+            birthDate,
+            firstname,
+            lastname,
+            email,
+            password,
+            phone,
+            address,
+            city,
+            postalCode,
+            nomOrganisation,
+            roleId,
+        } = await req.json();
+
         const existingUser = await prisma.user.findFirst({
             where: {
                 OR: [
-                    { email: email },
-                    { phone: phone }
+                    { email },
+                    { phone }
                 ]
             }
         });
@@ -56,22 +53,11 @@ export async function POST(req: NextRequest) {
                 roleId,
             },
         });
-        return NextResponse.json(newUser);
+
+        return NextResponse.json(newUser, { status: 201 });
     } catch (error) {
-        if (error instanceof Error) {
-            return NextResponse.json({ error: 'User creation failed', details: error.message }, { status: 500 });
-        } else {
-            return NextResponse.json({ error: 'User creation failed', details: 'An unexpected error occurred' }, { status: 500 });
-        }
+        console.error('User creation failed:', error instanceof Error ? error.message : error);
+        return NextResponse.json({ error: 'User creation failed', details: error instanceof Error ? error.message : 'An unexpected error occurred' }, { status: 500 });
     }
 }
 
-export async function GET() {
-    try {
-        const users = await prisma.user.findMany();
-        return NextResponse.json({ data: users }, { status: 200 });
-    } catch (error) {
-        console.error('Error fetching users:', error);
-        return NextResponse.json({ error: 'Error fetching users' }, { status: 500 });
-    }
-}
