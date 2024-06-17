@@ -6,8 +6,6 @@ import {
 import XIcon from '@mui/icons-material/X';
 import InstagramIcon from '@mui/icons-material/Instagram';
 import YouTubeIcon from '@mui/icons-material/YouTube';
-import DiscordIcon from '../Svg/DiscordIcon/DiscordIcon';
-import TiktokIcon from '../Svg/TiktokIcon/TiktokIcon';
 import Image from 'next/image';
 
 interface LinkProps {
@@ -36,9 +34,7 @@ const policyLinks: LinkProps[] = [
 const socialLinks: SocialLinkProps[] = [
   { href: "https://www.instagram.com", icon: InstagramIcon },
   { href: "https://www.twitter.com/x", icon: XIcon },
-  { href: "https://www.tiktok.com", icon: TiktokIcon },
   { href: "https://www.youtube.com", icon: YouTubeIcon },
-  { href: "https://discord.com", icon: DiscordIcon },
 ];
 
 const FooterLink: React.FC<LinkProps> = ({ href, text }) => (
