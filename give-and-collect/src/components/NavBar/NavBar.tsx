@@ -229,7 +229,6 @@ function ResponsiveAppBar() {
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
             >
-              
               <MenuItem key={'Profile'} onClick={handleCloseUserMenu}>
                 <Typography textAlign="center">Mon profil</Typography>
               </MenuItem>
