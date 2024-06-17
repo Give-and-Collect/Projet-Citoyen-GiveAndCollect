@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v14-appRouter";
-import ResponsiveAppBar from "../components/NavBar/NavBar";
+import ResponsiveAppBar from "@/components/NavBar/NavBar";
+import Footer from "@/components/Footer/Footer";
 import theme from "@/utils/theme";
 import { ThemeProvider } from "@mui/material";
 import Providers from "@/components/Providers";
@@ -22,16 +23,15 @@ export default async function RootLayout({
 
   return (
       <html lang="en">
-      <body className={inter.className}>
-        <AppRouterCacheProvider>
-          <ThemeProvider theme={theme}>
-            <Providers>
+        <body className={inter.className}>
+          <AppRouterCacheProvider>
+            <ThemeProvider theme={theme}>
               <ResponsiveAppBar />
               {children}
-            </Providers>
-          </ThemeProvider>
-        </AppRouterCacheProvider>
-      </body>
+              <Footer />
+            </ThemeProvider>
+          </AppRouterCacheProvider>
+        </body>
       </html>
   );
 }
