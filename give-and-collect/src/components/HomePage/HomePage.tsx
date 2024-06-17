@@ -10,7 +10,7 @@ const HomePage = () => {
         <Box>
             <Banner 
                 bannerSrc="/images/banner.png" 
-                logoSrc="/images/logo.png" 
+                logoSrc="/images/logo1.png"
                 bannerText="Donnons une nouvelle vie à nos vêtements. Partageons l’amour, réchauffons des vies !" 
             />
             <Container>

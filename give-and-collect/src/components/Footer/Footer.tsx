@@ -83,7 +83,7 @@ const Footer: React.FC = () => {
         width={200} 
         height={80} 
         alt="Give-and-collect logo" 
-        src='/images/logo-horizontal.png' 
+        src='/images/logo2.png'
       />
       
       <Box 
