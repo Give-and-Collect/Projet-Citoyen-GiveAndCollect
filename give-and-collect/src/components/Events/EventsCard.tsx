@@ -52,7 +52,7 @@ const EventsCard: React.FC<Props> = (props) => {
 
             <div style={{ display: 'flex', alignItems: 'center' }}>
               <Image src={'/assets/icones/calendar-darkgreen.png'} alt="Home" width={50} height={50} />
-              <Typography>{props.startDate.toLocaleString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric', hour: 'numeric', minute: 'numeric' })} - {props.endDate.toLocaleString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric', hour: 'numeric', minute: 'numeric' })}</Typography>
+              <Typography>{props.startDate.toLocaleString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric', hour: 'numeric', minute: 'numeric', timeZone: 'UTC' })} - {props.endDate.toLocaleString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric', hour: 'numeric', minute: 'numeric', timeZone: 'UTC' })}</Typography>
             </div>
 
             <div style={{ display: 'flex', alignItems: 'center' }}>

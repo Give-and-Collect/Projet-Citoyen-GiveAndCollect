@@ -11,13 +11,24 @@ export async function GET(request: NextRequest, { params }: { params: { city: st
       if (city) {
         events = await prisma.event.findMany({
           where: {
-            city: city
+            city: city,
+            endDate: {
+              gte: new Date(),
+            },
           }
         });
       }
   
       if (!events || events.length === 0) {
-        events = await prisma.event.findMany();
+        events = await prisma.event.findMany(
+          {
+            where: {
+              endDate: {
+                gte: new Date(),
+              },
+            }
+          }
+        );
       }
   
       if (events.length === 0) {
