@@ -5,7 +5,7 @@ import { AppRouterCacheProvider } from "@mui/material-nextjs/v14-appRouter";
 import ResponsiveAppBar from "@/components/NavBar/NavBar";
 import Footer from "@/components/Footer/Footer";
 import theme from "@/utils/theme";
-import { ThemeProvider } from "@mui/material";
+import { Box, ThemeProvider } from "@mui/material";
 import Providers from "@/components/Providers";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -28,8 +28,16 @@ export default async function RootLayout({
             <ThemeProvider theme={theme}>
               <Providers>
                 <ResponsiveAppBar />
-                {children}
-                <Footer />
+                <Box
+                  display={"flex"}
+                  flexDirection={"column"}
+                  minHeight={"100vh"}
+                >
+                  <Box flexGrow={1}>
+                    {children}
+                  </Box>
+                  <Footer />
+                </Box>
               </Providers>
             </ThemeProvider>
           </AppRouterCacheProvider>
