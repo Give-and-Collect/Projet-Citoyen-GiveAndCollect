@@ -31,9 +31,9 @@ model User {
   address         String
   city            String
   postalCode      String
-  latitude        Float
-  longitude       Float
-  nomOrganisation String
+  latitude        Float?
+  longitude       Float?
+  nomOrganisation String?
   profilePicture  String?
   role            Role          @relation(fields: [roleId], references: [id])
   roleId          Int
