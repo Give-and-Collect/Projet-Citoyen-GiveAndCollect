@@ -1,4 +1,3 @@
-// types.ts
 export interface Ligne {
     categorie: string;
     taille: string;
@@ -7,8 +6,10 @@ export interface Ligne {
 }
 
 export interface FormData {
-    ville: string;
-    type: 'don' | 'collecte';
-    adresse: string;
+    city: string;
+    type: string;
+    postalCode: string;
+    address: string;
+    description: string;
     lignes: Ligne[];
 }

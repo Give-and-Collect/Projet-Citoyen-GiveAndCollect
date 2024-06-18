@@ -65,8 +65,8 @@ model Post {
   address      String
   city         String
   postalCode   String
-  latitude     Float
-  longitude    Float
+  latitude     Float?
+  longitude    Float?
   description  String
   creationDate DateTime
   author       User     @relation(fields: [authorId], references: [id])
@@ -83,22 +83,27 @@ model PostType {
 }
 
 model Item {
-  id         Int      @id @default(autoincrement())
+  id         Int            @id @default(autoincrement())
   size       String
   quantity   Int
-  post       Post     @relation(fields: [postId], references: [id])
+  post       Post           @relation(fields: [postId], references: [id])
   postId     Int
-  category   Category @relation(fields: [categoryId], references: [id])
-  categoryId Int
+  categories ItemCategory[]
 }
 
 model Category {
-  id              Int        @id @default(autoincrement())
-  name            String
-  parentCategory  Category?  @relation("ParentChild", fields: [categoryId], references: [id])
-  categoryId      Int?
-  childCategories Category[] @relation("ParentChild")
-  items           Item[]
+  id    Int            @id @default(autoincrement())
+  name  String
+  type  String
+  items ItemCategory[]
+}
+
+model ItemCategory {
+  id         Int      @id @default(autoincrement())
+  item       Item     @relation(fields: [itemId], references: [id])
+  itemId     Int
+  category   Category @relation(fields: [categoryId], references: [id])
+  categoryId Int
 }
 
 model CollectionPoint {

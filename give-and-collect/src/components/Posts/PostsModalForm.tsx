@@ -14,7 +14,7 @@ import {
     SelectChangeEvent
 } from '@mui/material';
 import { Delete } from '@mui/icons-material';
-import { FormData, Ligne } from '../../app/types';
+import { FormData, Ligne } from '../../types/post';
 
 const modalStyle = {
     position: 'absolute' as 'absolute',
@@ -41,6 +41,8 @@ interface PostsModalFormProps {
         field: keyof Ligne
     ) => void;
     handlePublish: () => Promise<void>;
+    types: {id: number, name: string}[]
+    genres: string[]
 }
 
 const PostsModalForm: React.FC<PostsModalFormProps> = ({
@@ -53,6 +55,8 @@ const PostsModalForm: React.FC<PostsModalFormProps> = ({
                                                            handleDeleteLine,
                                                            handleChange,
                                                            handlePublish,
+                                                           types,
+                                                           genres
                                                        }) => {
     return (
         <Modal open={isOpen} onClose={onClose}>
@@ -65,9 +69,33 @@ const PostsModalForm: React.FC<PostsModalFormProps> = ({
                         <Grid item xs={12}>
                             <TextField
                                 fullWidth
+                                label="Adresse"
+                                value={formData.city}
+                                onChange={(e) => setFormData({ ...formData, address: e.target.value })}
+                            />
+                        </Grid>
+                        <Grid item xs={12}>
+                            <TextField
+                                fullWidth
                                 label="Ville"
-                                value={formData.ville}
-                                onChange={(e) => setFormData({ ...formData, ville: e.target.value })}
+                                value={formData.address}
+                                onChange={(e) => setFormData({ ...formData, city: e.target.value })}
+                            />
+                        </Grid>
+                        <Grid item xs={12}>
+                            <TextField
+                                fullWidth
+                                label="Code Postal"
+                                value={formData.postalCode}
+                                onChange={(e) => setFormData({ ...formData, postalCode: e.target.value })}
+                            />
+                        </Grid>
+                        <Grid item xs={12}>
+                            <TextField
+                                fullWidth
+                                label="Descrption"
+                                value={formData.description}
+                                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                             />
                         </Grid>
                         <Grid item xs={12}>
@@ -75,20 +103,11 @@ const PostsModalForm: React.FC<PostsModalFormProps> = ({
                                 <InputLabel>Type</InputLabel>
                                 <Select
                                     value={formData.type}
-                                    onChange={(e) => setFormData({ ...formData, type: e.target.value as 'don' | 'collecte' })}
+                                    onChange={(e) => setFormData({ ...formData, type: e.target.value })}
                                 >
-                                    <MenuItem value="don">Don</MenuItem>
-                                    <MenuItem value="collecte">Collecte</MenuItem>
+                                    {types.map(type => (<MenuItem value={type.id}>{type.name}</MenuItem>))}
                                 </Select>
                             </FormControl>
-                        </Grid>
-                        <Grid item xs={12}>
-                            <TextField
-                                fullWidth
-                                label="Adresse"
-                                value={formData.adresse}
-                                onChange={(e) => setFormData({ ...formData, adresse: e.target.value })}
-                            />
                         </Grid>
                         {formData.lignes.map((line, index) => (
                             <Grid container item spacing={2} alignItems="center" key={index}>
@@ -125,11 +144,7 @@ const PostsModalForm: React.FC<PostsModalFormProps> = ({
                                             value={line.genre}
                                             onChange={(e) => handleChange(e as SelectChangeEvent<string>, index, 'genre')}
                                         >
-                                            <MenuItem value="homme">Homme</MenuItem>
-                                            <MenuItem value="femme">Femme</MenuItem>
-                                            <MenuItem value="fille">Fille</MenuItem>
-                                            <MenuItem value="garcon">Garçon</MenuItem>
-                                            <MenuItem value="unisexe">Unisexe</MenuItem>
+                                            {genres.map((genre) => (<MenuItem value={genre} key={genre}>{genre}</MenuItem>))}
                                         </Select>
                                     </FormControl>
                                 </Grid>
