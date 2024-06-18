@@ -45,6 +45,12 @@ const theme = createTheme({
       default: '#ffffff',
       paper: '#F4EEE0',
     },
+    action: {
+      active: '#F4EEE0',
+      hover: '#DCD5C6',
+      selected: '#DCD5C6',
+      disabled: '#E2EAF4',
+    },
     divider: 'rgba(140,110,110,0.12)',
   },
   typography: {
