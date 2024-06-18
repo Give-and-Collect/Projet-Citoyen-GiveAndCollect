@@ -5,6 +5,8 @@ import {Button, SelectChangeEvent} from '@mui/material';
 import PostsModalForm from '../../components/Posts/PostsModalForm';
 import { FormData, Ligne } from '../../types/post';
 import {getSession} from "next-auth/react";
+import { Add } from '@mui/icons-material';
+
 
 // Initialisation des catégories
 const categories = [
@@ -116,7 +118,7 @@ const PostAnnonce: React.FC = () => {
 
     return (
         <div style={{margin: '20px', display: 'flex', justifyContent: 'flex-end'}}>
-            <Button variant="contained" color="secondary" onClick={openModal}>
+            <Button variant="contained" color="secondary" onClick={openModal} startIcon={<Add />}>
                 Ajouter une annonce
             </Button>
             <PostsModalForm

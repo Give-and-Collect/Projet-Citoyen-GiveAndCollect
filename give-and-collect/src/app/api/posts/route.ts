@@ -63,32 +63,22 @@ export async function POST(req: NextRequest, res: NextResponse) {
     }
 }
 
-//
-// export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-//     if (req.method === 'GET') {
-//         // Récupérer toutes les annonces
-//         try {
-//             const posts = await prisma.post.findMany({
-//                 include: {
-//                     author: true,
-//                     postType: true,
-//                     items: {
-//                         include: {
-//                             category: true
-//                         }
-//                     }
-//                 }
-//             });
-//             res.status(200).json(posts);
-//         } catch (error) {
-//             res.status(500).json({ error: 'Erreur lors de la récupération des annonces' });
-//         }
-//     } else if (req.method === 'POST') {
-//
-//     } else {
-//         res.setHeader('Allow', ['GET', 'POST']);
-//         res.status(405).end(`Method ${req.method} Not Allowed`);
-//     }
-// }
-//
-//
+export async function GET(req: NextRequest) {
+    try {
+        const posts = await prisma.post.findMany({
+            include: {
+                author: true,
+                postType: true,
+                items: {
+                    include: {
+                        categories: true
+                    }
+                }
+            }
+        });
+        return NextResponse.json(posts);
+    } catch (error) {
+        console.log(error);
+        return NextResponse.json({ error: 'Erreur lors de la récupération des annonces' }, { status: 500 });
+    }
+}

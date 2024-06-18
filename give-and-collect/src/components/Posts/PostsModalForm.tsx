@@ -41,8 +41,8 @@ interface PostsModalFormProps {
         field: keyof Ligne
     ) => void;
     handlePublish: () => Promise<void>;
-    types: {id: number, name: string}[]
-    genres: string[]
+    types: { id: number, name: string }[];
+    genres: string[];
 }
 
 const PostsModalForm: React.FC<PostsModalFormProps> = ({
@@ -70,7 +70,7 @@ const PostsModalForm: React.FC<PostsModalFormProps> = ({
                             <TextField
                                 fullWidth
                                 label="Adresse"
-                                value={formData.city}
+                                value={formData.address}
                                 onChange={(e) => setFormData({ ...formData, address: e.target.value })}
                             />
                         </Grid>
@@ -78,7 +78,7 @@ const PostsModalForm: React.FC<PostsModalFormProps> = ({
                             <TextField
                                 fullWidth
                                 label="Ville"
-                                value={formData.address}
+                                value={formData.city}
                                 onChange={(e) => setFormData({ ...formData, city: e.target.value })}
                             />
                         </Grid>
@@ -93,7 +93,7 @@ const PostsModalForm: React.FC<PostsModalFormProps> = ({
                         <Grid item xs={12}>
                             <TextField
                                 fullWidth
-                                label="Descrption"
+                                label="Description"
                                 value={formData.description}
                                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                             />
@@ -105,7 +105,7 @@ const PostsModalForm: React.FC<PostsModalFormProps> = ({
                                     value={formData.type}
                                     onChange={(e) => setFormData({ ...formData, type: e.target.value })}
                                 >
-                                    {types.map(type => (<MenuItem value={type.id}>{type.name}</MenuItem>))}
+                                    {types.map(type => (<MenuItem value={type.id} key={type.id}>{type.name}</MenuItem>))}
                                 </Select>
                             </FormControl>
                         </Grid>
@@ -159,16 +159,14 @@ const PostsModalForm: React.FC<PostsModalFormProps> = ({
                                     />
                                 </Grid>
                                 <Grid item xs={1}>
-                                    {index > 0 && (
-                                        <IconButton onClick={() => handleDeleteLine(index)}>
-                                            <Delete />
-                                        </IconButton>
-                                    )}
+                                    <IconButton onClick={() => handleDeleteLine(index)} color="secondary">
+                                        <Delete />
+                                    </IconButton>
                                 </Grid>
                             </Grid>
                         ))}
                         <Grid item xs={12}>
-                            <Button variant="contained" sx={{ bgcolor: '#4caf50', '&:hover': { bgcolor: '#388e3c' } }} onClick={handleAddLine} fullWidth>
+                            <Button variant="contained" sx={{ bgcolor: 'primary.main', '&:hover': { bgcolor: 'primary.dark' } }} onClick={handleAddLine} fullWidth>
                                 Ajouter une ligne
                             </Button>
                         </Grid>
