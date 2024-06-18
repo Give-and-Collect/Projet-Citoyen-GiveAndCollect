@@ -20,14 +20,14 @@ interface SocialLinkProps {
 
 const links: LinkProps[] = [
   { href: "/", text: "accueil" },
-  { href: "/collect", text: "points de collecte" },
+  { href: "/collection-point", text: "points de collecte" },
   { href: "/events", text: "événements" },
-  { href: "/annonces", text: "annonces" },
-  { href: "/contact", text: "qui-sommes-nous ?" },
+  { href: "/posts", text: "annonces" },
+  { href: "/about", text: "qui-sommes-nous ?" },
 ];
 
 const policyLinks: LinkProps[] = [
-  { href: "/terms-and-conditions", text: "conditions générales d'utilisation" },
+  { href: "/general-terms", text: "conditions générales d'utilisation" },
   { href: "/legal-notice", text: "mentions légales" },
 ];
 
