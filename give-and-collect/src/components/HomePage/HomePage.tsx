@@ -1,4 +1,3 @@
-
 import Banner from "../Banner/Banner";
 import { 
     Box, 
@@ -9,8 +8,8 @@ const HomePage = () => {
     return (
         <Box>
             <Banner 
-                bannerSrc="/images/banner.png" 
-                logoSrc="/images/logo.png" 
+                bannerSrc="/assets/images/banner.png" 
+                logoSrc="/assets/images/logo1.png" 
                 bannerText="Donnons une nouvelle vie à nos vêtements. Partageons l’amour, réchauffons des vies !" 
             />
             <Container>
