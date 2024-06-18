@@ -1,8 +1,7 @@
 "use client";
 
 import EventsCard from "@/components/Events/EventsCard";
-import { Box, Card, CardContent, CardHeader, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, Typography } from "@mui/material";
-import Image from "next/image";
+import { Box, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, Typography } from "@mui/material";
 import * as React from "react";
 
 export default function Events() {
