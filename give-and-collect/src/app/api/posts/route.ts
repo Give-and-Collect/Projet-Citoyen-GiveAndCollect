@@ -32,7 +32,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
                 longitude,
                 description,
                 creationDate: new Date(),
-                author: {connect: {id: 1}},
+                author: {connect: {id: authorId}},
                 postType: {connect: {id: postTypeId}},
             }
         });

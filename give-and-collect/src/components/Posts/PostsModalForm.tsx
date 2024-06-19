@@ -21,10 +21,14 @@ const modalStyle = {
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
-    width: 800,
+    width: '90%',
+    maxWidth: '600px',
     bgcolor: 'background.paper',
     boxShadow: 24,
     p: 4,
+    borderRadius: '8px',
+    maxHeight: '90vh', // Limiter la hauteur maximale
+    overflowY: 'auto'  // Activer le défilement vertical
 };
 
 interface PostsModalFormProps {
@@ -105,13 +109,15 @@ const PostsModalForm: React.FC<PostsModalFormProps> = ({
                                     value={formData.type}
                                     onChange={(e) => setFormData({ ...formData, type: e.target.value })}
                                 >
-                                    {types.map(type => (<MenuItem value={type.id} key={type.id}>{type.name}</MenuItem>))}
+                                    {types.map(type => (
+                                        <MenuItem value={type.id} key={type.id}>{type.name}</MenuItem>
+                                    ))}
                                 </Select>
                             </FormControl>
                         </Grid>
                         {formData.lignes.map((line, index) => (
                             <Grid container item spacing={2} alignItems="center" key={index}>
-                                <Grid item xs={3}>
+                                <Grid item xs={12} sm={6} md={3}>
                                     <FormControl fullWidth>
                                         <InputLabel>Catégorie</InputLabel>
                                         <Select
@@ -129,7 +135,7 @@ const PostsModalForm: React.FC<PostsModalFormProps> = ({
                                         </Select>
                                     </FormControl>
                                 </Grid>
-                                <Grid item xs={2}>
+                                <Grid item xs={12} sm={6} md={2}>
                                     <TextField
                                         fullWidth
                                         label="Taille"
@@ -137,18 +143,20 @@ const PostsModalForm: React.FC<PostsModalFormProps> = ({
                                         onChange={(e) => handleChange(e, index, 'taille')}
                                     />
                                 </Grid>
-                                <Grid item xs={2}>
+                                <Grid item xs={12} sm={6} md={2}>
                                     <FormControl fullWidth>
                                         <InputLabel>Genre</InputLabel>
                                         <Select
                                             value={line.genre}
                                             onChange={(e) => handleChange(e as SelectChangeEvent<string>, index, 'genre')}
                                         >
-                                            {genres.map((genre) => (<MenuItem value={genre} key={genre}>{genre}</MenuItem>))}
+                                            {genres.map((genre) => (
+                                                <MenuItem value={genre} key={genre}>{genre}</MenuItem>
+                                            ))}
                                         </Select>
                                     </FormControl>
                                 </Grid>
-                                <Grid item xs={2}>
+                                <Grid item xs={12} sm={6} md={2}>
                                     <TextField
                                         fullWidth
                                         label="Quantité"
@@ -158,7 +166,7 @@ const PostsModalForm: React.FC<PostsModalFormProps> = ({
                                         inputProps={{ min: 0 }}
                                     />
                                 </Grid>
-                                <Grid item xs={1}>
+                                <Grid item xs={12} sm={12} md={1}>
                                     <IconButton onClick={() => handleDeleteLine(index)} color="secondary">
                                         <Delete />
                                     </IconButton>
@@ -167,15 +175,15 @@ const PostsModalForm: React.FC<PostsModalFormProps> = ({
                         ))}
                         <Grid item xs={12}>
                             <Button variant="contained" sx={{ bgcolor: 'primary.main', '&:hover': { bgcolor: 'primary.dark' } }} onClick={handleAddLine} fullWidth>
-                                Ajouter une ligne
+                                Ajouter une Article
                             </Button>
                         </Grid>
-                        <Grid item xs={6}>
+                        <Grid item xs={12} sm={6}>
                             <Button variant="contained" color="success" onClick={handlePublish} fullWidth>
                                 Publier l'annonce
                             </Button>
                         </Grid>
-                        <Grid item xs={6}>
+                        <Grid item xs={12} sm={6}>
                             <Button variant="contained" color="error" onClick={onClose} fullWidth>
                                 Annuler
                             </Button>

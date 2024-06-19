@@ -1,12 +1,12 @@
 "use client";
 
 import React, { useEffect, useState } from 'react';
-import { Button, SelectChangeEvent } from '@mui/material';
+import {Button, SelectChangeEvent, Container, Typography, Box,} from '@mui/material';
 import PostsModalForm from '../../components/Posts/PostsModalForm';
 import { FormData, Ligne } from '../../types/post';
 import { getSession } from 'next-auth/react';
 import { Add } from '@mui/icons-material';
-import PostsCard from '../../components/Posts/PostsCard'; // Import du composant PostsCard
+import PostsCard from '../../components/Posts/PostsCard';
 
 // Initialisation des catégories
 const categories = [
@@ -108,7 +108,18 @@ const PostAnnonce: React.FC = () => {
             )
         }));
     };
-
+    const refeshPosts = async () => {
+        try {
+            const response = await fetch('/api/posts');
+            if (!response.ok) {
+                throw new Error('Erreur lors de la récupération des annonces');
+            }
+            const data = await response.json();
+            setPosts(data);
+        } catch (error) {
+            console.error('Erreur:', error);
+        }
+    }
     const handlePublish = async () => {
         try {
             const session = await getSession();
@@ -138,6 +149,8 @@ const PostAnnonce: React.FC = () => {
             if (response.ok) {
                 closeModal();
                 const newPost = await response.json();
+                alert('Annonce créée avec succès !');
+                refeshPosts(); // Appel de la fonction pour rafraîchir les annonces après la publication
                 console.log('Annonce créée :', newPost);
             } else {
                 console.error('Erreur lors de la publication de l\'annonce');
@@ -148,17 +161,20 @@ const PostAnnonce: React.FC = () => {
     };
 
     return (
-        <div style={{ margin: '20px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-            <div style={{ marginBottom: '20px', alignSelf: 'flex-end' }}>
+        <Container maxWidth="md" sx={{ mt: 4, mb: 4 }}>
+            <Box display="flex" justifyContent="flex-end" mb={2}>
                 <Button variant="contained" color="secondary" onClick={openModal} startIcon={<Add />}>
                     Ajouter une annonce
                 </Button>
-            </div>
+            </Box>
+            <Typography variant="h4" align="center" gutterBottom>
+                Listes des Annonces
+            </Typography>
             <PostsModalForm
                 isOpen={modalIsOpen}
                 onClose={closeModal}
                 formData={formData}
-                setFormData={setFormData}  // Ajout de setFormData ici
+                setFormData={setFormData}
                 categories={categories}
                 handleAddLine={handleAddLine}
                 handleDeleteLine={handleDeleteLine}
@@ -167,10 +183,10 @@ const PostAnnonce: React.FC = () => {
                 types={types}
                 genres={genres}
             />
-            <div style={{ width: '100%', marginTop: '20px' }}>
+            <Box mt={3}>
                 <PostsCard posts={posts} />
-            </div>
-        </div>
+            </Box>
+        </Container>
     );
 
 };
