@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -13,7 +7,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// schema.prisma
 model Role {
   id    Int    @id @default(autoincrement())
   name  String
@@ -28,19 +21,14 @@ model User {
   email           String        @unique
   password        String
   phone           String
-  address         String
-  city            String
-  postalCode      String
-  latitude        Float?
-  longitude       Float?
   nomOrganisation String?
   profilePicture  String?
-  role            Role          @relation(fields: [roleId], references: [id])
   roleId          Int
   events          Event[]
-  posts           Post[]
   Message         Message[]
   Participate     Participate[]
+  posts           Post[]
+  role            Role          @relation(fields: [roleId], references: [id])
 }
 
 model Event {
@@ -56,8 +44,8 @@ model Event {
   endDate      DateTime
   phone        String
   creationDate DateTime
-  organizer    User     @relation(fields: [organizerId], references: [id])
   organizerId  Int
+  organizer    User     @relation(fields: [organizerId], references: [id])
 }
 
 model Post {
@@ -65,15 +53,15 @@ model Post {
   address      String
   city         String
   postalCode   String
-  latitude     Float?
-  longitude    Float?
+  latitude     Float
+  longitude    Float
   description  String
   creationDate DateTime
-  author       User     @relation(fields: [authorId], references: [id])
   authorId     Int
-  postType     PostType @relation(fields: [postTypeId], references: [id])
   postTypeId   Int
   items        Item[]
+  author       User     @relation(fields: [authorId], references: [id])
+  postType     PostType @relation(fields: [postTypeId], references: [id])
 }
 
 model PostType {
@@ -86,8 +74,8 @@ model Item {
   id         Int            @id @default(autoincrement())
   size       String
   quantity   Int
-  post       Post           @relation(fields: [postId], references: [id])
   postId     Int
+  post       Post           @relation(fields: [postId], references: [id])
   categories ItemCategory[]
 }
 
@@ -100,10 +88,10 @@ model Category {
 
 model ItemCategory {
   id         Int      @id @default(autoincrement())
-  item       Item     @relation(fields: [itemId], references: [id])
   itemId     Int
-  category   Category @relation(fields: [categoryId], references: [id])
   categoryId Int
+  category   Category @relation(fields: [categoryId], references: [id])
+  item       Item     @relation(fields: [itemId], references: [id])
 }
 
 model CollectionPoint {
@@ -121,10 +109,10 @@ model Message {
   id             Int          @id @default(autoincrement())
   messageDate    DateTime
   body           String
-  sender         User         @relation(fields: [senderId], references: [id])
   senderId       Int
-  conversation   Conversation @relation(fields: [conversationId], references: [id])
   conversationId Int
+  conversation   Conversation @relation(fields: [conversationId], references: [id])
+  sender         User         @relation(fields: [senderId], references: [id])
 }
 
 model Conversation {
@@ -136,8 +124,8 @@ model Conversation {
 
 model Participate {
   id             Int          @id @default(autoincrement())
-  user           User         @relation(fields: [userId], references: [id])
   userId         Int
-  conversation   Conversation @relation(fields: [conversationId], references: [id])
   conversationId Int
+  conversation   Conversation @relation(fields: [conversationId], references: [id])
+  user           User         @relation(fields: [userId], references: [id])
 }

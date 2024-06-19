@@ -1,14 +1,13 @@
 "use client";
 
 import React, { useEffect, useState } from 'react';
-import {Button, SelectChangeEvent, Container, Typography, Box,} from '@mui/material';
+import { Button, Container, Typography, Box, SelectChangeEvent } from '@mui/material'; // Assurez-vous d'importer SelectChangeEvent
 import PostsModalForm from '../../components/Posts/PostsModalForm';
 import { FormData, Ligne } from '../../types/post';
 import { getSession } from 'next-auth/react';
 import { Add } from '@mui/icons-material';
 import PostsCard from '../../components/Posts/PostsCard';
 
-// Initialisation des catégories
 const categories = [
     'Chaussures', 'Vestes', 'Robes', 'Pantalons', 'Accessoires',
     'T-Shirt', 'Pull', 'Chemise', 'Jupe', 'Short', 'Manteau',
@@ -22,7 +21,7 @@ const genres = [
     'Fille',
     'Garçon',
     'Unisexe'
-]
+];
 
 const PostAnnonce: React.FC = () => {
     const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -36,45 +35,43 @@ const PostAnnonce: React.FC = () => {
     });
 
     const [types, setTypes] = useState<{ id: number, name: string }[]>([]);
-    const [posts, setPosts] = useState<any[]>([]); // État local pour stocker les annonces récupérées
+    const [posts, setPosts] = useState<any[]>([]);
 
     const openModal = () => setModalIsOpen(true);
     const closeModal = () => setModalIsOpen(false);
 
     useEffect(() => {
-        // Fonction pour charger les types de post depuis l'API
         const fetchTypes = async () => {
             try {
-                const response = await fetch('/api/types'); // Assurez-vous que l'API correspond bien à votre route GET des types
+                const response = await fetch('/api/types');
                 if (!response.ok) {
                     throw new Error('Erreur lors de la récupération des types de post');
                 }
                 const data = await response.json();
-                setTypes(data); // Met à jour l'état local avec les types récupérés depuis l'API
+                setTypes(data);
             } catch (error) {
                 console.error('Erreur:', error);
             }
         };
 
-        fetchTypes(); // Appel de la fonction pour charger les types de post au montage du composant
+        fetchTypes();
     }, []);
 
     useEffect(() => {
-        // Fonction pour charger les annonces depuis l'API
         const fetchPosts = async () => {
             try {
-                const response = await fetch('/api/posts'); // Assurez-vous que l'API correspond bien à votre route GET des posts
+                const response = await fetch('/api/posts');
                 if (!response.ok) {
                     throw new Error('Erreur lors de la récupération des annonces');
                 }
                 const data = await response.json();
-                setPosts(data); // Met à jour l'état local avec les annonces récupérées depuis l'API
+                setPosts(data);
             } catch (error) {
                 console.error('Erreur:', error);
             }
         };
 
-        fetchPosts(); // Appel de la fonction pour charger les annonces au montage du composant
+        fetchPosts();
     }, []);
 
     const handleAddLine = () => {
@@ -108,7 +105,8 @@ const PostAnnonce: React.FC = () => {
             )
         }));
     };
-    const refeshPosts = async () => {
+
+    const refreshPosts = async () => {
         try {
             const response = await fetch('/api/posts');
             if (!response.ok) {
@@ -119,7 +117,8 @@ const PostAnnonce: React.FC = () => {
         } catch (error) {
             console.error('Erreur:', error);
         }
-    }
+    };
+
     const handlePublish = async () => {
         try {
             const session = await getSession();
@@ -150,7 +149,7 @@ const PostAnnonce: React.FC = () => {
                 closeModal();
                 const newPost = await response.json();
                 alert('Annonce créée avec succès !');
-                refeshPosts(); // Appel de la fonction pour rafraîchir les annonces après la publication
+                refreshPosts();
                 console.log('Annonce créée :', newPost);
             } else {
                 console.error('Erreur lors de la publication de l\'annonce');
