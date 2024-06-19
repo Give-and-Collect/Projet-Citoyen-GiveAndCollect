@@ -16,27 +16,27 @@ type Props = {
 };
 
 const EventsCard: React.FC<Props> = (props) => {
-
   function formatPhoneNumber(phone: string): React.ReactNode {
     return phone.replace(/(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})/, '$1 $2 $3 $4 $5');
   }
 
     return (
-      <Box sx={{ maxWidth: 1000, width: 1000, ml: 5, mr: 5 }}>
+      <Box sx={{ width: '100%', maxWidth: 1000, px: 2 }}>
         <Card 
           sx={{ 
-          mt: 5,
-          mb: 5,
-          maxWidth: 1000,
-          borderTopLeftRadius: 15, 
-          borderTopRightRadius: 0, 
-          borderBottomLeftRadius: 0, 
-          borderBottomRightRadius: 15, 
-          boxShadow: 10 
-        }}>
+            mt: 5,
+            mb: 5,
+            width: '100%',
+            borderTopLeftRadius: 15, 
+            borderTopRightRadius: 0, 
+            borderBottomLeftRadius: 0, 
+            borderBottomRightRadius: 15, 
+            boxShadow: 10 
+          }}
+        >
           <CardHeader
             title={props.title}
-            style={{ textAlign: 'center', textTransform: 'uppercase', color: "#F4EEE0", backgroundColor: "#111D13",  }}
+            style={{ textAlign: 'center', textTransform: 'uppercase', color: "#F4EEE0", backgroundColor: "#111D13" }}
           />
           <CardContent>
             <Typography variant="body1" color="text.primary">

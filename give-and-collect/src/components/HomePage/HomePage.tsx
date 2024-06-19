@@ -9,6 +9,9 @@ import {
 } from '@mui/material';
 import EventsCard from "../Events/EventsCard";
 import Image from "next/image";
+import Carousel from 'react-multi-carousel';
+import 'react-multi-carousel/lib/styles.css';
+import zIndex from "@mui/material/styles/zIndex";
 
 const HomePage = () => {
     const [events, setEvents] = React.useState([]);
@@ -16,25 +19,39 @@ const HomePage = () => {
 
     React.useEffect(() => {
         const fetchEvents = async () => {
-        try {
-            const response = await fetch('api/events');
-            const data = await response.json();
-            if (data.length > 0) {
+            try {
+                const response = await fetch('api/events');
+                const data = await response.json();
                 const sortedEvents = data.sort((a, b) => new Date(a.startDate).getTime() - new Date(b.startDate).getTime());
                 setEvents(sortedEvents.slice(0, 3));
-            } else {
-                setEvents([]);
+            } catch (error) {
+                console.error('An error occurred while fetching events:', error);
             }
-            
-        } catch (error) {
-            console.error('An error occurred while fetching events:', error);
-        }
         };
 
         fetchEvents();
 
         setIsLoading(false);
     }, []);
+
+    const responsive = {
+        superLargeDesktop: {
+            breakpoint: { max: 4000, min: 1024 },
+            items: 3,
+        },
+        desktop: {
+            breakpoint: { max: 1024, min: 768 },
+            items: 2,
+        },
+        tablet: {
+            breakpoint: { max: 768, min: 640 },
+            items: 1,
+        },
+        mobile: {
+            breakpoint: { max: 640, min: 0 },
+            items: 1,
+        },
+    };
 
     return (
         <Box>
@@ -53,23 +70,32 @@ const HomePage = () => {
                 
                 {events.length > 0 ? (
                     <>
-                        <Box sx={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center' }}>
-                        {events.map((event, index) => (
-                            <EventsCard
-                                key={index}
-                                title={event.title}
-                                description={event.description}
-                                address={event.address}
-                                city={event.city}
-                                postalCode={event.postalCode}
-                                latitude={event.latitude}
-                                longitude={event.longitude}
-                                startDate={new Date(event.startDate)}
-                                endDate={new Date(event.endDate)}
-                                phone={event.phone}
-                            />
-                        ))}
-                        </Box>
+                        <Carousel 
+                            responsive={responsive} 
+                            infinite={true} 
+                            autoPlay={true} 
+                            autoPlaySpeed={5000}
+                            arrows={false}
+                            containerClass="carousel-container"
+                            itemClass="carousel-item"
+                        >
+                            {events.map((event, index) => (
+                                <Box key={index} sx={{ width: '100%' }}>
+                                    <EventsCard
+                                        title={event.title}
+                                        description={event.description}
+                                        address={event.address}
+                                        city={event.city}
+                                        postalCode={event.postalCode}
+                                        latitude={event.latitude}
+                                        longitude={event.longitude}
+                                        startDate={new Date(event.startDate)}
+                                        endDate={new Date(event.endDate)}
+                                        phone={event.phone}
+                                    />
+                                </Box>
+                            ))}
+                        </Carousel>
                     </>
                 ) : (
                     <>

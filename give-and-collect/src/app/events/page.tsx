@@ -51,10 +51,12 @@ export default function Events() {
       setIsLoading(false);
     }, [city]);
 
+    let sortedEvents = [];
+
     if (events.length > 0) {
-      const sortedEvents = events.sort((a, b) => new Date(a.startDate).getTime() - new Date(b.startDate).getTime());
+      sortedEvents = events.sort((a, b) => new Date(a.startDate).getTime() - new Date(b.startDate).getTime());
     } else {
-      const sortedEvents = [];
+      sortedEvents = [];
     }
 
     return (
