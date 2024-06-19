@@ -20,9 +20,13 @@ export default function Events() {
         try {
           const response = await fetch('api/events');
           const data = await response.json();
-          const cities = data.map(event => event.city);
-          const uniqueCities = [...new Set(cities)];
-          setCityList(uniqueCities);
+          if (data.length > 0) {
+            const cities = data.map(event => event.city);
+            const uniqueCities = [...new Set(cities)];
+            setCityList(uniqueCities);
+          } else {
+            setCityList([]);
+          }
         } catch (error) {
           console.error('An error occurred while fetching cities:', error);
         } finally {
@@ -47,7 +51,11 @@ export default function Events() {
       setIsLoading(false);
     }, [city]);
 
-    const sortedEvents = events.sort((a, b) => new Date(a.startDate).getTime() - new Date(b.startDate).getTime());
+    if (events.length > 0) {
+      const sortedEvents = events.sort((a, b) => new Date(a.startDate).getTime() - new Date(b.startDate).getTime());
+    } else {
+      const sortedEvents = [];
+    }
 
     return (
       <>

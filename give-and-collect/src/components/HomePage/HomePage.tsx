@@ -19,8 +19,13 @@ const HomePage = () => {
         try {
             const response = await fetch('api/events');
             const data = await response.json();
-            const sortedEvents = data.sort((a, b) => new Date(a.startDate).getTime() - new Date(b.startDate).getTime());
-            setEvents(sortedEvents.slice(0, 3));
+            if (data.length > 0) {
+                const sortedEvents = data.sort((a, b) => new Date(a.startDate).getTime() - new Date(b.startDate).getTime());
+                setEvents(sortedEvents.slice(0, 3));
+            } else {
+                setEvents([]);
+            }
+            
         } catch (error) {
             console.error('An error occurred while fetching events:', error);
         }
