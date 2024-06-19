@@ -1,12 +1,12 @@
 "use client";
 
-import React, {useEffect, useState} from 'react';
-import {Button, SelectChangeEvent} from '@mui/material';
+import React, { useEffect, useState } from 'react';
+import { Button, SelectChangeEvent } from '@mui/material';
 import PostsModalForm from '../../components/Posts/PostsModalForm';
 import { FormData, Ligne } from '../../types/post';
-import {getSession} from "next-auth/react";
+import { getSession } from 'next-auth/react';
 import { Add } from '@mui/icons-material';
-
+import PostsCard from '../../components/Posts/PostsCard'; // Import du composant PostsCard
 
 // Initialisation des catégories
 const categories = [
@@ -32,18 +32,49 @@ const PostAnnonce: React.FC = () => {
         address: '',
         postalCode: '',
         description: '',
-        lignes: [{categorie: '', taille: '', genre: '', quantite: ''}],
+        lignes: [{ categorie: '', taille: '', genre: '', quantite: '' }],
     });
 
     const [types, setTypes] = useState<{ id: number, name: string }[]>([]);
+    const [posts, setPosts] = useState<any[]>([]); // État local pour stocker les annonces récupérées
 
     const openModal = () => setModalIsOpen(true);
     const closeModal = () => setModalIsOpen(false);
 
     useEffect(() => {
-        fetch('/api/types')
-            .then(response => response.json())
-            .then(setTypes)
+        // Fonction pour charger les types de post depuis l'API
+        const fetchTypes = async () => {
+            try {
+                const response = await fetch('/api/types'); // Assurez-vous que l'API correspond bien à votre route GET des types
+                if (!response.ok) {
+                    throw new Error('Erreur lors de la récupération des types de post');
+                }
+                const data = await response.json();
+                setTypes(data); // Met à jour l'état local avec les types récupérés depuis l'API
+            } catch (error) {
+                console.error('Erreur:', error);
+            }
+        };
+
+        fetchTypes(); // Appel de la fonction pour charger les types de post au montage du composant
+    }, []);
+
+    useEffect(() => {
+        // Fonction pour charger les annonces depuis l'API
+        const fetchPosts = async () => {
+            try {
+                const response = await fetch('/api/posts'); // Assurez-vous que l'API correspond bien à votre route GET des posts
+                if (!response.ok) {
+                    throw new Error('Erreur lors de la récupération des annonces');
+                }
+                const data = await response.json();
+                setPosts(data); // Met à jour l'état local avec les annonces récupérées depuis l'API
+            } catch (error) {
+                console.error('Erreur:', error);
+            }
+        };
+
+        fetchPosts(); // Appel de la fonction pour charger les annonces au montage du composant
     }, []);
 
     const handleAddLine = () => {
@@ -51,7 +82,7 @@ const PostAnnonce: React.FC = () => {
             ...prevState,
             lignes: [
                 ...prevState.lignes,
-                {categorie: '', taille: '', genre: '', quantite: ''},
+                { categorie: '', taille: '', genre: '', quantite: '' },
             ],
         }));
     };
@@ -60,7 +91,7 @@ const PostAnnonce: React.FC = () => {
         setFormData(prevState => {
             const newLines = [...prevState.lignes];
             newLines.splice(index, 1);
-            return {...prevState, lignes: newLines};
+            return { ...prevState, lignes: newLines };
         });
     };
 
@@ -69,11 +100,11 @@ const PostAnnonce: React.FC = () => {
         index: number,
         field: keyof Ligne,
     ) => {
-        const {value} = e.target;
+        const { value } = e.target;
         setFormData(prevState => ({
             ...prevState,
             lignes: prevState.lignes.map((line, i) =>
-                i === index ? {...line, [field]: value} : line
+                i === index ? { ...line, [field]: value } : line
             )
         }));
     };
@@ -117,10 +148,12 @@ const PostAnnonce: React.FC = () => {
     };
 
     return (
-        <div style={{margin: '20px', display: 'flex', justifyContent: 'flex-end'}}>
-            <Button variant="contained" color="secondary" onClick={openModal} startIcon={<Add />}>
-                Ajouter une annonce
-            </Button>
+        <div style={{ margin: '20px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            <div style={{ marginBottom: '20px', alignSelf: 'flex-end' }}>
+                <Button variant="contained" color="secondary" onClick={openModal} startIcon={<Add />}>
+                    Ajouter une annonce
+                </Button>
+            </div>
             <PostsModalForm
                 isOpen={modalIsOpen}
                 onClose={closeModal}
@@ -134,6 +167,9 @@ const PostAnnonce: React.FC = () => {
                 types={types}
                 genres={genres}
             />
+            <div style={{ width: '100%', marginTop: '20px' }}>
+                <PostsCard posts={posts} />
+            </div>
         </div>
     );
 
