@@ -53,18 +53,20 @@ const customMarkerIcon = L.icon({
     popupAnchor: [0, -40],
 });
 
-const CollectionPointListMap: React.FC<Props> = ({
-                                                     pointsDeCollecte = [],
-                                                     currentPosition,
-                                                     selectedCity,
-                                                     handleCityChange,
-                                                     handleMarkerClick,
-                                                     handleListClick,
-                                                     cities = []
-                                                 }) => {
+const CollectionPointListMap: React.FC<Props> = React.memo(({
+                                                                pointsDeCollecte = [],
+                                                                currentPosition,
+                                                                selectedCity,
+                                                                handleCityChange,
+                                                                handleMarkerClick,
+                                                                handleListClick,
+                                                                cities = []
+                                                            }) => {
     const isSmallScreen = useMediaQuery((theme: Theme) => theme.breakpoints.down('md'));
 
-    const filteredPoints = selectedCity === 'Toutes' ? pointsDeCollecte : pointsDeCollecte.filter(point => point.city === selectedCity);
+    const filteredPoints = React.useMemo(() => {
+        return selectedCity === 'Toutes' ? pointsDeCollecte : pointsDeCollecte.filter(point => point.city === selectedCity);
+    }, [selectedCity, pointsDeCollecte]);
 
     return (
         <Box sx={{
@@ -211,6 +213,6 @@ const CollectionPointListMap: React.FC<Props> = ({
             )}
         </Box>
     );
-};
+});
 
 export default CollectionPointListMap;
