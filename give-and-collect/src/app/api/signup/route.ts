@@ -11,9 +11,6 @@ export async function POST(req: NextRequest) {
             email,
             password,
             phone,
-            address,
-            city,
-            postalCode,
             nomOrganisation,
             roleId,
         } = await req.json();
@@ -46,12 +43,9 @@ export async function POST(req: NextRequest) {
                 email,
                 password: hashedPassword,
                 phone,
-                address,
-                city,
-                postalCode,
                 nomOrganisation,
                 roleId,
-            },
+            }
         });
 
         return NextResponse.json(newUser, { status: 201 });
@@ -60,4 +54,3 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ error: 'User creation failed', details: error instanceof Error ? error.message : 'An unexpected error occurred' }, { status: 500 });
     }
 }
-
