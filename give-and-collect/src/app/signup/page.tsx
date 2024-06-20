@@ -1,13 +1,14 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import { Container, TextField, Button, Typography, Box, Link, Grid, MenuItem, Card, IconButton } from '@mui/material';
+import { Container, TextField, Button, Typography, Box, Link, Grid, MenuItem, Card, IconButton, InputAdornment } from '@mui/material';
 import { LocalizationProvider, DesktopDatePicker } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import Image from 'next/image';
 import { signIn } from 'next-auth/react';
+import differenceInYears from 'date-fns/differenceInYears'; // Importez cette fonction pour vérifier l'âge
 
 interface Role {
     id: number;
@@ -26,9 +27,6 @@ export default function Signup() {
         password: '',
         confirmPassword: '',
         phone: '',
-        address: '',
-        city: '',
-        postalCode: '',
         nomOrganisation: '',
     });
 
@@ -70,7 +68,7 @@ export default function Signup() {
         return phoneRegex.test(phone);
     };
 
-    const isPasswordStrong = (password:string) => {
+    const isPasswordStrong = (password: string) => {
         const containsUppercase = /[A-Z]/.test(password);
         const containsSpecialCharacter = /[^A-Za-z0-9]/.test(password);
 
@@ -109,6 +107,11 @@ export default function Signup() {
 
         if (!isPhoneValid(formData.phone)) {
             alert("Le numéro de téléphone n'est pas valide");
+            return;
+        }
+
+        if (dob && differenceInYears(new Date(), dob) < 18) {
+            alert("Vous devez avoir au moins 18 ans pour vous inscrire");
             return;
         }
 
@@ -250,12 +253,15 @@ export default function Signup() {
                                     onChange={handleChange}
                                     InputProps={{
                                         endAdornment: (
-                                            <IconButton
-                                                onClick={togglePasswordVisibility}
-                                                edge="end"
-                                            >
-                                                {showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
-                                            </IconButton>
+                                            <InputAdornment position="end">
+                                                <IconButton
+                                                    onClick={togglePasswordVisibility}
+                                                    edge="end"
+                                                    style={{ backgroundColor: 'black' }}
+                                                >
+                                                    {showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
+                                                </IconButton>
+                                            </InputAdornment>
                                         ),
                                     }}
                                 />
@@ -295,12 +301,15 @@ export default function Signup() {
                                     onChange={handleChange}
                                     InputProps={{
                                         endAdornment: (
-                                            <IconButton
-                                                onClick={togglePasswordVisibility}
-                                                edge="end"
-                                            >
-                                                {showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
-                                            </IconButton>
+                                            <InputAdornment position="end">
+                                                <IconButton
+                                                    onClick={togglePasswordVisibility}
+                                                    edge="end"
+                                                    style={{ backgroundColor: 'black' }}
+                                                >
+                                                    {showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
+                                                </IconButton>
+                                            </InputAdornment>
                                         ),
                                     }}
                                 />
@@ -350,63 +359,6 @@ export default function Signup() {
                                         shrink: true,
                                     }}
                                     value={formData.phone}
-                                    onChange={handleChange}
-                                />
-                            </Grid>
-                            {/* Adresse */}
-                            <Grid item xs={12} sm={6}>
-                                <TextField
-                                    variant="outlined"
-                                    margin="normal"
-                                    required
-                                    fullWidth
-                                    name="address"
-                                    label="Adresse"
-                                    type="text"
-                                    id="address"
-                                    autoComplete="street-address"
-                                    InputLabelProps={{
-                                        shrink: true,
-                                    }}
-                                    value={formData.address}
-                                    onChange={handleChange}
-                                />
-                            </Grid>
-                            {/* Ville */}
-                            <Grid item xs={12} sm={6}>
-                                <TextField
-                                    variant="outlined"
-                                    margin="normal"
-                                    required
-                                    fullWidth
-                                    name="city"
-                                    label="Ville"
-                                    type="text"
-                                    id="city"
-                                    autoComplete="address-level2"
-                                    InputLabelProps={{
-                                        shrink: true,
-                                    }}
-                                    value={formData.city}
-                                    onChange={handleChange}
-                                />
-                            </Grid>
-                            {/* Code postal */}
-                            <Grid item xs={12} sm={6}>
-                                <TextField
-                                    variant="outlined"
-                                    margin="normal"
-                                    required
-                                    fullWidth
-                                    name="postalCode"
-                                    label="Code postal"
-                                    type="text"
-                                    id="postalCode"
-                                    autoComplete="postal-code"
-                                    InputLabelProps={{
-                                        shrink: true,
-                                    }}
-                                    value={formData.postalCode}
                                     onChange={handleChange}
                                 />
                             </Grid>
@@ -476,5 +428,4 @@ export default function Signup() {
             </Card>
         </Container>
     );
-
 }

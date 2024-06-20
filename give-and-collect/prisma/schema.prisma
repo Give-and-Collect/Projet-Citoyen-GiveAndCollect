@@ -71,19 +71,19 @@ model PostType {
 }
 
 model Item {
-  id         Int            @id @default(autoincrement())
-  size       String
-  quantity   Int
-  postId     Int
-  post       Post           @relation(fields: [postId], references: [id])
-  categories ItemCategory[]
+  id           Int            @id @default(autoincrement())
+  size         String
+  quantity     Int
+  postId       Int
+  post         Post           @relation(fields: [postId], references: [id])
+  ItemCategory ItemCategory[]
 }
 
 model Category {
-  id    Int            @id @default(autoincrement())
-  name  String
-  type  String
-  items ItemCategory[]
+  id           Int            @id @default(autoincrement())
+  name         String
+  type         String
+  ItemCategory ItemCategory[]
 }
 
 model ItemCategory {
@@ -128,4 +128,12 @@ model Participate {
   conversationId Int
   conversation   Conversation @relation(fields: [conversationId], references: [id])
   user           User         @relation(fields: [userId], references: [id])
+}
+
+model ItemCategory {
+  id         Int      @id @default(autoincrement())
+  itemId     Int
+  categoryId Int
+  Category   Category @relation(fields: [categoryId], references: [id])
+  Item       Item     @relation(fields: [itemId], references: [id])
 }
