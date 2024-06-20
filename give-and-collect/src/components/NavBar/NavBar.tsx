@@ -47,7 +47,7 @@ function ResponsiveAppBar() {
   };
 
   return (
-    <AppBar position="static" sx={{ color: theme.palette.background.paper }}>
+    <AppBar position="sticky" sx={{ color: theme.palette.background.paper }}>
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           <Box sx={{ display: { xs: 'none', lg: 'flex' }, mr: 1, my: 1 }}>

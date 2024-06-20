@@ -20,6 +20,16 @@ export async function middleware(req: NextRequest) {
     }
   }
 
+  if (req.nextUrl.pathname.startsWith('/api/events')) {
+    // Only protect POST requests
+    if (req.method === 'POST') {
+      // Have to be authenticated
+      if (!token) {
+        return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401 })
+      }
+    }
+  }
+
   // -------------------Page routes protection-------------------
   if (req.nextUrl.pathname.startsWith('/chat')) {
     // Have to be authenticated
