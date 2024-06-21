@@ -11,7 +11,6 @@ import EventsCard from "../Events/EventsCard";
 import Image from "next/image";
 import Carousel from 'react-multi-carousel';
 import 'react-multi-carousel/lib/styles.css';
-import zIndex from "@mui/material/styles/zIndex";
 
 const HomePage = () => {
     const [events, setEvents] = React.useState([]);
@@ -34,14 +33,24 @@ const HomePage = () => {
         setIsLoading(false);
     }, []);
 
+    let superLargeDesktopItems = 3;
+    if (events.length < superLargeDesktopItems) {
+        superLargeDesktopItems = events.length;
+    }
+
+    let desktopItems = 2;
+    if (events.length < desktopItems) {
+        desktopItems = events.length;
+    }
+
     const responsive = {
         superLargeDesktop: {
             breakpoint: { max: 4000, min: 1024 },
-            items: 3,
+            items: superLargeDesktopItems,
         },
         desktop: {
             breakpoint: { max: 1024, min: 768 },
-            items: 2,
+            items: desktopItems,
         },
         tablet: {
             breakpoint: { max: 768, min: 640 },
@@ -73,6 +82,7 @@ const HomePage = () => {
                         <Carousel 
                             responsive={responsive} 
                             infinite={true} 
+                            pauseOnHover={true}
                             autoPlay={true} 
                             autoPlaySpeed={5000}
                             arrows={false}
