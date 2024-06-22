@@ -16,15 +16,17 @@ import {
     FormControl,
     InputLabel,
     Select,
-    MenuItem
+    MenuItem,
+    Button
 } from '@mui/material';
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
+import {Session} from "next-auth";
 
 interface PostItem {
     size: string;
     quantity: number;
-    categories: { id: number; itemId: number; categoryId: number }[];
+    ItemCategory: {category: { name: string, type: string }}[];
 }
 
 interface Post {
@@ -36,7 +38,9 @@ interface Post {
     author: {
         firstname: string;
         lastname: string;
-        roleId: string;
+        role: {
+            name: string
+        };
     };
     postType: {
         name: string;
@@ -46,9 +50,11 @@ interface Post {
 
 interface PostsCardProps {
     posts: Post[];
+    session: Session | null | undefined
+    handlePostDelete: (id : number) => void;
 }
 
-const PostsCard: React.FC<PostsCardProps> = ({ posts }) => {
+const PostsCard: React.FC<PostsCardProps> = ({ posts, session, handlePostDelete }) => {
     const [selectedCity, setSelectedCity] = useState('Toutes');
     const [cities, setCities] = useState<string[]>([]);
 
@@ -104,7 +110,7 @@ const PostsCard: React.FC<PostsCardProps> = ({ posts }) => {
                         <CardContent>
                             <Grid container spacing={1} alignItems="center" style={{ marginBottom: '20px' }}>
                                 <Grid item>
-                                    <Chip label={post.author.roleId} color="primary" sx={{ fontSize: '1rem', padding: '8px' }} />
+                                    <Chip label={post.author.role.name} color="primary" sx={{ fontSize: '1rem', padding: '8px' }} />
                                 </Grid>
                                 <Grid item>
                                     <Chip label={post.postType.name} color="secondary" style={{ marginLeft: '5px' }} sx={{ fontSize: '1rem', padding: '8px' }} />
@@ -144,9 +150,17 @@ const PostsCard: React.FC<PostsCardProps> = ({ posts }) => {
                                     <TableBody>
                                         {post.items.map((item, itemIndex) => (
                                             <TableRow key={itemIndex} sx={{ backgroundColor: itemIndex % 2 === 0 ? '#ffffff' : '#8bd59e' }}>
-                                                <TableCell>{item.categories.map(category => category.categoryId).join(', ')}</TableCell>
+                                                <TableCell>{item.ItemCategory
+                                                    .map(category => category.category)
+                                                    .filter(category => category.type === 'category')
+                                                    .map(category => category.name)
+                                                    .join(', ')}</TableCell>
                                                 <TableCell>{item.size}</TableCell>
-                                                <TableCell>{item.categories.map(category => category.categoryId).join(', ')}</TableCell>
+                                                <TableCell>{item.ItemCategory
+                                                    .map(category => category.category)
+                                                    .filter(category => category.type === 'genre')
+                                                    .map(category => category.name)
+                                                    .join(', ')}</TableCell>
                                                 <TableCell>{item.quantity}</TableCell>
                                             </TableRow>
                                         ))}
@@ -154,6 +168,7 @@ const PostsCard: React.FC<PostsCardProps> = ({ posts }) => {
                                 </Table>
                             </TableContainer>
                         </CardContent>
+                        {session?.user.role.name === 'admin' && <Button variant="contained" color="error" onClick={() => handlePostDelete(post.id)}>Supprimer</Button>}
                     </Card>
                 ))}
             </Box>

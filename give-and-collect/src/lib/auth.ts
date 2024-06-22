@@ -9,6 +9,9 @@ export const login: LoginFn = async (email, password) => {
         where: {
             email: email,
         },
+        include: {
+            role: true,
+        }
     });
 
     if (user && (await bcrypt.compare(password, user.password))) {

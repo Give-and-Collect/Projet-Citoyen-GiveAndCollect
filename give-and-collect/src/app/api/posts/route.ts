@@ -67,11 +67,19 @@ export async function GET(req: NextRequest) {
     try {
         const posts = await prisma.post.findMany({
             include: {
-                author: true,
+                author: {
+                    include: {
+                        role: true
+                    }
+                },
                 postType: true,
                 items: {
                     include: {
-                        categories: true
+                        ItemCategory: {
+                            include: {
+                                category: true
+                            }
+                        }
                     }
                 }
             }

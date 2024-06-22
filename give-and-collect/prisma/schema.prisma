@@ -129,11 +129,3 @@ model Participate {
   conversation   Conversation @relation(fields: [conversationId], references: [id])
   user           User         @relation(fields: [userId], references: [id])
 }
-
-model ItemCategory {
-  id         Int      @id @default(autoincrement())
-  itemId     Int
-  categoryId Int
-  Category   Category @relation(fields: [categoryId], references: [id])
-  Item       Item     @relation(fields: [itemId], references: [id])
-}
