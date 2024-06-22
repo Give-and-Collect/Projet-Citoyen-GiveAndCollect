@@ -20,11 +20,33 @@ export async function middleware(req: NextRequest) {
     }
   }
 
+  if (req.nextUrl.pathname.startsWith('/api/events')) {
+    // Only protect POST requests
+    if (req.method === 'POST') {
+      // Have to be authenticated
+      if (!token) {
+        return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401 })
+      }
+    }
+  }
+
   // -------------------Page routes protection-------------------
   if (req.nextUrl.pathname.startsWith('/chat')) {
     // Have to be authenticated
     if (!token) {
       return NextResponse.redirect(new URL(signInPage, req.url))
+    }
+  }
+
+  if (req.nextUrl.pathname.startsWith('/admin')) {
+    // Have to be authenticated
+    if (!token) {
+      return NextResponse.redirect(new URL(signInPage, req.url))
+    } else {
+      // Have to be admin
+      if (token.roleId !== 1) {
+        return Response.json({ error: 'Unauthorized' }, { status: 401 })
+      }
     }
   }
 

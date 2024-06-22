@@ -1,8 +1,9 @@
 "use client";
 
 import EventsCard from "@/components/Events/EventsCard";
-import { Box, Card, CardContent, CardHeader, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, Typography } from "@mui/material";
-import Image from "next/image";
+import EventsModalForm from "@/components/Events/EventsModalForm";
+import { Box, Button, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, Typography } from "@mui/material";
+import { signIn, useSession } from "next-auth/react";
 import * as React from "react";
 
 export default function Events() {
@@ -10,6 +11,24 @@ export default function Events() {
     const [cityList, setCityList] = React.useState([]);
     const [events, setEvents] = React.useState([]);
     const [isLoading, setIsLoading] = React.useState(true);
+    const [modalIsOpen, setModalIsOpen] = React.useState(false);
+
+    const { data: session } = useSession();
+
+    const openModal = () => {
+      if (!session) {
+        signIn();
+        return;
+      }
+      setModalIsOpen(true);
+    }
+    const closeModal = () => {
+      setModalIsOpen(false);
+    }
+    const eventCreated = () => {
+      closeModal();
+      window.location.reload();
+    }
 
     const cityHandleChange = async (event: SelectChangeEvent) => {
       setCity(event.target.value);
@@ -21,9 +40,13 @@ export default function Events() {
         try {
           const response = await fetch('api/events');
           const data = await response.json();
-          const cities = data.map(event => event.city);
-          const uniqueCities = [...new Set(cities)];
-          setCityList(uniqueCities);
+          if (data.length > 0) {
+            const cities = data.map(event => event.city);
+            const uniqueCities = [...new Set(cities)];
+            setCityList(uniqueCities);
+          } else {
+            setCityList([]);
+          }
         } catch (error) {
           console.error('An error occurred while fetching cities:', error);
         } finally {
@@ -48,13 +71,19 @@ export default function Events() {
       setIsLoading(false);
     }, [city]);
 
-    const sortedEvents = events.sort((a, b) => new Date(a.startDate).getTime() - new Date(b.startDate).getTime());
+    let sortedEvents = [];
+
+    if (events.length > 0) {
+      sortedEvents = events.sort((a, b) => new Date(a.startDate).getTime() - new Date(b.startDate).getTime());
+    } else {
+      sortedEvents = [];
+    }
 
     return (
       <>
         {events.length > 0 ? (
           <>
-            <Box sx={{ display: 'flex', justifyContent: 'center', minWidth: 120, maxWidth: 300, m: 5 }}>
+            <Box sx={{ display: 'flex', justifyContent: 'center', minWidth: 120, maxWidth: 400, m: 5 }}>
               <FormControl fullWidth>
                 <InputLabel id="city-select-label">Sélectionnez une ville :</InputLabel>
                 <Select
@@ -73,7 +102,23 @@ export default function Events() {
 
                 </Select>
               </FormControl>
+
+              <Button
+                variant="contained"
+                color="secondary"
+                onClick={() => openModal()}
+                sx={{ ml: 2 }}
+              >
+                Créer un évènement
+              </Button>
             </Box>
+
+            <EventsModalForm
+                isOpen={modalIsOpen}
+                onClose={closeModal}
+                onEventCreated={eventCreated}
+                session={session}
+            />
 
             <Typography variant="body1" color="text.primary" sx={{ textAlign: 'left', ml: 5, mb: 1 }}>
               {events.length} résultat(s)
@@ -100,9 +145,32 @@ export default function Events() {
           </>
         ) : (
           <>
-            <Typography variant="body1" color="text.primary" sx={{ textAlign: 'center', mt: 5 }}>
-              {isLoading ? 'Chargement en cours...' : 'Aucun évènement trouvé'}
-            </Typography>
+            {isLoading ? (
+              <Typography variant="body1" color="text.primary" sx={{ textAlign: 'center', mt: 5 }}>
+                Chargement en cours...
+              </Typography>
+            ) : (
+              <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', maxWidth: 400, width: '100%', height: '100%', marginLeft: 'auto', marginRight: 'auto' }}>
+                <Typography variant="body1" color="text.primary" sx={{ textAlign: 'center', mt: 5, mb: 5 }}>
+                    Aucun évènement trouvé
+                </Typography>
+
+                <Button
+                    variant="contained"
+                    color="secondary"
+                    onClick={() => openModal()}
+                >
+                    Créer un évènement
+                </Button>
+
+                <EventsModalForm
+                    isOpen={modalIsOpen}
+                    onClose={closeModal}
+                    onEventCreated={eventCreated}
+                    session={session}
+                />
+              </Box>
+            )}
           </>
         )}
       </>

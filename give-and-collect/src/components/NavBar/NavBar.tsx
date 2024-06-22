@@ -14,6 +14,8 @@ import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import Image from 'next/image';
+import AnalyticsIcon from '@mui/icons-material/Analytics';
+import LogoutIcon from '@mui/icons-material/Logout';
 
 import { useTheme } from '@mui/material/styles';
 import Link from 'next/link';
@@ -47,7 +49,7 @@ function ResponsiveAppBar() {
   };
 
   return (
-    <AppBar position="static" sx={{ color: theme.palette.background.paper }}>
+    <AppBar position="sticky" sx={{ color: theme.palette.background.paper }}>
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           <Box sx={{ display: { xs: 'none', lg: 'flex' }, mr: 1, my: 1 }}>
@@ -211,7 +213,10 @@ function ResponsiveAppBar() {
             <Link href={"/chat"}><Image src={pathname === '/chat' ? '/assets/icones/chat-lightgreen2.png' : '/assets/icones/chat-beige.png'} alt="Chat" width={40} height={40} /></Link>
           </Box>
 
-          <Box sx={{ flexGrow: 0 }}>
+          <Box sx={{ flexGrow: 0, display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+            {(session && session.user && session.user.roleId === 1) && (
+              <Typography textAlign="center">Administrateur</Typography>
+            )}
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                 <Avatar alt="Profile" src="/assets/icones/profile-beige.png" />
@@ -236,10 +241,40 @@ function ResponsiveAppBar() {
                 onClose={handleCloseUserMenu}
               >
                 <MenuItem key={'Profile'} onClick={handleCloseUserMenu}>
-                  <Typography textAlign="center">{session.user.firstname} {session.user.lastname}</Typography>
+                  <Typography textAlign="center" sx={{ display: 'flex', alignItems: 'center' }}>
+                    <Image src={'/assets/icones/profile-darkgreen.png'} alt="Profile" width={25} height={25} style={{ marginRight: '10px' }} />
+                    {session.user.firstname} {session.user.lastname}
+                  </Typography>
                 </MenuItem>
+
+                {session.user.roleId === 1 && (
+                  <div>
+                    <MenuItem key={'UsersList'} onClick={handleCloseUserMenu}>
+                      <Link href={"/admin/users-list"}>
+                        <Typography textAlign="center" sx={{ display: 'flex', alignItems: 'center' }}>
+                          <Image src={'/assets/icones/users-darkgreen.png'} alt="Users" width={25} height={25} style={{ marginRight: '10px' }} />
+                          <span>Liste des utilisateurs</span>
+                        </Typography>
+                      </Link>
+                    </MenuItem>
+                    <MenuItem key={'Stats'} onClick={handleCloseUserMenu}>
+                      <Link href={"/admin/stats"}>
+                        <Typography textAlign="center" sx={{ display: 'flex', alignItems: 'center' }}>
+                          <AnalyticsIcon sx={{ marginRight: '10px' }} />
+                          <span>Statistiques</span>
+                        </Typography>
+                      </Link>
+                    </MenuItem>
+                  </div>
+                )}
+
                 <MenuItem key={'Logout'} onClick={handleCloseUserMenu}>
-                  <a onClick={() => signOut()}><Typography textAlign="center">Se déconnecter</Typography></a>
+                  <a onClick={() => signOut()}>
+                    <Typography textAlign="center" sx={{ display: 'flex', alignItems: 'center' }}>
+                      <LogoutIcon sx={{ marginRight: '10px' }} />
+                      <span>Se déconnecter</span>
+                    </Typography>
+                  </a>
                 </MenuItem>
               </Menu>
             ) : (
