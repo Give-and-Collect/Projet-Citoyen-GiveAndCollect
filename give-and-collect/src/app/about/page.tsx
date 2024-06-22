@@ -82,8 +82,13 @@ const Contact = () => {
         const { name, value } = e.target;
         setFormData((prev) => ({
             ...prev,
-            [name]: value,
+            [name]: sanitizeInput(value), // Utilisation de la fonction de sanitisation
         }));
+    };
+
+    const sanitizeInput = (input: string): string => {
+        // Échapper les caractères spéciaux et les balises HTML
+        return input.replace(/['"<>]/g, '');
     };
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
