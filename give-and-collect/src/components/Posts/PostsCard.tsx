@@ -20,6 +20,7 @@ import {
     Button
 } from '@mui/material';
 import React, { useState, useEffect } from 'react';
+import DeleteIcon from '@mui/icons-material/Delete';
 import Image from 'next/image';
 import {Session} from "next-auth";
 
@@ -168,12 +169,23 @@ const PostsCard: React.FC<PostsCardProps> = ({ posts, session, handlePostDelete 
                                 </Table>
                             </TableContainer>
                         </CardContent>
-                        {session?.user.role.name === 'admin' && <Button variant="contained" color="error" onClick={() => handlePostDelete(post.id)}>Supprimer</Button>}
+                        {session?.user.role.name === 'admin' && (
+                            <Button
+                                variant="outlined"
+                                color="error"
+                                startIcon={<DeleteIcon />}
+                                onClick={() => handlePostDelete(post.id)}
+                                sx={{ mt: 2, mb: 2, ml: 2, alignSelf: 'flex-start' }}
+                            >
+                                Supprimer
+                            </Button>
+                        )}
                     </Card>
                 ))}
             </Box>
         </Box>
     );
 };
+
 
 export default PostsCard;
