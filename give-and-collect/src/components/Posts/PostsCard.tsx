@@ -17,48 +17,26 @@ import {
     InputLabel,
     Select,
     MenuItem,
-    Button
+    Button,
+    Pagination
 } from '@mui/material';
 import React, { useState, useEffect } from 'react';
 import DeleteIcon from '@mui/icons-material/Delete';
 import Image from 'next/image';
-import {Session} from "next-auth";
-
-interface PostItem {
-    size: string;
-    quantity: number;
-    ItemCategory: {category: { name: string, type: string }}[];
-}
-
-interface Post {
-    id: number;
-    address: string;
-    city: string;
-    postalCode: string;
-    description: string;
-    author: {
-        firstname: string;
-        lastname: string;
-        role: {
-            name: string
-        };
-    };
-    postType: {
-        name: string;
-    };
-    items: PostItem[];
-}
+import { Session } from "next-auth";
+import { Post } from '../../types/post';
 
 interface PostsCardProps {
     posts: Post[];
-    session: Session | null | undefined
-    handlePostDelete: (id : number) => void;
+    session: Session | null | undefined;
+    handlePostDelete: (id: number) => void;
 }
 
 const PostsCard: React.FC<PostsCardProps> = ({ posts, session, handlePostDelete }) => {
     const [selectedCity, setSelectedCity] = useState('Toutes');
     const [cities, setCities] = useState<string[]>([]);
-
+    const [currentPage, setCurrentPage] = useState(1);
+    const postsPerPage = 10;
 
     useEffect(() => {
         const uniqueCities = Array.from(new Set(posts.map(post => post.city)));
@@ -69,9 +47,15 @@ const PostsCard: React.FC<PostsCardProps> = ({ posts, session, handlePostDelete 
         setSelectedCity(event.target.value as string);
     };
 
-    const sortedPosts = [...posts].sort((a, b) => b.id - a.id);
+    const filteredPosts = selectedCity === 'Toutes' ? posts : posts.filter(post => post.city === selectedCity);
 
-    const filteredPosts = selectedCity === 'Toutes' ? sortedPosts : sortedPosts.filter(post => post.city === selectedCity);
+    const indexOfLastPost = currentPage * postsPerPage;
+    const indexOfFirstPost = indexOfLastPost - postsPerPage;
+    const currentPosts = filteredPosts.slice(indexOfFirstPost, indexOfLastPost);
+
+    const handlePageChange = (event: React.ChangeEvent<unknown>, value: number) => {
+        setCurrentPage(value);
+    };
 
     return (
         <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mt: 5, mb: 5 }}>
@@ -90,7 +74,7 @@ const PostsCard: React.FC<PostsCardProps> = ({ posts, session, handlePostDelete 
                 </Select>
             </FormControl>
             <Box sx={{ maxWidth: 1000, width: '100%' }}>
-                {filteredPosts.map((post) => (
+                {currentPosts.map((post) => (
                     <Card
                         key={post.id}
                         sx={{
@@ -183,9 +167,14 @@ const PostsCard: React.FC<PostsCardProps> = ({ posts, session, handlePostDelete 
                     </Card>
                 ))}
             </Box>
+            <Pagination
+                count={Math.ceil(filteredPosts.length / postsPerPage)}
+                page={currentPage}
+                onChange={handlePageChange}
+                sx={{ mt: 5 }}
+            />
         </Box>
     );
 };
-
 
 export default PostsCard;

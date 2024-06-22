@@ -31,12 +31,22 @@ export interface PostItem {
     categories: { id: number; itemId: number; categoryId: number }[];
 }
 
+interface Author {
+    firstname: string;
+    lastname: string;
+    roleId: number;
+    role: {
+        name: string;
+    };
+}
+
 export interface Post {
     id: number;
     address: string;
     city: string;
     postalCode: string;
     description: string;
+    creationDate: string;
     author: {
         firstname: string;
         lastname: string;

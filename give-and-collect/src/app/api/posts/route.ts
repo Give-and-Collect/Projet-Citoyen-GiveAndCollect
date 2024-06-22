@@ -82,6 +82,9 @@ export async function GET(req: NextRequest) {
                         }
                     }
                 }
+            },
+            orderBy: {
+                creationDate: 'desc'
             }
         });
         return NextResponse.json(posts);
