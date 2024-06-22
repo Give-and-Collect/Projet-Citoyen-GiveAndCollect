@@ -38,5 +38,17 @@ export async function middleware(req: NextRequest) {
     }
   }
 
+  if (req.nextUrl.pathname.startsWith('/admin')) {
+    // Have to be authenticated
+    if (!token) {
+      return NextResponse.redirect(new URL(signInPage, req.url))
+    } else {
+      // Have to be admin
+      if (token.roleId !== 1) {
+        return Response.json({ error: 'Unauthorized' }, { status: 401 })
+      }
+    }
+  }
+
   return NextResponse.next()
 }
