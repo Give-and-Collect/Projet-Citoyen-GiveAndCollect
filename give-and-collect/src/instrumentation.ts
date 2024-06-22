@@ -27,7 +27,7 @@ const categories: Record<string, string> = {
     'Unisexe': 'genre',
 }
 
-const roles = ['Administrateur', 'Particulier', 'Association', 'Entreprise'];
+const roles = ['Admin', 'Particulier', 'Association', 'Entreprise'];
 
 const postTypes = ['Don', 'Collecte'];
 
@@ -41,7 +41,7 @@ export async function register() {
             .map(category => ({name: category, type: categories[category]}))
             .filter(({name: key}) => !existingCategories.some(({name}) => name === key));
 
-        const rolesToCreate = roles.filter(role => !existingRoles.some(({name}) => name === role));
+        const rolesToCreate = roles.filter(role => !existingRoles.some(({name}) => name.toLowerCase() === role.toLowerCase()));
         const postTypesToCreate = postTypes.filter(postType => !existingPostTypes.some(({name}) => name === postType));
 
         await prisma.category.createMany({data: categoriesToCreate});
