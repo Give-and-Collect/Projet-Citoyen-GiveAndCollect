@@ -45,15 +45,3 @@ export async function GET() {
 
   return NextResponse.json(usersWithRolePostEventCounts);
 }
-
-export async function DELETE({ params }: { params: { id: number } }) {
-  const { id } = params;
-  
-  await prisma.user.delete({
-    where: {
-      id: id,
-    },
-  });
-
-  return NextResponse.json({ message: `User with id ${id} deleted successfully` });
-}

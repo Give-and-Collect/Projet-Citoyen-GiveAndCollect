@@ -26,17 +26,18 @@ const columns: GridColDef[] = [
   ];
   
   const handleDelete = (id: number) => {
-    fetch(`../api/users/${id}`, {
-      method: 'DELETE',
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        console.log(data);
-        window.location.reload();
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+    console.log('Deleting user with id:', id);
+    // fetch(`../api/users/${id}`, {
+    //   method: 'DELETE',
+    // })
+    //   .then((response) => response.json())
+    //   .then((data) => {
+    //     console.log(data);
+    //     window.location.reload();
+    //   })
+    //   .catch((error) => {
+    //     console.error(error);
+    //   });
   };
   
     type User = {
@@ -57,7 +58,6 @@ const columns: GridColDef[] = [
             try {
             const response = await fetch('../api/users');
             const data = await response.json();
-            console.log('Data expected :', data);
             // Déconstruction du json pour obtenir les données attendues
             const usersData = data.map((user: any) => ({
                 id: user.id,
