@@ -1,16 +1,51 @@
 "use client";
 
-import { Button } from "@mui/material";
+import { Button, FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
+import { Role } from "@prisma/client";
 import { useEffect, useState } from "react";
 
 const columns: GridColDef[] = [
-    { field: 'id', headerName: 'ID', width: 90, minWidth: 90  },
-    { field: 'firstname', headerName: 'Prénom', flex: 1, minWidth: 150},
-    { field: 'lastname', headerName: 'Nom', flex: 1, minWidth: 150},
-    { field: 'role', headerName: 'Rôle', width: 130, minWidth: 130},
-    { field: 'adsPosted', headerName: 'Annonces postées', type: 'number', width: 150, minWidth: 150},
-    { field: 'eventsPosted', headerName: 'Evènements postés', type: 'number', width: 150, minWidth: 150},
+    { field: 'id', headerName: 'ID', width: 90, minWidth: 90 },
+    { field: 'firstname', headerName: 'Prénom', flex: 1, minWidth: 150 },
+    { field: 'lastname', headerName: 'Nom', flex: 1, minWidth: 150 },
+    { 
+      field: 'role', 
+      headerName: 'Rôle', 
+      width: 150, 
+      minWidth: 150,
+      renderCell: (params) => {
+        function handleRoleChange(id: number, newValue: number): void {
+          console.log('Changing role of user with id:', id);
+          console.log('New role:', newValue);
+          try {
+            fetch(`../api/users/${id}`, {
+              method: 'PATCH',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({ roleId: newValue }),
+            })
+              .then((response) => response.json())
+              .catch((error) => {
+                console.error(error);
+              });
+          }
+          catch (error) {
+            console.error(error);
+          }
+        }
+
+        return (
+          <RoleSelect
+            currentRole={params.row.roleId}
+            onChange={(newValue) => handleRoleChange(params.row.id, newValue)}
+          />
+        );
+      }
+    },
+    { field: 'adsPosted', headerName: 'Annonces postées', type: 'number', width: 150, minWidth: 150 },
+    { field: 'eventsPosted', headerName: 'Evènements postés', type: 'number', width: 150, minWidth: 150 },
     {
       field: 'actions',
       headerName: 'Actions',
@@ -24,6 +59,38 @@ const columns: GridColDef[] = [
       ),
     },
   ];
+
+  const RoleSelect = ({ currentRole, onChange }: { currentRole: string, onChange: (newValue: number) => void }) => {
+
+    const [roles, setRoles] = useState<Role[]>([]);
+
+    useEffect(() => {
+      const fetchRoles = async () => {
+        try {
+          const response = await fetch('../api/role');
+          const data = await response.json();
+          setRoles(data);
+        } catch (error) {
+          console.error(error);
+        }
+      }
+      fetchRoles();
+    }, []);
+
+    return (
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
+        <Select
+          value={currentRole}
+          onChange={(e) => onChange(Number(e.target.value))}
+          style={{ width: '100%', height: 40 }}
+        >
+          {roles.map((role) => (
+            <MenuItem key={role.id} value={role.id}>{role.name}</MenuItem>
+          ))}
+        </Select>
+      </div>
+    );
+  };
   
   const handleDelete = (id: number) => {
     console.log('Deleting user with id:', id);
@@ -44,6 +111,7 @@ const columns: GridColDef[] = [
         id: number;
         firstname: string;
         lastname: string;
+        roleId: number;
         role: string;
         adsPosted: number;
         eventsPosted: number;
@@ -63,6 +131,7 @@ const columns: GridColDef[] = [
                 id: user.id,
                 firstname: user.firstname,
                 lastname: user.lastname,
+                roleId: user.roleId,
                 role: user.role,
                 adsPosted: user.posts._count,
                 eventsPosted: user.events._count,
@@ -90,7 +159,6 @@ const columns: GridColDef[] = [
           sx={{ 
             height: 400,
             width: '100%',
-            borderRadius: 5,
           }}
         />
       </div>
