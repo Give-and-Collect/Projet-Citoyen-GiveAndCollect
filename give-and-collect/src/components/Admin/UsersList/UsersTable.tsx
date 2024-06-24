@@ -100,18 +100,17 @@ const columns: GridColDef[] = [
   };
   
   const handleDelete = (id: number) => {
-    console.log('Deleting user with id:', id);
-    // fetch(`../api/users/${id}`, {
-    //   method: 'DELETE',
-    // })
-    //   .then((response) => response.json())
-    //   .then((data) => {
-    //     console.log(data);
-    //     window.location.reload();
-    //   })
-    //   .catch((error) => {
-    //     console.error(error);
-    //   });
+    fetch(`../api/users/${id}`, {
+      method: 'DELETE',
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+        window.location.reload();
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   };
   
     type User = {
