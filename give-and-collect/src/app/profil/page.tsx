@@ -1,9 +1,22 @@
 "use client";
+// ProfilePage.tsx
 
 import { useState, useEffect, FormEvent } from 'react';
 import { getSession } from 'next-auth/react';
 import { Session } from "next-auth";
-import Image from 'next/image';
+import {
+    Container,
+    Typography,
+    TextField,
+    Button,
+    CircularProgress,
+    Avatar,
+    Grid,
+    Box,
+    Card,
+    CardContent,
+    CardHeader,
+} from '@mui/material';
 
 interface User {
     id: string;
@@ -22,7 +35,6 @@ interface CustomSession extends Session {
 function ProfilePage() {
     const [user, setUser] = useState<User | null>(null);
     const [session, setSession] = useState<CustomSession | null>(null);
-    const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
     const [firstname, setFirstname] = useState('');
@@ -34,23 +46,19 @@ function ProfilePage() {
 
     useEffect(() => {
         const fetchUser = async () => {
-            setLoading(true);
             try {
-                const session = await getSession();
-                console.log("Session:", session);
-                if (session && 'accessToken' in session) {
-                    setSession(session as CustomSession);
+                const session = await getSession() as CustomSession;
+                if (session && session.accessToken) {
+                    setSession(session);
                     const response = await fetch('/api/profil', {
                         headers: {
                             'Authorization': `Bearer ${session.accessToken}`
                         }
                     });
-                    console.log("Response status:", response.status);
                     if (!response.ok) {
                         throw new Error('Failed to fetch user data');
                     }
                     const data = await response.json();
-                    console.log("User data:", data);
                     setUser(data);
                     setFirstname(data.firstname);
                     setLastname(data.lastname);
@@ -64,8 +72,6 @@ function ProfilePage() {
             } catch (error: any) {
                 console.error("Error fetching user data:", error);
                 setError(error.message);
-            } finally {
-                setLoading(false);
             }
         };
 
@@ -101,7 +107,6 @@ function ProfilePage() {
                 }
 
                 const updatedData = await response.json();
-                console.log("Updated user data:", updatedData);
                 setUser(updatedData);
             } catch (error: any) {
                 console.error("Error updating user data:", error);
@@ -110,50 +115,85 @@ function ProfilePage() {
         }
     };
 
-    if (loading) {
-        return <div>Loading...</div>;
-    }
 
     if (error) {
-        return <div>Error: {error}</div>;
+        return (
+            <Container maxWidth="md" sx={{ mt: 4 }}>
+                <Typography variant="h6" color="error">
+                    Error: {error}
+                </Typography>
+            </Container>
+        );
     }
 
     return (
-        <div>
-            <h1>{user ? `${user.firstname} ${user.lastname}` : 'Loading...'}</h1>
-            <p>Email: {user ? user.email : 'Loading...'}</p>
-            <p>Phone: {user ? user.phone : 'Loading...'}</p>
-            <p>Organisation: {user ? user.nomOrganisation : 'Loading...'}</p>
-            {user && user.profilePicture ? (
-                <Image src={user.profilePicture} alt="Profile" width={150} height={150} />
-            ) : (
-                <p>Loading image...</p>
-            )}
-
-            <form onSubmit={handleSubmit}>
-                <label>
-                    First name:
-                    <input type="text" value={firstname} onChange={e => setFirstname(e.target.value)} />
-                </label>
-                <label>
-                    Last name:
-                    <input type="text" value={lastname} onChange={e => setLastname(e.target.value)} />
-                </label>
-                <label>
-                    Email:
-                    <input type="email" value={email} onChange={e => setEmail(e.target.value)} />
-                </label>
-                <label>
-                    Phone:
-                    <input type="text" value={phone} onChange={e => setPhone(e.target.value)} />
-                </label>
-                <label>
-                    Organisation:
-                    <input type="text" value={nomOrganisation} onChange={e => setNomOrganisation(e.target.value)} />
-                </label>
-                <button type="submit">Update</button>
-            </form>
-        </div>
+        <Container maxWidth="md" sx={{ mt: 4 }}>
+            <Card>
+                <CardHeader
+                    avatar={
+                        <Avatar alt="Profile Picture" src={user?.profilePicture} />
+                    }
+                    title={`${user?.firstname} ${user?.lastname}`}
+                    subheader={user?.email}
+                />
+                <CardContent>
+                    <form onSubmit={handleSubmit}>
+                        <Grid container spacing={2}>
+                            <Grid item xs={12} sm={6}>
+                                <TextField
+                                    fullWidth
+                                    label="Prénom"
+                                    variant="outlined"
+                                    value={firstname}
+                                    onChange={(e) => setFirstname(e.target.value)}
+                                />
+                            </Grid>
+                            <Grid item xs={12} sm={6}>
+                                <TextField
+                                    fullWidth
+                                    label="Nom"
+                                    variant="outlined"
+                                    value={lastname}
+                                    onChange={(e) => setLastname(e.target.value)}
+                                />
+                            </Grid>
+                            <Grid item xs={12} sm={6}>
+                                <TextField
+                                    fullWidth
+                                    label="Email"
+                                    variant="outlined"
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                />
+                            </Grid>
+                            <Grid item xs={12} sm={6}>
+                                <TextField
+                                    fullWidth
+                                    label="Numéro de télephone"
+                                    variant="outlined"
+                                    value={phone}
+                                    onChange={(e) => setPhone(e.target.value)}
+                                />
+                            </Grid>
+                            <Grid item xs={12}>
+                                <TextField
+                                    fullWidth
+                                    label="Nom d'organisation"
+                                    variant="outlined"
+                                    value={nomOrganisation}
+                                    onChange={(e) => setNomOrganisation(e.target.value)}
+                                />
+                            </Grid>
+                            <Grid item xs={12}>
+                                <Button type="submit" variant="contained" color="error">
+                                    Mettre à jour
+                                </Button>
+                            </Grid>
+                        </Grid>
+                    </form>
+                </CardContent>
+            </Card>
+        </Container>
     );
 }
 
