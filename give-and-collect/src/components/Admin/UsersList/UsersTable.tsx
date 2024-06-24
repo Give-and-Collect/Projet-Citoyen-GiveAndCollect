@@ -60,9 +60,11 @@ const columns: GridColDef[] = [
     },
   ];
 
-  const RoleSelect = ({ currentRole, onChange }: { currentRole: string, onChange: (newValue: number) => void }) => {
+  const RoleSelect = ({ currentRole, onChange }: { currentRole: number, onChange: (newValue: number) => void }) => {
 
     const [roles, setRoles] = useState<Role[]>([]);
+
+    const [roleSelected, setRoleSelected] = useState(currentRole);
 
     useEffect(() => {
       const fetchRoles = async () => {
@@ -77,11 +79,16 @@ const columns: GridColDef[] = [
       fetchRoles();
     }, []);
 
+    const handleChange = (newValue: number) => {
+      setRoleSelected(newValue);
+      onChange(newValue);
+    }
+
     return (
       <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
         <Select
-          value={currentRole}
-          onChange={(e) => onChange(Number(e.target.value))}
+          value={roleSelected}
+          onChange={(e) => handleChange(Number(e.target.value))}
           style={{ width: '100%', height: 40 }}
         >
           {roles.map((role) => (
