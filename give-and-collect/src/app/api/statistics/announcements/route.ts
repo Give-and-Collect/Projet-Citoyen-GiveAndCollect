@@ -6,14 +6,21 @@ export async function GET(req: NextRequest) {
     const month = searchParams.get('month');
     const year = searchParams.get('year');
 
+    if (!month || !year) {
+        return NextResponse.json({ error: 'Month and year are required' }, { status: 400 });
+    }
+
     try {
+        const startDate = new Date(Number(year), Number(month) - 1, 1);
+        const endDate = new Date(Number(year), Number(month), 0); // dernier jour du mois
+
         const announcementCount = await prisma.post.count({
             where: {
                 creationDate: {
-                    gte: new Date(`${year}-${month}-01`),
-                    lt: new Date(`${year}-${Number(month) + 1}-01`)
-                }
-            }
+                    gte: startDate,
+                    lte: endDate, // inclusif
+                },
+            },
         });
 
         return NextResponse.json({ count: announcementCount });
