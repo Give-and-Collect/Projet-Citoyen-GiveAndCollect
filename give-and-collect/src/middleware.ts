@@ -30,6 +30,28 @@ export async function middleware(req: NextRequest) {
     }
   }
 
+  if (req.nextUrl.pathname.startsWith('/api/posts/')) {
+    if (req.method === 'DELETE') {
+      // Have to be authenticated
+      if (!token) {
+        return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401 })
+      }
+      // Have to be admin
+      if (token.roleId == 1) {
+        return Response.json({ error: 'Unauthorized' }, { status: 401 })
+      }
+    }
+  }
+
+  if (req.nextUrl.pathname.startsWith('/api/posts')) {
+    if (req.method === 'POST') {
+      // Have to be authenticated
+      if (!token) {
+        return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401 })
+      }
+    }
+  }
+
   // -------------------Page routes protection-------------------
   if (req.nextUrl.pathname.startsWith('/chat')) {
     // Have to be authenticated
