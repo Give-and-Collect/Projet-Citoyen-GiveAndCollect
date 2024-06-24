@@ -1,6 +1,6 @@
 "use client";
 
-import { Button, FormControl, InputLabel, MenuItem, Select } from "@mui/material";
+import { Button, MenuItem, Select } from "@mui/material";
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import { Role } from "@prisma/client";
 import { useEffect, useState } from "react";
@@ -16,8 +16,6 @@ const columns: GridColDef[] = [
       minWidth: 150,
       renderCell: (params) => {
         function handleRoleChange(id: number, newValue: number): void {
-          console.log('Changing role of user with id:', id);
-          console.log('New role:', newValue);
           try {
             fetch(`../api/users/${id}`, {
               method: 'PATCH',
@@ -105,7 +103,6 @@ const columns: GridColDef[] = [
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log(data);
         window.location.reload();
       })
       .catch((error) => {
