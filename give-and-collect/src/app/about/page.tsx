@@ -77,11 +77,44 @@ const CustomCard = styled(Card)(({ theme }) => ({
 
 const Contact = () => {
     const [formData, setFormData] = useState<FormValues>(initValues);
+    const [errorMessage, setErrorMessage] = useState<string>('');
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
         setFormData((prev) => ({
             ...prev,
+            [name]: sanitizeInput(value),
+        }));
+    };
+
+    const sanitizeInput = (input: string): string => {
+        return input.replace(/['"<>]/g, '');
+    };
+
+    const containsMaliciousPatterns = (input: string): boolean => {
+        const patterns = [
+            /<script.*?>.*?<\/script.*?>/i,
+            /<.*?onerror=.*?>/i,
+            /' OR '1'='1/i,
+            /;.*--/i,
+            /http:\/\/|https:\/\//i,
+            /[!@#$%^&*()_+]/i,
+            /&#x3C;.*?&#x3E;/i
+        ];
+        return patterns.some(pattern => pattern.test(input));
+    };
+
+    const validateForm = (): boolean => {
+        if ([formData.name, formData.subject, formData.message, formData.email].some(input => containsMaliciousPatterns(input))) {
+            setErrorMessage('Votre message contient des caractères non autorisés. Veuillez éviter les symboles spéciaux (comme ! @ # $ % ^ & * ( ) _ +), les scripts, les liens URL ou d\'autres éléments potentiellement dangereux.');
+            return false;
+        }
+        return true;
+    };
+
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        if (!validateForm()) return;
             [name]: value,
         }));
     };
@@ -225,6 +258,13 @@ const Contact = () => {
                                             required
                                         />
                                     </Grid>
+
+                                    {errorMessage && (
+                                        <Grid item xs={12}>
+                                            <Typography color="error">{errorMessage}</Typography>
+                                        </Grid>
+                                    )}
+
                                     <Grid item xs={12} sx={{ textAlign: 'center' }}>
                                         <Button
                                             variant="contained"
