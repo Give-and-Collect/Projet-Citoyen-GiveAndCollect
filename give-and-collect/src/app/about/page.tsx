@@ -115,7 +115,12 @@ const Contact = () => {
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         if (!validateForm()) return;
+            [name]: value,
+        }));
+    };
 
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
         try {
             const response = await fetch('/api/contact', {
                 method: 'POST',
@@ -253,11 +258,13 @@ const Contact = () => {
                                             required
                                         />
                                     </Grid>
+
                                     {errorMessage && (
                                         <Grid item xs={12}>
                                             <Typography color="error">{errorMessage}</Typography>
                                         </Grid>
                                     )}
+
                                     <Grid item xs={12} sx={{ textAlign: 'center' }}>
                                         <Button
                                             variant="contained"

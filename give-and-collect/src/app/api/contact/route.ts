@@ -64,7 +64,7 @@ const generateEmailContent = (data: {
 export async function POST(req: NextRequest) {
     try {
         const body = await req.json();
-
+      
         // Valider et nettoyer les données
         const { name, email, message, subject } = body;
 
