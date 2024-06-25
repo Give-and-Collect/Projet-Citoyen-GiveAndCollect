@@ -129,7 +129,6 @@ export default function Events() {
 
               {sortedEvents.map((event, index) => (
                 <>
-                <Typography>{event.organizerId}</Typography>
                 <EventsCard
                   key={index}
                   id={event.id}
