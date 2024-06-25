@@ -209,10 +209,6 @@ function ResponsiveAppBar() {
             </Button>
           </Box>
 
-          <Box sx={{ flexGrow: 0, mr: 2 }}>
-            <Link href={"/chat"}><Image src={pathname === '/chat' ? '/assets/icones/chat-lightgreen2.png' : '/assets/icones/chat-beige.png'} alt="Chat" width={40} height={40} /></Link>
-          </Box>
-
           <Box sx={{ flexGrow: 0, display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
             {(session && session.user && session.user.roleId === 1) && (
               <Typography textAlign="center">Administrateur</Typography>
