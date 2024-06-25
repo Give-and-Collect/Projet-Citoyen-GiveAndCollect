@@ -93,13 +93,13 @@ const Contact = () => {
 
     const containsMaliciousPatterns = (input: string): boolean => {
         const patterns = [
-            /<script.*?>.*?<\/script.*?>/i,    // Détecte les balises de script
-            /<.*?onerror=.*?>/i,               // Détecte les attributs d'événement dangereux
-            /' OR '1'='1/i,                    // Détecte les injections SQL basiques
-            /;.*--/i,                          // Détecte les tentatives de commentaires SQL
-            /https?:\/\/[^\s]+/i,              // Détecte les URLs HTTP/HTTPS
-            /(\bhttps?:\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/i,  // Détecte les URLs plus complexes
-            /&#x3C;.*?&#x3E;/i                 // Détecte les tentatives d'injection de code HTML
+            /<script.*?>.*?<\/script.*?>/i,
+            /<.*?onerror=.*?>/i,
+            /' OR '1'='1/i,
+            /;.*--/i,
+            /https?:\/\/[^\s]+/i,
+            /(\bhttps?:\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/i,
+            /&#x3C;.*?&#x3E;/i
         ];
         return patterns.some(pattern => pattern.test(input));
     };
