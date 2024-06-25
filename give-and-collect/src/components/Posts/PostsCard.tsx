@@ -153,7 +153,7 @@ const PostsCard: React.FC<PostsCardProps> = ({ posts, session, handlePostDelete 
                                 </Table>
                             </TableContainer>
                         </CardContent>
-                        {session?.user.role.name === 'Admin' && (
+                        {(session?.user.role.name === 'Admin' || session?.user.id === post.author.id) && (
                             <Button
                                 variant="outlined"
                                 color="error"
