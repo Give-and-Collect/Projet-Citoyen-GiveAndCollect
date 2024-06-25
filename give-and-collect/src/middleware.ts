@@ -51,16 +51,23 @@ export async function middleware(req: NextRequest) {
         }
       }
     }
-  }
 
-  // -------------------Page routes protection-------------------
-  if (req.nextUrl.pathname.startsWith('/chat')) {
-    // Have to be authenticated
-    if (!token) {
-      return NextResponse.redirect(new URL(signInPage, req.url));
+    if (req.method === 'DELETE') {
+      // Have to be authenticated
+      if (!token) {
+        return new NextResponse(JSON.stringify({ error: 'Unauthorized' }), { status: 401 })
+      }
+    
+      if (token.roleId !== 1) {
+        const requestBody = await req.json();
+        if (requestBody?.organizerId !== token.id) {
+          return new NextResponse(JSON.stringify({ error: 'Unauthorized' }), { status: 401 })
+        }
+      }
     }
   }
 
+  // -------------------Page routes protection-------------------
   if (req.nextUrl.pathname.startsWith('/admin')) {
     // Have to be authenticated
     if (!token) {
