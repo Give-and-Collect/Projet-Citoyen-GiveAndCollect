@@ -28,12 +28,32 @@ export async function DELETE(request: NextRequest, { params }: { params: { id: n
 
   const idParsed = parseInt(id.toString());
 
-  // User's posts and events have to be deleted before the user
-  await prisma.post.deleteMany({
+  const posts = await prisma.post.findMany({
     where: {
       authorId: idParsed,
     },
   });
+
+  console.log('posts to delete', posts)
+
+  for(const post of posts) {
+    const items = await prisma.item.findMany({
+      where: {postId: Number(post.id)}
+    });
+    await prisma.itemCategory.deleteMany({
+      where: {itemId: {in: items.map(item => item.id)}}
+    });
+
+    await prisma.item.deleteMany({
+      where: {postId: Number(post.id)}
+    });
+
+    await prisma.post.delete({
+      where: {id: Number(post.id)}
+    });
+  }
+
+  console.log('posts successfully deleted')
 
   await prisma.event.deleteMany({
     where: {

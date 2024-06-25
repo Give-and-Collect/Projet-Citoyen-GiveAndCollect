@@ -1,7 +1,8 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import {useEffect, useState} from 'react';
 import {
+    Avatar,
     Box,
     Button,
     Card,
@@ -11,17 +12,13 @@ import {
     FormLabel,
     Grid,
     Input,
-    InputLabel,
-    MenuItem,
-    Select,
     TextField,
     Typography,
-    Avatar,
 } from '@mui/material';
-import { useSession } from 'next-auth/react';
+import {signOut, useSession} from 'next-auth/react';
 
 const UserProfilePage = () => {
-    const { data: session, status } = useSession();
+    const {data: session, status} = useSession();
     const [user, setUser] = useState(null);
     const [editing, setEditing] = useState(false);
     const [formData, setFormData] = useState({
@@ -62,7 +59,7 @@ const UserProfilePage = () => {
     };
 
     const handleChange = (e) => {
-        const { name, value } = e.target;
+        const {name, value} = e.target;
         setFormData((prev) => ({
             ...prev,
             [name]: value,
@@ -78,19 +75,23 @@ const UserProfilePage = () => {
 
     const handleUpdateUser = async () => {
         try {
-            const data = new FormData();
-            data.append('firstname', formData.firstname);
-            data.append('lastname', formData.lastname);
-            data.append('email', formData.email);
-            data.append('phone', formData.phone);
-            data.append('nomOrganisation', formData.nomOrganisation);
-            data.append('profilePicture', formData.profilePicture);
+            const data = {
+                firstname: formData.firstname,
+                lastname: formData.lastname,
+                email: formData.email,
+                phone: formData.phone,
+                nomOrganisation: formData.nomOrganisation,
+                profilePicture: formData.profilePicture,
+            };
 
-            await fetch(`/api/profil/${user.id}`, {
+            await fetch(`/api/profil/${user?.id}`, {
                 method: 'PUT',
-                body: data,
+                body: JSON.stringify(data),
+                headers: {
+                    'Content-Type': 'application/json',
+                }
             });
-            fetchUserProfile(user.id);
+            await fetchUserProfile(user?.id);
             setEditing(false);
         } catch (error) {
             console.error('Failed to update user:', error);
@@ -98,13 +99,16 @@ const UserProfilePage = () => {
     };
 
     const handleDeleteUser = async () => {
-        try {
-            await fetch(`/api/profil/${user.id}`, {
-                method: 'DELETE',
-            });
-            window.location.href = '/profil'; // Redirection vers la liste des utilisateurs
-        } catch (error) {
-            console.error('Failed to delete user:', error);
+        const confirmed = confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur ? Cette action est irréversible.');
+        if (confirmed) {
+            try {
+                await fetch(`/api/profil/${user.id}`, {
+                    method: 'DELETE',
+                });
+                signOut();
+            } catch (error) {
+                console.error('Failed to delete user:', error);
+            }
         }
     };
 
@@ -121,15 +125,15 @@ const UserProfilePage = () => {
     }
 
     return (
-        <Box sx={{ maxWidth: 600, mx: 'auto', mt: 5 }} marginBottom={20}>
+        <Box sx={{maxWidth: 600, mx: 'auto', mt: 5}} marginBottom={20}>
             <Card>
-                <CardHeader title="Profil Utilisateur" />
+                <CardHeader title="Profil Utilisateur"/>
                 <CardContent>
-                    <Box sx={{ display: 'flex', justifyContent: 'center', mb: 3 }}>
+                    <Box sx={{display: 'flex', justifyContent: 'center', mb: 3}}>
                         <Avatar
                             alt={formData.firstname}
                             src={formData.profilePicture ? URL.createObjectURL(formData.profilePicture) : '/default-avatar.png'}
-                            sx={{ width: 100, height: 100 }}
+                            sx={{width: 100, height: 100}}
                         />
                     </Box>
                     <Grid container spacing={2}>
@@ -198,7 +202,7 @@ const UserProfilePage = () => {
 
                     {editing ? (
                         <Box mt={2} display="flex" justifyContent="flex-end">
-                            <Button onClick={handleUpdateUser} variant="contained" color="primary" sx={{ mr: 2 }}>
+                            <Button onClick={handleUpdateUser} variant="contained" color="primary" sx={{mr: 2}}>
                                 Enregistrer
                             </Button>
                             <Button onClick={handleEditToggle} variant="outlined" color="secondary">
@@ -210,7 +214,7 @@ const UserProfilePage = () => {
                             <Button onClick={handleEditToggle} variant="outlined">
                                 Modifier
                             </Button>
-                            <Button onClick={handleDeleteUser} variant="outlined" color="error" sx={{ ml: 2 }}>
+                            <Button onClick={handleDeleteUser} variant="outlined" color="error" sx={{ml: 2}}>
                                 Supprimer
                             </Button>
                         </Box>

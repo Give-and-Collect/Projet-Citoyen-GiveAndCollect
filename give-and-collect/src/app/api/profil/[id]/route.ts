@@ -1,8 +1,5 @@
 import {NextRequest, NextResponse} from "next/server";
 import prisma from "@/utils/db";
-import formidable from 'formidable';
-import fs from 'fs';
-import path from 'path';
 
 export const config = {
     api: {
@@ -10,81 +7,96 @@ export const config = {
     },
 };
 
-export async function DELETE(request: NextRequest, { params: { id } }: { params: { id: string } }) {
-    const idParsed = parseInt(id, 10);
+export async function DELETE(request: NextRequest, { params }: { params: { id: number } }) {
+    const { id } = params;
 
-    try {
-        await prisma.user.delete({
-            where: { id: idParsed },
+    const idParsed = parseInt(id.toString());
+
+    const posts = await prisma.post.findMany({
+        where: {
+            authorId: idParsed,
+        },
+    });
+
+    console.log('posts to delete', posts)
+
+    for(const post of posts) {
+        const items = await prisma.item.findMany({
+            where: {postId: Number(post.id)}
+        });
+        await prisma.itemCategory.deleteMany({
+            where: {itemId: {in: items.map(item => item.id)}}
         });
 
-        return NextResponse.json({ message: `User with id ${id} deleted successfully` });
+        await prisma.item.deleteMany({
+            where: {postId: Number(post.id)}
+        });
+
+        await prisma.post.delete({
+            where: {id: Number(post.id)}
+        });
+    }
+
+    console.log('posts successfully deleted')
+
+    await prisma.event.deleteMany({
+        where: {
+            organizerId: idParsed,
+        },
+    });
+
+    // Delete the user
+    await prisma.user.delete({
+        where: {
+            id: idParsed,
+        },
+    });
+
+    return NextResponse.json({ message: `User with id ${idParsed} deleted successfully` });
+}
+
+export async function PUT(req: NextRequest, {params: {id}}: { params: { id: string } }) {
+    const {
+        firstname,
+        lastname,
+        email,
+        phone,
+        nomOrganisation,
+        profilePicture
+    } = await req.json();
+
+    const userData = {
+        firstname,
+        lastname,
+        email,
+        phone,
+        nomOrganisation
+    };
+
+    console.log('Extracted user data:', userData);
+
+    // Mettre à jour l'utilisateur avec le rôle
+    try {
+        const updatedUser = await prisma.user.update({
+            where: {id: Number(id)},
+            data: userData,
+        });
+
+        console.log('User updated successfully:', updatedUser);
+        return NextResponse.json(updatedUser);
     } catch (error) {
-        console.error('Failed to delete user:', error);
-        return NextResponse.json({ error: 'Failed to delete user' }, { status: 500 });
+        console.error('Error updating user:', error);
+        return NextResponse.json({error: 'Failed to update user'}, {status: 500});
     }
 }
 
-export async function PUT(req: NextRequest, { params: { id } }: { params: { id: string } }) {
-    const form = new formidable.IncomingForm();
 
-    form.uploadDir = "./public/uploads"; // Directory to save uploaded files
-    form.keepExtensions = true; // Keep file extensions
-
-    return new Promise((resolve, reject) => {
-        form.parse(req, async (err, fields, files) => {
-            if (err) {
-                console.error('Formidable error:', err);
-                return resolve(NextResponse.json({ error: 'Failed to update user' }, { status: 500 }));
-            }
-
-            // Extraire les données du formulaire
-            const { firstname, lastname, email, phone, nomOrganisation, roleId } = fields;
-            const profilePicture = files.profilePicture ? files.profilePicture.path : null;
-
-            const userData = {
-                firstname,
-                lastname,
-                email,
-                phone,
-                nomOrganisation,
-                role: {
-                    connect: { id: Number(roleId) },
-                },
-            };
-
-            // Ajouter l'image de profil si elle existe
-            if (profilePicture) {
-                userData.profilePicture = profilePicture;
-            }
-
-            console.log('Extracted user data:', userData);
-
-            // Mettre à jour l'utilisateur avec le rôle
-            try {
-                const updatedUser = await prisma.user.update({
-                    where: { id: Number(id) },
-                    data: userData,
-                });
-
-                console.log('User updated successfully:', updatedUser);
-                resolve(NextResponse.json(updatedUser));
-            } catch (error) {
-                console.error('Error updating user:', error);
-                resolve(NextResponse.json({ error: 'Failed to update user' }, { status: 500 }));
-            }
-        });
-    });
-}
-
-
-
-export async function GET(req: NextRequest, { params: { id } }: { params: { id: string } }) {
+export async function GET(req: NextRequest, {params: {id}}: { params: { id: string } }) {
     const idParsed = parseInt(id, 10);
 
     try {
         const user = await prisma.user.findUnique({
-            where: { id: idParsed },
+            where: {id: idParsed},
             include: {
                 role: true,
                 posts: true,
@@ -93,12 +105,12 @@ export async function GET(req: NextRequest, { params: { id } }: { params: { id: 
         });
 
         if (!user) {
-            return NextResponse.json({ error: `User with id ${id} not found` }, { status: 404 });
+            return NextResponse.json({error: `User with id ${id} not found`}, {status: 404});
         }
 
-        return NextResponse.json({ user });
+        return NextResponse.json({user});
     } catch (error) {
         console.error('Error fetching user:', error);
-        return NextResponse.json({ error: 'Failed to fetch user details' }, { status: 500 });
+        return NextResponse.json({error: 'Failed to fetch user details'}, {status: 500});
     }
 }
