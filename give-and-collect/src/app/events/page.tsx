@@ -3,6 +3,7 @@
 import EventsCard from "@/components/Events/EventsCard";
 import EventsModalForm from "@/components/Events/EventsModalForm";
 import { Box, Button, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, Typography } from "@mui/material";
+import { Event } from "@prisma/client";
 import { signIn, useSession } from "next-auth/react";
 import * as React from "react";
 
@@ -55,7 +56,7 @@ export default function Events() {
 
       const fetchEvents = async () => {
         try {
-          const url = city ? `api/events/${city}` : 'api/events';
+          const url = city ? `api/events/city/${city}` : 'api/events';
           const response = await fetch(url);
           const data = await response.json();
           setEvents(data);
@@ -71,7 +72,7 @@ export default function Events() {
       setIsLoading(false);
     }, [city]);
 
-    let sortedEvents = [];
+    let sortedEvents: Event[] = [];
 
     if (events.length > 0) {
       sortedEvents = events.sort((a, b) => new Date(a.startDate).getTime() - new Date(b.startDate).getTime());
@@ -129,6 +130,7 @@ export default function Events() {
               {sortedEvents.map((event, index) => (
                 <EventsCard
                   key={index}
+                  id={event.id}
                   title={event.title}
                   description={event.description}
                   address={event.address}
@@ -139,6 +141,8 @@ export default function Events() {
                   startDate={new Date(event.startDate)}
                   endDate={new Date(event.endDate)}
                   phone={event.phone}
+                  organizerId={event.organizerId}
+                  session={session}
                 />
               ))}
             </Box>

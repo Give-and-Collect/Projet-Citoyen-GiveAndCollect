@@ -1,8 +1,11 @@
-import { Box, Card, CardContent, CardHeader, Typography } from '@mui/material';
+import { Box, Button, Card, CardContent, CardHeader, Typography } from '@mui/material';
+import { Session } from 'next-auth';
 import Image from 'next/image';
 import React from 'react';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 type Props = {
+    id: number;
     title: string;
     description: string;
     address: string;
@@ -13,11 +16,40 @@ type Props = {
     startDate: Date;
     endDate: Date;
     phone: string;
+    organizerId: number;
+    session: Session;
 };
 
 const EventsCard: React.FC<Props> = (props) => {
   function formatPhoneNumber(phone: string): React.ReactNode {
     return phone.replace(/(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})/, '$1 $2 $3 $4 $5');
+  }
+
+  async function handleDelete(id: number) {
+    if (!window.confirm('Êtes-vous sûr de vouloir supprimer cet événement ?')) {
+      return;
+    }
+
+    await fetch(`../api/events/${id}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ 
+        organizerId: props.organizerId
+      }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.error) {
+          console.error(data.error);
+          return;
+        }
+        window.location.reload();
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   }
 
     return (
@@ -59,6 +91,18 @@ const EventsCard: React.FC<Props> = (props) => {
               <Image src={'/assets/icones/phone-darkgreen.png'} alt="Home" width={50} height={50} />
               <a href={"tel:" + props.phone}><Typography>{formatPhoneNumber(props.phone)}</Typography></a>
             </div>
+
+            {props.session && (props.session.user.roleId === 1 || props.session.user.id === props.organizerId) && (
+              <Button
+                  variant="outlined"
+                  color="error"
+                  startIcon={<DeleteIcon />}
+                  onClick={() => handleDelete(props.id)}
+                  sx={{ mt: 2, mb: 2, ml: 2, alignSelf: 'flex-start' }}
+              >
+                  Supprimer
+              </Button>
+            )}
           </CardContent>
         </Card>
       </Box>
