@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import { useState, useEffect } from 'react';
 import {
@@ -8,12 +8,15 @@ import {
     CardContent,
     CardHeader,
     FormControl,
+    FormLabel,
     Grid,
+    Input,
     InputLabel,
     MenuItem,
     Select,
     TextField,
     Typography,
+    Avatar,
 } from '@mui/material';
 import { useSession } from 'next-auth/react';
 
@@ -27,8 +30,7 @@ const UserProfilePage = () => {
         email: '',
         phone: '',
         nomOrganisation: '',
-        profilePicture: '',
-        roleId: '',
+        profilePicture: null,
     });
 
     useEffect(() => {
@@ -37,15 +39,9 @@ const UserProfilePage = () => {
         }
     }, [session]);
 
-    useEffect(() => {
-        console.log('User data from session:', user);
-    }, [user]);
-
-    console.log(session, 'test id');
-
     const fetchUserProfile = async (userId) => {
         try {
-            const response = await fetch(`/api/users/${userId}`);
+            const response = await fetch(`/api/profil/${userId}`);
             const userData = await response.json();
             setUser(userData.user);
             setFormData({
@@ -54,8 +50,7 @@ const UserProfilePage = () => {
                 email: userData.user.email,
                 phone: userData.user.phone,
                 nomOrganisation: userData.user.nomOrganisation || '',
-                profilePicture: userData.user.profilePicture || '',
-                roleId: userData.user.roleId.toString(),
+                profilePicture: userData.user.profilePicture || null,
             });
         } catch (error) {
             console.error('Error fetching user data:', error);
@@ -74,16 +69,28 @@ const UserProfilePage = () => {
         }));
     };
 
+    const handleFileChange = (e) => {
+        setFormData((prev) => ({
+            ...prev,
+            profilePicture: e.target.files[0],
+        }));
+    };
+
     const handleUpdateUser = async () => {
         try {
-            await fetch(`/api/users/${user.id}`, {
+            const data = new FormData();
+            data.append('firstname', formData.firstname);
+            data.append('lastname', formData.lastname);
+            data.append('email', formData.email);
+            data.append('phone', formData.phone);
+            data.append('nomOrganisation', formData.nomOrganisation);
+            data.append('profilePicture', formData.profilePicture);
+
+            await fetch(`/api/profil/${user.id}`, {
                 method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(formData),
+                body: data,
             });
-            fetchUserProfile(user.id); // Actualiser les données utilisateur après la mise à jour
+            fetchUserProfile(user.id);
             setEditing(false);
         } catch (error) {
             console.error('Failed to update user:', error);
@@ -92,11 +99,10 @@ const UserProfilePage = () => {
 
     const handleDeleteUser = async () => {
         try {
-            await fetch(`/api/users/${user.id}`, {
+            await fetch(`/api/profil/${user.id}`, {
                 method: 'DELETE',
             });
-            // Rediriger ou gérer la suppression selon vos besoins
-            window.location.href = '/users'; // Redirection vers la liste des utilisateurs
+            window.location.href = '/profil'; // Redirection vers la liste des utilisateurs
         } catch (error) {
             console.error('Failed to delete user:', error);
         }
@@ -115,10 +121,17 @@ const UserProfilePage = () => {
     }
 
     return (
-        <Box sx={{ maxWidth: 600, mx: 'auto', mt: 5 }}>
+        <Box sx={{ maxWidth: 600, mx: 'auto', mt: 5 }} marginBottom={20}>
             <Card>
                 <CardHeader title="Profil Utilisateur" />
                 <CardContent>
+                    <Box sx={{ display: 'flex', justifyContent: 'center', mb: 3 }}>
+                        <Avatar
+                            alt={formData.firstname}
+                            src={formData.profilePicture ? URL.createObjectURL(formData.profilePicture) : '/default-avatar.png'}
+                            sx={{ width: 100, height: 100 }}
+                        />
+                    </Box>
                     <Grid container spacing={2}>
                         <Grid item xs={12} sm={6}>
                             <TextField
@@ -170,28 +183,15 @@ const UserProfilePage = () => {
                                 disabled={!editing}
                             />
                         </Grid>
-                        <Grid item xs={12}>
-                            <TextField
-                                fullWidth
-                                name="profilePicture"
-                                label="Photo de profil"
-                                value={formData.profilePicture}
-                                onChange={handleChange}
-                                disabled={!editing}
-                            />
-                        </Grid>
-                        <Grid item xs={12}>
+                        <Grid item xs={12} marginBottom={2}>
                             <FormControl fullWidth disabled={!editing}>
-                                <InputLabel>Rôle</InputLabel>
-                                <Select
-                                    name="roleId"
-                                    value={formData.roleId}
-                                    onChange={handleChange}
-                                >
-                                    {/* Remplacez par les rôles réels récupérés depuis votre API */}
-                                    <MenuItem value="1">Admin</MenuItem>
-                                    <MenuItem value="2">Utilisateur</MenuItem>
-                                </Select>
+                                <FormLabel>Photo de profil</FormLabel>
+                                <Input
+                                    name="profilePicture"
+                                    type="file"
+                                    onChange={handleFileChange}
+                                    disableUnderline
+                                />
                             </FormControl>
                         </Grid>
                     </Grid>

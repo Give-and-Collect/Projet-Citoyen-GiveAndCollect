@@ -1,22 +1,52 @@
-import {NextRequest, NextResponse} from "next/server";
 import prisma from "@/utils/db";
+import { NextRequest, NextResponse } from "next/server";
 
-export async function DELETE(req: NextRequest, {params: {id}}: { params: { id: string } }) {
-    const items = await prisma.item.findMany({
-        where: {postId: Number(id)}
+// Update only the role of a user
+export async function PATCH(request: NextRequest, { params }: { params: { id: number }}) {
+    const { id } = params;
+
+    const idParsed = parseInt(id.toString());
+
+    const body = await request.json();
+    const { roleId } = body;
+
+    await prisma.user.update({
+        where: {
+            id: idParsed,
+        },
+        data: {
+            roleId,
+        },
     });
 
-    await prisma.itemCategory.deleteMany({
-        where: {itemId: {in: items.map(item => item.id)}}
+    return NextResponse.json({ message: `User with id ${id} updated successfully` });
+}
+
+// Delete a user
+export async function DELETE(request: NextRequest, { params }: { params: { id: number } }) {
+    const { id } = params;
+
+    const idParsed = parseInt(id.toString());
+
+    // User's posts and events have to be deleted before the user
+    await prisma.post.deleteMany({
+        where: {
+            authorId: idParsed,
+        },
     });
 
-    await prisma.item.deleteMany({
-        where: {postId: Number(id)}
+    await prisma.event.deleteMany({
+        where: {
+            organizerId: idParsed,
+        },
     });
 
-    await prisma.post.delete({
-        where: {id: Number(id)}
+    // Delete the user
+    await prisma.user.delete({
+        where: {
+            id: idParsed,
+        },
     });
 
-    return NextResponse.json({})
+    return NextResponse.json({ message: `User with id ${idParsed} deleted successfully` });
 }

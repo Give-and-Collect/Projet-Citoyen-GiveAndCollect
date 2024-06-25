@@ -28,6 +28,20 @@ export async function middleware(req: NextRequest) {
         return new NextResponse(JSON.stringify({ error: 'Unauthorized' }), { status: 401 });
       }
     }
+
+    if (req.method === 'DELETE') {
+      // Have to be authenticated
+      if (!token) {
+        return new NextResponse(JSON.stringify({ error: 'Unauthorized' }), { status: 401 })
+      }
+    
+      if (token.roleId !== 1) {
+        const requestBody = await req.json();
+        if (requestBody?.organizerId !== token.id) {
+          return new NextResponse(JSON.stringify({ error: 'Unauthorized' }), { status: 401 })
+        }
+      }
+    }
   }
 
   if (req.nextUrl.pathname.startsWith('/api/posts')) {
@@ -53,14 +67,44 @@ export async function middleware(req: NextRequest) {
     }
   }
 
-  // -------------------Page routes protection-------------------
-  if (req.nextUrl.pathname.startsWith('/chat')) {
-    // Have to be authenticated
-    if (!token) {
-      return NextResponse.redirect(new URL(signInPage, req.url));
-    }
-  }
+  // if (req.nextUrl.pathname.startsWith('/api/profil')) {
+  //   if (req.method === 'POST') {
+  //     // Must be authenticated
+  //     if (!token) {
+  //       return new NextResponse(JSON.stringify({ error: 'Unauthorized' }), { status: 401 });
+  //     }
+  //   }
+  //
+  //   if (req.method === 'DELETE') {
+  //     // Have to be authenticated
+  //     if (!token) {
+  //       return new NextResponse(JSON.stringify({ error: 'Unauthorized' }), { status: 401 });
+  //     }
+  //     // Have to be admin
+  //     if (token.roleId !== 1 )  {
+  //       const requestBody = await req.json();
+  //       if (requestBody?.authorId !== token.id) {
+  //         return new NextResponse(JSON.stringify({ error: 'Unauthorized' }), { status: 401 });
+  //       }
+  //     }
+  //   }
+  //
+  //   if (req.method === 'PUT') {
+  //     // Have to be authenticated
+  //     if (!token) {
+  //       return new NextResponse(JSON.stringify({ error: 'Unauthorized' }), { status: 401 });
+  //     }
+  //     // Have to be admin
+  //     if (token.roleId !== 1 )  {
+  //       const requestBody = await req.json();
+  //       if (requestBody?.authorId !== token.id) {
+  //         return new NextResponse(JSON.stringify({ error: 'Unauthorized' }), { status: 401 });
+  //       }
+  //     }
+  //   }
+  // }
 
+  // -------------------Page routes protection-------------------
   if (req.nextUrl.pathname.startsWith('/admin')) {
     // Have to be authenticated
     if (!token) {
@@ -76,6 +120,6 @@ export async function middleware(req: NextRequest) {
   return NextResponse.next();
 }
 
-export const config = {
-  matcher: ['/api/:path*', '/chat', '/admin'],
-};
+// export const config = {
+//   matcher: ['/api/:path*', '/chat', '/admin'],
+// };
