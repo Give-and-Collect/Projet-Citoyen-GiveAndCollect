@@ -7,7 +7,7 @@ import path from 'path';
 const CONTACT_MESSAGE_FIELDS: { [key: string]: string } = {
     name: 'Nom et Prénom',
     email: 'Email',
-    subject: 'Object',
+    subject: 'Objet',
     message: 'Message',
 };
 
@@ -20,8 +20,20 @@ const transporter: CustomTransporter = nodemailer.createTransport({
 }) as CustomTransporter;
 
 const sanitizeInput = (input: string): string => {
-    // Échapper les caractères spéciaux et les balises HTML
     return input.replace(/['"<>]/g, '');
+};
+
+const containsMaliciousPatterns = (input: string): boolean => {
+    const patterns = [
+        /<script.*?>.*?<\/script.*?>/i,
+        /<.*?onerror=.*?>/i,
+        /' OR '1'='1/i,
+        /;.*--/i,
+        /http:\/\/|https:\/\//i,
+        /[!@#$%^&*()_+]/i,
+        /&#x3C;.*?&#x3E;/i
+    ];
+    return patterns.some(pattern => pattern.test(input));
 };
 
 const generateEmailContent = (data: {
@@ -37,8 +49,14 @@ const generateEmailContent = (data: {
         return (str += `<h3>${CONTACT_MESSAGE_FIELDS[key]}</h3><p>${sanitizeInput(data[key])}</p>`);
     }, '');
 
+    const textData = orderedKeys.reduce(
+        (str, key) =>
+            (str += `${CONTACT_MESSAGE_FIELDS[key]}: ${sanitizeInput(data[key])}\n\n`),
+        ''
+    );
+
     return {
-        text: '', // Si vous souhaitez également inclure un texte brut
+        text: textData,
         html: htmlData,
     };
 };
@@ -54,6 +72,10 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ message: 'Bad request' }, { status: 400 });
         }
 
+        if ([name, subject, message, email].some(input => containsMaliciousPatterns(input))) {
+            return NextResponse.json({ message: 'Invalid input detected' }, { status: 400 });
+        }
+
         const userEmail = process.env.EMAIL_USER!;
         if (!userEmail) {
             throw new Error('EMAIL_USER environment variable is not defined');
@@ -66,8 +88,8 @@ export async function POST(req: NextRequest) {
             from: userEmail,
             to: userEmail,
             subject: `${subject}`,
-            html: htmlTemplate.replace('${htmlData}', generateEmailContent(body).html), // Remplacer les données dans le template HTML
-            text: generateEmailContent(body).text, // Ajouter également le texte brut si nécessaire
+            html: htmlTemplate.replace('${htmlData}', generateEmailContent(body).html),
+            text: generateEmailContent(body).text,
         };
 
         await transporter.sendMail(mailOptions);
