@@ -128,7 +128,6 @@ export default function Events() {
             <Box sx={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center' }}>
 
               {sortedEvents.map((event, index) => (
-                <>
                 <EventsCard
                   key={index}
                   id={event.id}
@@ -145,7 +144,6 @@ export default function Events() {
                   organizerId={event.organizerId}
                   session={session}
                 />
-                </>
               ))}
             </Box>
           </>

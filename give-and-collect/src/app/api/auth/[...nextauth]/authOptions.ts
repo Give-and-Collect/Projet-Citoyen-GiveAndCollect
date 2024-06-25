@@ -44,7 +44,7 @@ export const authOptions = {
                     firstname: user.firstname,
                     lastname: user.lastname,
                     email: user.email,
-                    role: user.role,
+                    roleId: user.roleId,
                 };
             }
             return token;
@@ -59,7 +59,7 @@ export const authOptions = {
                     firstname: token.firstname,
                     lastname: token.lastname,
                     email: token.email,
-                    role: token.role
+                    roleId: token.roleId
                 },
             };
         },

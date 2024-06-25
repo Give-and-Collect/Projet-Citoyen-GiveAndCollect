@@ -28,6 +28,20 @@ export async function middleware(req: NextRequest) {
         return new NextResponse(JSON.stringify({ error: 'Unauthorized' }), { status: 401 });
       }
     }
+
+    if (req.method === 'DELETE') {
+      // Have to be authenticated
+      if (!token) {
+        return new NextResponse(JSON.stringify({ error: 'Unauthorized' }), { status: 401 })
+      }
+    
+      if (token.roleId !== 1) {
+        const requestBody = await req.json();
+        if (requestBody?.organizerId !== token.id) {
+          return new NextResponse(JSON.stringify({ error: 'Unauthorized' }), { status: 401 })
+        }
+      }
+    }
   }
 
   if (req.nextUrl.pathname.startsWith('/api/posts')) {
@@ -48,20 +62,6 @@ export async function middleware(req: NextRequest) {
         const requestBody = await req.json();
         if (requestBody?.authorId !== token.id) {
           return new NextResponse(JSON.stringify({ error: 'Unauthorized' }), { status: 401 });
-        }
-      }
-    }
-
-    if (req.method === 'DELETE') {
-      // Have to be authenticated
-      if (!token) {
-        return new NextResponse(JSON.stringify({ error: 'Unauthorized' }), { status: 401 })
-      }
-    
-      if (token.roleId !== 1) {
-        const requestBody = await req.json();
-        if (requestBody?.organizerId !== token.id) {
-          return new NextResponse(JSON.stringify({ error: 'Unauthorized' }), { status: 401 })
         }
       }
     }
