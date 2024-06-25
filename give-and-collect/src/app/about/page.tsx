@@ -77,22 +77,47 @@ const CustomCard = styled(Card)(({ theme }) => ({
 
 const Contact = () => {
     const [formData, setFormData] = useState<FormValues>(initValues);
+    const [errorMessage, setErrorMessage] = useState<string>('');
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
         setFormData((prev) => ({
             ...prev,
-            [name]: sanitizeInput(value), // Utilisation de la fonction de sanitisation
+            [name]: sanitizeInput(value),
         }));
     };
 
     const sanitizeInput = (input: string): string => {
-        // Échapper les caractères spéciaux et les balises HTML
         return input.replace(/['"<>]/g, '');
+    };
+
+    const containsMaliciousPatterns = (input: string): boolean => {
+        const patterns = [
+            /<script.*?>.*?<\/script.*?>/i,    // Détecte les balises de script
+            /<.*?onerror=.*?>/i,               // Détecte les attributs d'événement dangereux
+            /' OR '1'='1/i,                    // Détecte les injections SQL basiques
+            /;.*--/i,                          // Détecte les tentatives de commentaires SQL
+            /https?:\/\/[^\s]+/i,              // Détecte les URLs HTTP/HTTPS
+            /(\bhttps?:\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/i,  // Détecte les URLs plus complexes
+            /&#x3C;.*?&#x3E;/i                 // Détecte les tentatives d'injection de code HTML
+        ];
+        return patterns.some(pattern => pattern.test(input));
+    };
+
+    const validateForm = (): boolean => {
+        const inputs = [formData.name, formData.subject, formData.message, formData.email];
+        if (inputs.some(input => containsMaliciousPatterns(input))) {
+            setErrorMessage('Votre message contient des caractères non autorisés. Veuillez éviter les symboles spéciaux.');
+            return false;
+        }
+        setErrorMessage('');
+        return true;
     };
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        if (!validateForm()) return;
+
         try {
             const response = await fetch('/api/contact', {
                 method: 'POST',
@@ -230,6 +255,11 @@ const Contact = () => {
                                             required
                                         />
                                     </Grid>
+                                    {errorMessage && (
+                                        <Grid item xs={12}>
+                                            <Typography color="error">{errorMessage}</Typography>
+                                        </Grid>
+                                    )}
                                     <Grid item xs={12} sx={{ textAlign: 'center' }}>
                                         <Button
                                             variant="contained"
