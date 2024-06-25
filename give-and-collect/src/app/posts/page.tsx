@@ -149,9 +149,13 @@ const PostAnnonce: React.FC = () => {
         }
     };
 
-    const handlePostDelete = (id:number) => {
+    const handlePostDelete = (id:number, authorId:number) => {
         fetch('/api/posts/' + id, {
-            method: 'DELETE'
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ authorId: authorId }),
         }).then(() => void refreshPosts());
     }
 

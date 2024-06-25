@@ -29,7 +29,7 @@ import { Post } from '../../types/post';
 interface PostsCardProps {
     posts: Post[];
     session: Session | null | undefined;
-    handlePostDelete: (id: number) => void;
+    handlePostDelete: (id: number, authorId: number) => void;
 }
 
 const PostsCard: React.FC<PostsCardProps> = ({ posts, session, handlePostDelete }) => {
@@ -56,7 +56,6 @@ const PostsCard: React.FC<PostsCardProps> = ({ posts, session, handlePostDelete 
     const handlePageChange = (event: React.ChangeEvent<unknown>, value: number) => {
         setCurrentPage(value);
     };
-
     return (
         <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mt: 5, mb: 5 }}>
             <FormControl fullWidth variant="outlined" sx={{ mb: 5 }}>
@@ -153,12 +152,12 @@ const PostsCard: React.FC<PostsCardProps> = ({ posts, session, handlePostDelete 
                                 </Table>
                             </TableContainer>
                         </CardContent>
-                        {(session?.user.role.name === 'Admin' || session?.user.id === post.author.id) && (
+                        {(session?.user.role.id === 1 || session?.user.id === post.author.id) && (
                             <Button
                                 variant="outlined"
                                 color="error"
                                 startIcon={<DeleteIcon />}
-                                onClick={() => handlePostDelete(post.id)}
+                                onClick={() => handlePostDelete(post.id, post.author.id)}
                                 sx={{ mt: 2, mb: 2, ml: 2, alignSelf: 'flex-start' }}
                             >
                                 Supprimer
