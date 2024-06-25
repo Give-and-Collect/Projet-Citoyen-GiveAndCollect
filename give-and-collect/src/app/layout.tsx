@@ -13,6 +13,7 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: "Give & Collect",
   description: "Transformez des vies en faisant don de vos vêtements. Notre plateforme simplifie la collecte et la redistribution pour aider ceux dans le besoin. Ensemble, nous pouvons faire une différence significative. Faites un geste aujourd'hui.",
+  manifest: "/manifest.json",
 };
 
 export default async function RootLayout({
