@@ -1,0 +1,140 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Role {
+  id    Int    @id @default(autoincrement())
+  name  String
+  users User[]
+}
+
+model SecretQuestion {
+  id       Int    @id @default(autoincrement())
+  question String @unique
+  users    User[]
+}
+
+model User {
+  id               Int            @id @default(autoincrement())
+  birthDate        DateTime
+  firstname        String
+  lastname         String
+  email            String         @unique
+  password         String
+  phone            String
+  nomOrganisation  String?
+  profilePicture   String?
+  roleId           Int
+  secretQuestionId Int
+  secretAnswer     String
+  events           Event[]
+  Message          Message[]
+  Participate      Participate[]
+  posts            Post[]
+  role             Role           @relation(fields: [roleId], references: [id])
+  SecretQuestion   SecretQuestion @relation(fields: [secretQuestionId], references: [id])
+}
+
+model Event {
+  id           Int      @id @default(autoincrement())
+  title        String
+  description  String
+  address      String
+  city         String
+  postalCode   String
+  latitude     Float
+  longitude    Float
+  startDate    DateTime
+  endDate      DateTime
+  phone        String
+  creationDate DateTime
+  organizerId  Int
+  organizer    User     @relation(fields: [organizerId], references: [id])
+}
+
+model Post {
+  id           Int      @id @default(autoincrement())
+  address      String
+  city         String
+  postalCode   String
+  latitude     Float
+  longitude    Float
+  description  String
+  creationDate DateTime
+  authorId     Int
+  postTypeId   Int
+  items        Item[]
+  author       User     @relation(fields: [authorId], references: [id])
+  postType     PostType @relation(fields: [postTypeId], references: [id])
+}
+
+model PostType {
+  id    Int    @id @default(autoincrement())
+  name  String
+  posts Post[]
+}
+
+model Item {
+  id           Int            @id @default(autoincrement())
+  size         String
+  quantity     Int
+  postId       Int
+  post         Post           @relation(fields: [postId], references: [id])
+  ItemCategory ItemCategory[]
+}
+
+model Category {
+  id           Int            @id @default(autoincrement())
+  name         String
+  type         String
+  ItemCategory ItemCategory[]
+}
+
+model ItemCategory {
+  id         Int      @id @default(autoincrement())
+  itemId     Int
+  categoryId Int
+  category   Category @relation(fields: [categoryId], references: [id])
+  item       Item     @relation(fields: [itemId], references: [id])
+}
+
+model CollectionPoint {
+  id          Int     @id @default(autoincrement())
+  address     String
+  city        String
+  postalCode  String
+  latitude    Float
+  longitude   Float
+  description String
+  isActive    Boolean @default(true)
+}
+
+model Message {
+  id             Int          @id @default(autoincrement())
+  messageDate    DateTime
+  body           String
+  senderId       Int
+  conversationId Int
+  conversation   Conversation @relation(fields: [conversationId], references: [id])
+  sender         User         @relation(fields: [senderId], references: [id])
+}
+
+model Conversation {
+  id           Int           @id @default(autoincrement())
+  creationDate DateTime
+  messages     Message[]
+  Participate  Participate[]
+}
+
+model Participate {
+  id             Int          @id @default(autoincrement())
+  userId         Int
+  conversationId Int
+  conversation   Conversation @relation(fields: [conversationId], references: [id])
+  user           User         @relation(fields: [userId], references: [id])
+}
