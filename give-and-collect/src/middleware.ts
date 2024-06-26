@@ -67,7 +67,7 @@ export async function middleware(req: NextRequest) {
     }
   }
 
-  // if (req.nextUrl.pathname.startsWith('/api/profil')) {
+  // if (req.nextUrl.pathname.startsWith('/api/profile')) {
   //   if (req.method === 'POST') {
   //     // Must be authenticated
   //     if (!token) {

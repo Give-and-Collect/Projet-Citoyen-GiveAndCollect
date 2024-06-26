@@ -4,30 +4,7 @@ import { useEffect, useState } from 'react';
 import { Typography } from '@mui/material';
 import { signOut, useSession } from 'next-auth/react';
 import UserProfileForm from '../../components/Profil/UserProfileForm';
-
-interface UserProfile {
-    id: string;
-    firstname: string;
-    lastname: string;
-    email: string;
-    phone: string;
-    nomOrganisation?: string;
-    profilePicture?: string | null;
-    roleId: string;
-    roleName: string;
-}
-
-interface FormData {
-    firstname: string;
-    lastname: string;
-    email: string;
-    phone: string;
-    nomOrganisation: string;
-    profilePicture: File | null;
-    profilePictureBase64: string;
-    roleId: string;
-    roleName: string;
-}
+import {UserProfile, FormData} from '../../types/profile';
 
 const UserProfilePage = () => {
     const { data: session, status } = useSession();
