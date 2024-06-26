@@ -34,6 +34,7 @@ export interface PostItem {
 interface Author {
     firstname: string;
     lastname: string;
+    email: string;
     roleId: number;
     role: {
         name: string;
@@ -50,6 +51,7 @@ export interface Post {
     author: {
         firstname: string;
         lastname: string;
+        email: string;
         roleId: number;
     };
     postType: {

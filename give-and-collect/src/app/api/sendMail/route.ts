@@ -1,23 +1,21 @@
 import { NextRequest, NextResponse } from 'next/server';
 import nodemailer from 'nodemailer';
-import { EmailContent, MailOptions, CustomTransporter } from '@/types/sendMail';
+import { EmailContent } from '@/types/sendMail'; // Assurez-vous que ce chemin est correct pour vos types
 import fs from 'fs';
 import path from 'path';
 
 const CONTACT_MESSAGE_FIELDS: { [key: string]: string } = {
-    name: 'Nom et Prénom',
-    email: 'Email',
     subject: 'Objet',
     message: 'Message',
 };
 
-const transporter: CustomTransporter = nodemailer.createTransport({
+const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
         user: process.env.EMAIL_USER!,
         pass: process.env.EMAIL_PASS!,
     },
-}) as CustomTransporter;
+});
 
 const sanitizeInput = (input: string): string => {
     return input.replace(/['"<>]/g, '');
@@ -37,13 +35,13 @@ const containsMaliciousPatterns = (input: string): boolean => {
 };
 
 const generateEmailContent = (data: {
-    name: string;
+    firstname: string;
     email: string;
     subject: string;
     message: string;
     [key: string]: string;
 }): EmailContent => {
-    const orderedKeys = ['name', 'email', 'subject', 'message'];
+    const orderedKeys = ['firstname', 'email', 'subject', 'message'];
 
     const htmlData = orderedKeys.reduce((str, key) => {
         return (str += `<h3>${CONTACT_MESSAGE_FIELDS[key]}</h3><p>${sanitizeInput(data[key])}</p>`);
@@ -64,36 +62,41 @@ const generateEmailContent = (data: {
 export async function POST(req: NextRequest) {
     try {
         const body = await req.json();
-      
-        // Valider et nettoyer les données
-        const { name, email, message, subject } = body;
 
-        if (!name || !email || !subject || !message) {
-            return NextResponse.json({ message: 'Bad request' }, { status: 400 });
+        console.log('Request Body:', body);
+
+        const { subject, message, authorEmail, userConnectedEmail, userConnectedFirstName } = body;
+
+        console.log('Subject:', subject);
+        console.log('Message:', message);
+        console.log('authorEmail:', authorEmail);
+
+        if (!subject || !message || !authorEmail || !userConnectedEmail || !userConnectedFirstName) {
+            console.log('Missing required fields:', { subject, message});
+            return NextResponse.json({ message: 'Bad request - Missing required fields' }, { status: 400 });
         }
 
-        if ([name, subject, message, email].some(input => containsMaliciousPatterns(input))) {
+        if ([subject, message, authorEmail, userConnectedEmail, userConnectedFirstName].some(input => containsMaliciousPatterns(input))) {
+            console.log('Invalid input detected:', { subject, message, userConnectedEmail ,userConnectedFirstName});
             return NextResponse.json({ message: 'Invalid input detected' }, { status: 400 });
         }
 
-        const userEmail = process.env.EMAIL_USER!;
-        if (!userEmail) {
-            throw new Error('EMAIL_USER environment variable is not defined');
-        }
+        const emailContent = generateEmailContent({ firstname: userConnectedFirstName, email: userConnectedEmail,subject: subject,message: message });
 
         const htmlTemplatePath = path.resolve('./src/template/email.html');
         const htmlTemplate = fs.readFileSync(htmlTemplatePath, 'utf8');
 
-        const mailOptions: MailOptions & EmailContent = {
-            from: userEmail,
-            to: userEmail,
+        const mailOptions = {
+            from: process.env.EMAIL_USER!,
+            to: authorEmail,//authorEmail
             subject: `${subject}`,
-            html: htmlTemplate.replace('${htmlData}', generateEmailContent(body).html),
-            text: generateEmailContent(body).text,
+            html: htmlTemplate.replace('${htmlData}', emailContent.html),
+            text: emailContent.text,
         };
 
         await transporter.sendMail(mailOptions);
 
+        console.log('Email sent successfully to:', authorEmail);
         return NextResponse.json({ success: true }, { status: 200 });
     } catch (error) {
         console.error('Error sending email:', error);
