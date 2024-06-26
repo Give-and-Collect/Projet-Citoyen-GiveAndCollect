@@ -1,18 +1,20 @@
-import type { Config } from 'jest';
-import nextJest from 'next/jest.js';
+const nextJest = require('next/jest');
 
 const createJestConfig = nextJest({
   dir: './',
 });
 
-const config: Config = {
-  coverageProvider: 'v8',
-  testEnvironment: 'jsdom',
+const customJestConfig = {
+  // Comment or remove this line if you don't need setup files
+  // setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
+  testEnvironment: 'node',
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1',
-    '\\.(css|less|scss|sass)$': 'identity-obj-proxy'
   },
-  setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
+  transform: {
+    '^.+\\.(ts|tsx)$': 'ts-jest',
+  },
+  testPathIgnorePatterns: ['<rootDir>/node_modules/', '<rootDir>/.next/'],
 };
 
-export default createJestConfig(config);
+module.exports = createJestConfig(customJestConfig);
