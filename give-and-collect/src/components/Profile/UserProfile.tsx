@@ -3,13 +3,8 @@
 import { useEffect, useState } from 'react';
 import { Typography } from '@mui/material';
 import { signOut, useSession } from 'next-auth/react';
-<<<<<<<< HEAD:give-and-collect/src/app/profile/page.tsx
-import UserProfileForm from '../../components/Profil/UserProfileForm';
-import {UserProfile, FormData} from '../../types/profile';
-========
 import UserProfileForm from '@/components/Profile/UserProfileForm';
 import {UserProfile, FormData} from '@/types/profile';
->>>>>>>> users/HPO/Profil:give-and-collect/src/components/Profile/UserProfile.tsx
 
 const UserProfilePage = () => {
     const { data: session, status } = useSession();
