@@ -237,10 +237,12 @@ function ResponsiveAppBar() {
                 onClose={handleCloseUserMenu}
               >
                 <MenuItem key={'Profile'} onClick={handleCloseUserMenu}>
-                  <Typography textAlign="center" sx={{ display: 'flex', alignItems: 'center' }}>
-                    <Image src={'/assets/icones/profile-darkgreen.png'} alt="Profile" width={25} height={25} style={{ marginRight: '10px' }} />
-                    {session.user.firstname} {session.user.lastname}
-                  </Typography>
+                  <Link href={"/profile"}>
+                    <Typography textAlign="center" sx={{ display: 'flex', alignItems: 'center' }}>
+                      <Image src={'/assets/icones/profile-darkgreen.png'} alt="Profile" width={25} height={25} style={{ marginRight: '10px' }} />
+                      {session.user.firstname} {session.user.lastname}
+                    </Typography>
+                  </Link>
                 </MenuItem>
 
                 {session.user.roleId === 1 && (

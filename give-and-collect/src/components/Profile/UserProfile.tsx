@@ -3,31 +3,8 @@
 import { useEffect, useState } from 'react';
 import { Typography } from '@mui/material';
 import { signOut, useSession } from 'next-auth/react';
-import UserProfileForm from '../../components/Profil/UserProfileForm';
-
-interface UserProfile {
-    id: string;
-    firstname: string;
-    lastname: string;
-    email: string;
-    phone: string;
-    nomOrganisation?: string;
-    profilePicture?: string | null;
-    roleId: string;
-    roleName: string;
-}
-
-interface FormData {
-    firstname: string;
-    lastname: string;
-    email: string;
-    phone: string;
-    nomOrganisation: string;
-    profilePicture: File | null;
-    profilePictureBase64: string;
-    roleId: string;
-    roleName: string;
-}
+import UserProfileForm from '@/components/Profile/UserProfileForm';
+import {UserProfile, FormData} from '@/types/profile';
 
 const UserProfilePage = () => {
     const { data: session, status } = useSession();
@@ -153,10 +130,6 @@ const UserProfilePage = () => {
             }
         }
     };
-
-    if (!session) {
-        return <Typography variant="body1">Connectez-vous pour accéder à cette page.</Typography>;
-    }
 
     if (!user) {
         return <Typography variant="body1">Chargement du profil...</Typography>;
