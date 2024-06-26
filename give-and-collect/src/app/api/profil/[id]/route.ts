@@ -18,8 +18,6 @@ export async function DELETE(request: NextRequest, { params }: { params: { id: n
         },
     });
 
-    console.log('posts to delete', posts)
-
     for(const post of posts) {
         const items = await prisma.item.findMany({
             where: {postId: Number(post.id)}
@@ -36,8 +34,6 @@ export async function DELETE(request: NextRequest, { params }: { params: { id: n
             where: {id: Number(post.id)}
         });
     }
-
-    console.log('posts successfully deleted')
 
     await prisma.event.deleteMany({
         where: {
@@ -73,7 +69,6 @@ export async function PUT(req: NextRequest, {params: {id}}: { params: { id: stri
         nomOrganisation
     };
 
-    console.log('Extracted user data:', userData);
 
     // Mettre à jour l'utilisateur avec le rôle
     try {
@@ -82,7 +77,6 @@ export async function PUT(req: NextRequest, {params: {id}}: { params: { id: stri
             data: userData,
         });
 
-        console.log('User updated successfully:', updatedUser);
         return NextResponse.json(updatedUser);
     } catch (error) {
         console.error('Error updating user:', error);

@@ -34,7 +34,6 @@ export async function DELETE(request: NextRequest, { params }: { params: { id: n
     },
   });
 
-  console.log('posts to delete', posts)
 
   for(const post of posts) {
     const items = await prisma.item.findMany({
@@ -53,7 +52,6 @@ export async function DELETE(request: NextRequest, { params }: { params: { id: n
     });
   }
 
-  console.log('posts successfully deleted')
 
   await prisma.event.deleteMany({
     where: {

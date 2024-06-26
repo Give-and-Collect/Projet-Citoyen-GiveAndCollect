@@ -34,7 +34,6 @@ export default function Signup() {
         fetch('/api/role')
             .then(response => response.json())
             .then(data => {
-                console.log(data);
                 // Filtrer les rôles pour exclure le rôle admin (id = 1)
                 const filteredRoles = data.filter((role: Role) => role.id !== 1);
                 setRole(filteredRoles);
