@@ -74,8 +74,15 @@ const StatisticsPage: React.FC = () => {
     };
 
     return (
-        <Box sx={{ padding: 2, marginTop: 4 }}>
-            <Typography variant="h4" gutterBottom sx={{ textAlign: 'center', marginBottom: 6 }}>
+        <Box sx={{ padding: 2 }}>
+            <Typography
+                color="primary" 
+                textAlign="center" 
+                textTransform="uppercase" 
+                fontWeight={'bold'} 
+                fontSize={32}
+                mt={5}
+            >
                 Statistiques du site
             </Typography>
             <Box sx={{ marginTop: 2, marginBottom: 6 }}>

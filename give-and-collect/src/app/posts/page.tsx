@@ -160,14 +160,24 @@ const PostAnnonce: React.FC = () => {
 
     return (
         <Container maxWidth="md" sx={{ mt: 4, mb: 4 }}>
+            <Typography
+                color="primary" 
+                textAlign="center" 
+                textTransform="uppercase" 
+                fontWeight={'bold'} 
+                fontSize={32}
+                mt={5}
+                mb={3}
+            >
+                Listes des Annonces
+            </Typography>
+            
             <Box display="flex" justifyContent="flex-end" mb={2}>
                 {session && <Button variant="contained" color="secondary" onClick={openModal} startIcon={<Add />}>
                     Ajouter une annonce
                 </Button>}
             </Box>
-            <Typography variant="h4" align="center" gutterBottom>
-                Listes des Annonces
-            </Typography>
+            
             <PostsModalForm
                 isOpen={modalIsOpen}
                 onClose={closeModal}
