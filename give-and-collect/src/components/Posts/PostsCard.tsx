@@ -178,7 +178,7 @@ const PostsCard: React.FC<PostsCardProps> = ({ posts, session, handlePostDelete 
                                         Contacter l'auteur
                                     </Button>
                                 )}
-                                {(session?.user?.role === "admin" || session?.user?.id === post.author.id) && (
+                                {(session?.user.roleId === 1 || session?.user.id === post.author.id) && (
                                     <Button
                                         variant="outlined"
                                         color="error"
