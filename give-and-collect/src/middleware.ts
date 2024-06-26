@@ -117,9 +117,12 @@ export async function middleware(req: NextRequest) {
     }
   }
 
+  if (req.nextUrl.pathname.startsWith('/profile')) {
+    // Have to be authenticated
+    if (!token) {
+      return NextResponse.redirect(new URL(signInPage, req.url));
+    }
+  }
+
   return NextResponse.next();
 }
-
-export const config = {
-  matcher: ['/api/:path*', '/chat', '/admin'],
-};

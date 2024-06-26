@@ -1,4 +1,4 @@
-interface UserProfile {
+export interface UserProfile {
     id: string;
     firstname: string;
     lastname: string;
@@ -10,7 +10,7 @@ interface UserProfile {
     roleName: string;
 }
 
-interface FormData {
+export interface FormData {
     firstname: string;
     lastname: string;
     email: string;

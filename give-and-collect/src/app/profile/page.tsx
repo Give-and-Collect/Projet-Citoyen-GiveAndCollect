@@ -1,155 +1,118 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import { Typography } from '@mui/material';
-import { signOut, useSession } from 'next-auth/react';
-import UserProfileForm from '../../components/Profil/UserProfileForm';
-import {UserProfile, FormData} from '../../types/profile';
+import * as React from 'react';
+import SwipeableViews from 'react-swipeable-views';
+import { useTheme } from '@mui/material/styles';
+import AppBar from '@mui/material/AppBar';
+import Tabs from '@mui/material/Tabs';
+import Tab from '@mui/material/Tab';
+import Typography from '@mui/material/Typography';
+import Box from '@mui/material/Box';
+import UserProfile from '@/components/Profile/UserProfile';
+import Image from 'next/image';
+import MyEvents from '@/components/Profile/MyEvents/MyEvents';
 
-const UserProfilePage = () => {
-    const { data: session, status } = useSession();
-    const [user, setUser] = useState<UserProfile | null>(null);
-    const [editing, setEditing] = useState(false);
-    const [formData, setFormData] = useState<FormData>({
-        firstname: '',
-        lastname: '',
-        email: '',
-        phone: '',
-        nomOrganisation: '',
-        profilePicture: null,
-        profilePictureBase64: '',
-        roleId: '',
-        roleName: '',
-    });
+interface TabPanelProps {
+  children?: React.ReactNode;
+  dir?: string;
+  index: number;
+  value: number;
+}
 
-    useEffect(() => {
-        if (session) {
-            fetchUserProfile(session.user.id);
-        }
-    }, [session]);
+function TabPanel(props: TabPanelProps) {
+  const { children, value, index, ...other } = props;
 
-    const fetchUserProfile = async (userId: string) => {
-        try {
-            const response = await fetch(`/api/profil/${userId}`);
-            const userData = await response.json();
-            setUser({
-                ...userData.user,
-                roleName: userData.user.role.name,
-            });
-            setFormData({
-                firstname: userData.user.firstname,
-                lastname: userData.user.lastname,
-                email: userData.user.email,
-                phone: userData.user.phone,
-                nomOrganisation: userData.user.nomOrganisation || '',
-                profilePicture: userData.user.profilePicture || null,
-                profilePictureBase64: '',
-                roleId: userData.user.roleId,
-                roleName: userData.user.role.name,
-            });
-        } catch (error) {
-            console.error('Error fetching user data:', error);
-        }
-    };
+  return (
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`full-width-tabpanel-${index}`}
+      aria-labelledby={`full-width-tab-${index}`}
+      {...other}
+    >
+      {value === index && (
+        <Box sx={{ p: 3 }}>
+          <Typography>{children}</Typography>
+        </Box>
+      )}
+    </div>
+  );
+}
 
-    const handleEditToggle = () => {
-        setEditing((prev) => !prev);
-    };
+function a11yProps(index: number) {
+  return {
+    id: `full-width-tab-${index}`,
+    'aria-controls': `full-width-tabpanel-${index}`,
+  };
+}
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = e.target;
-        setFormData((prev) => ({
-            ...prev,
-            [name]: value,
-        }));
-    };
+export default function FullWidthTabs() {
+  const theme = useTheme();
+  const [value, setValue] = React.useState(0);
+  const [isMounted, setIsMounted] = React.useState(false);
 
-    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0] || null;
-        setFormData((prev) => ({
-            ...prev,
-            profilePicture: file,
-        }));
+  React.useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
-        if (file) {
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                const result = reader.result as string | null;
-                if (result) {
-                    const base64String = result.replace("data:", "").replace(/^.+,/, "");
-                    setFormData((prev) => ({
-                        ...prev,
-                        profilePictureBase64: base64String,
-                    }));
-                }
-            };
-            reader.readAsDataURL(file);
-        }
-    };
+  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
+    setValue(newValue);
+  };
 
-    const handleUpdateUser = async () => {
-        if (!user) return;
+  const handleChangeIndex = (index: number) => {
+    setValue(index);
+  };
 
-        try {
-            const data = {
-                firstname: formData.firstname,
-                lastname: formData.lastname,
-                email: formData.email,
-                phone: formData.phone,
-                nomOrganisation: formData.nomOrganisation,
-                profilePicture: formData.profilePictureBase64,
-                roleId: formData.roleId,
-            };
+  if (!isMounted) {
+    return null;
+  }
 
-            await fetch(`/api/profil/${user.id}`, {
-                method: 'PUT',
-                body: JSON.stringify(data),
-                headers: {
-                    'Content-Type': 'application/json',
-                }
-            });
-            await fetchUserProfile(user.id);
-            setEditing(false);
-        } catch (error) {
-            console.error('Failed to update user:', error);
-        }
-    };
-
-    const handleDeleteUser = async () => {
-        if (!user) return;
-
-        const confirmed = confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur ? Cette action est irréversible.');
-        if (confirmed) {
-            try {
-                await fetch(`/api/profil/${user.id}`, {
-                    method: 'DELETE',
-                });
-                signOut();
-            } catch (error) {
-                console.error('Failed to delete user:', error);
-            }
-        }
-    };
-
-    if (!session) {
-        return <Typography variant="body1">Connectez-vous pour accéder à cette page.</Typography>;
-    }
-
-    if (!user) {
-        return <Typography variant="body1">Chargement du profil...</Typography>;
-    }
-
-    return (
-        <UserProfileForm
-            formData={formData}
-            editing={editing}
-            handleChange={handleChange}
-            handleFileChange={handleFileChange}
-            handleEditToggle={handleEditToggle}
-            handleUpdateUser={handleUpdateUser}
-            handleDeleteUser={handleDeleteUser}
-        />
-    );
-};
-
-export default UserProfilePage;
+  return (
+    <Box sx={{ width: '100%' }}>
+      <AppBar position="static">
+        <Tabs
+          value={value}
+          onChange={handleChange}
+          indicatorColor="secondary"
+          textColor="inherit"
+          variant="fullWidth"
+          aria-label="full width tabs example"
+        >
+            <Tab 
+                icon={<Image src={'/assets/icones/profile-beige.png'} alt="Profile" width={30} height={30} />} 
+                iconPosition="start" 
+                label="Mon profil" 
+                {...a11yProps(0)} 
+            />
+            <Tab 
+                icon={<Image src={'/assets/icones/calendar-beige.png'} alt="Events" width={30} height={30} />} 
+                iconPosition="start" 
+                label="Mes évènements" 
+                {...a11yProps(1)} 
+            />
+            <Tab 
+                icon={<Image src={'/assets/icones/cloth-beige.png'} alt="Posts" width={30} height={30} />} 
+                iconPosition="start" 
+                label="Mes annonces" 
+                {...a11yProps(2)} 
+            />
+        </Tabs>
+      </AppBar>
+      <SwipeableViews
+        axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
+        index={value}
+        onChangeIndex={handleChangeIndex}
+      >
+        <TabPanel value={value} index={0} dir={theme.direction}>
+          <UserProfile />
+        </TabPanel>
+        <TabPanel value={value} index={1} dir={theme.direction}>
+          <MyEvents />
+        </TabPanel>
+        <TabPanel value={value} index={2} dir={theme.direction}>
+          Mes annonces
+        </TabPanel>
+      </SwipeableViews>
+    </Box>
+  );
+}
