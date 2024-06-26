@@ -14,8 +14,8 @@ model Role {
 }
 
 model SecretQuestion {
-  id      Int      @id @default(autoincrement())
-  question String  @unique
+  id       Int    @id @default(autoincrement())
+  question String @unique
   users    User[]
 }
 
@@ -137,10 +137,4 @@ model Participate {
   conversationId Int
   conversation   Conversation @relation(fields: [conversationId], references: [id])
   user           User         @relation(fields: [userId], references: [id])
-}
-
-model SecretQuestion {
-  id       Int    @id @default(autoincrement())
-  question String @unique
-  User     User[]
 }

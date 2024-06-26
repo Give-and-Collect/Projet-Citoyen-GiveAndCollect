@@ -11,6 +11,7 @@ import Box from '@mui/material/Box';
 import UserProfile from '@/components/Profile/UserProfile';
 import Image from 'next/image';
 import MyEvents from '@/components/Profile/MyEvents/MyEvents';
+import MyPosts from "@/components/Profile/MyPosts/MyPosts";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -110,7 +111,7 @@ export default function FullWidthTabs() {
           <MyEvents />
         </TabPanel>
         <TabPanel value={value} index={2} dir={theme.direction}>
-          Mes annonces
+          <MyPosts/>
         </TabPanel>
       </SwipeableViews>
     </Box>
