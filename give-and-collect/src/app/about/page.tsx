@@ -152,7 +152,14 @@ const Contact = () => {
 
             {/* Carrousel d'images */}
             <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-                <Typography variant="h4" align="center" gutterBottom>
+                <Typography
+                    color="primary" 
+                    textAlign="center" 
+                    textTransform="uppercase" 
+                    fontWeight={'bold'} 
+                    fontSize={26}
+                    mb={3}
+                >
                     Notre projet en images
                 </Typography>
                 <Paper elevation={3} sx={{ p: 2, mb: 4 }}>
@@ -177,7 +184,14 @@ const Contact = () => {
 
             {/* Contactez-nous */}
             <Container maxWidth="md" sx={{ mt: 4, mb: 4 }}>
-                <Typography variant="h4" align="center" gutterBottom>
+                <Typography
+                    color="primary" 
+                    textAlign="center" 
+                    textTransform="uppercase" 
+                    fontWeight={'bold'} 
+                    fontSize={26}
+                    mb={3}
+                >
                     Contactez-nous
                 </Typography>
                 <Grid container spacing={2} justifyContent="center">
