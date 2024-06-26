@@ -1,3 +1,6 @@
+'use client';
+
+import React, { useState, useEffect } from 'react';
 import {
     Box,
     Card,
@@ -20,11 +23,12 @@ import {
     Button,
     Pagination
 } from '@mui/material';
-import React, { useState, useEffect } from 'react';
 import DeleteIcon from '@mui/icons-material/Delete';
+import EmailIcon from '@mui/icons-material/Email';
 import Image from 'next/image';
 import { Session } from "next-auth";
-import { Post } from '../../types/post';
+import { Post } from '@/types/post';
+import ContactAuthorModal from './ContactAuthorModal';
 
 interface PostsCardProps {
     posts: Post[];
@@ -36,6 +40,8 @@ const PostsCard: React.FC<PostsCardProps> = ({ posts, session, handlePostDelete 
     const [selectedCity, setSelectedCity] = useState('Toutes');
     const [cities, setCities] = useState<string[]>([]);
     const [currentPage, setCurrentPage] = useState(1);
+    const [openDialog, setOpenDialog] = useState(false);
+    const [currentPost, setCurrentPost] = useState<Post | null>(null);
     const postsPerPage = 10;
 
     useEffect(() => {
@@ -47,8 +53,17 @@ const PostsCard: React.FC<PostsCardProps> = ({ posts, session, handlePostDelete 
         setSelectedCity(event.target.value as string);
     };
 
-    const filteredPosts = selectedCity === 'Toutes' ? posts : posts.filter(post => post.city === selectedCity);
+    const handleOpenDialog = (post: Post) => {
+        setCurrentPost(post);
+        setOpenDialog(true);
+    };
 
+    const handleCloseDialog = () => {
+        setOpenDialog(false);
+        setCurrentPost(null);
+    };
+
+    const filteredPosts = selectedCity === 'Toutes' ? posts : posts.filter(post => post.city === selectedCity);
     const indexOfLastPost = currentPage * postsPerPage;
     const indexOfFirstPost = indexOfLastPost - postsPerPage;
     const currentPosts = filteredPosts.slice(indexOfFirstPost, indexOfLastPost);
@@ -56,6 +71,7 @@ const PostsCard: React.FC<PostsCardProps> = ({ posts, session, handlePostDelete 
     const handlePageChange = (event: React.ChangeEvent<unknown>, value: number) => {
         setCurrentPage(value);
     };
+
     return (
         <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mt: 5, mb: 5 }}>
             <FormControl fullWidth variant="outlined" sx={{ mb: 5 }}>
@@ -151,27 +167,48 @@ const PostsCard: React.FC<PostsCardProps> = ({ posts, session, handlePostDelete 
                                     </TableBody>
                                 </Table>
                             </TableContainer>
+                            <div style={{display: 'flex', justifyContent: 'space-between', marginTop: '20px'}}>
+                                {session && (
+                                    <Button
+                                        variant="outlined"
+                                        color="primary"
+                                        startIcon={<EmailIcon/>}
+                                        onClick={() => handleOpenDialog(post)} // Ouvre le modal pour contacter l'auteur
+                                    >
+                                        Contacter l'auteur
+                                    </Button>
+                                )}
+                                {(session?.user?.role === "admin" || session?.user?.id === post.author.id) && (
+                                    <Button
+                                        variant="outlined"
+                                        color="error"
+                                        startIcon={<DeleteIcon/>}
+                                        onClick={() => handlePostDelete(post.id, post.author.id)}
+                                    >
+                                        Supprimer
+                                    </Button>
+                                )}
+                            </div>
                         </CardContent>
-                        {(session?.user.roleId === 1 || session?.user.id === post.author.id) && (
-                            <Button
-                                variant="outlined"
-                                color="error"
-                                startIcon={<DeleteIcon />}
-                                onClick={() => handlePostDelete(post.id, post.author.id)}
-                                sx={{ mt: 2, mb: 2, ml: 2, alignSelf: 'flex-start' }}
-                            >
-                                Supprimer
-                            </Button>
-                        )}
                     </Card>
                 ))}
             </Box>
+            {/* Pagination */}
             <Pagination
                 count={Math.ceil(filteredPosts.length / postsPerPage)}
                 page={currentPage}
                 onChange={handlePageChange}
                 sx={{ mt: 5 }}
             />
+            {/* Modal pour contacter l'auteur */}
+            {currentPost && (
+                <ContactAuthorModal
+                    open={openDialog}
+                    onClose={handleCloseDialog}
+                    currentPost={currentPost}
+                    session={session}
+                />
+            )}
         </Box>
     );
 };
