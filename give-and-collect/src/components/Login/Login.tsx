@@ -88,6 +88,13 @@ export default function Login(props: Props) {
                                 Email ou mot de passe incorrect
                             </Typography>
                         )}
+                        <Grid container justifyContent="flex-end">
+                            <Grid item>
+                                <Link href="/reset-password" variant="body2">
+                                    Mot de passe oublié ?
+                                </Link>
+                            </Grid>
+                        </Grid>
                         <Button
                             fullWidth
                             padding="30px"

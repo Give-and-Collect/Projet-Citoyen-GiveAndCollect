@@ -13,22 +13,31 @@ model Role {
   users User[]
 }
 
+model SecretQuestion {
+  id      Int      @id @default(autoincrement())
+  question String  @unique
+  users    User[]
+}
+
 model User {
-  id              Int           @id @default(autoincrement())
-  birthDate       DateTime
-  firstname       String
-  lastname        String
-  email           String        @unique
-  password        String
-  phone           String
-  nomOrganisation String?
-  profilePicture  String?
-  roleId          Int
-  events          Event[]
-  Message         Message[]
-  Participate     Participate[]
-  posts           Post[]
-  role            Role          @relation(fields: [roleId], references: [id])
+id                Int               @id @default(autoincrement())
+  birthDate         DateTime
+  firstname         String
+  lastname          String
+  email             String          @unique
+  password          String
+  phone             String
+  nomOrganisation   String?
+  profilePicture    String?
+  roleId            Int
+  events            Event[]
+  Message           Message[]
+  Participate       Participate[]
+  posts             Post[]
+  secretQuestionId  Int
+  secretAnswer      String
+  role              Role            @relation(fields: [roleId], references: [id])
+  secretQuestion    SecretQuestion  @relation(fields: [secretQuestionId], references: [id])
 }
 
 model Event {
