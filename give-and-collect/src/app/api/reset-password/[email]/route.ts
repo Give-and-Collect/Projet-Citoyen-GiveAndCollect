@@ -16,7 +16,7 @@ export async function GET(request: NextRequest, { params }: { params: { email: s
         });
 
         if (!user) {
-            return NextResponse.json({ message: "Email not found" }, { status: 404 });
+            return NextResponse.json({ message: "Cet email n'existe pas" }, { status: 404 });
         }
 
         // Get the secret question
@@ -30,7 +30,7 @@ export async function GET(request: NextRequest, { params }: { params: { email: s
         return NextResponse.json({ secretQuestion: secretQuestion?.question });
 
     } catch (error) {
-        return NextResponse.json({ message: "An error occurred" }, { status: 500 });
+        return NextResponse.json({ message: "Une erreur est survenue" }, { status: 500 });
     }
 }
 
@@ -47,12 +47,12 @@ export async function PATCH(request: NextRequest, { params }: { params: { email:
         });
 
         if (!user) {
-            return NextResponse.json({ message: "Email not found" }, { status: 404 });
+            return NextResponse.json({ message: "Cet email n'existe pas" }, { status: 404 });
         }
 
         // Check if the secret answer is correct
         if (await bcrypt.compare(secretAnswer, user.secretAnswer) === false) {
-            return NextResponse.json({ message: "Secret answer is incorrect" }, { status: 401 });
+            return NextResponse.json({ message: "Réponse secrète incorrecte" }, { status: 401 });
         }
 
         // Hash the new password
@@ -71,6 +71,6 @@ export async function PATCH(request: NextRequest, { params }: { params: { email:
         return NextResponse.json({ success: true });
 
     } catch (error) {
-        return NextResponse.json({ message: "An error occurred" }, { status: 500 });
+        return NextResponse.json({ message: "Une erreur est survenue" }, { status: 500 });
     }
 }
