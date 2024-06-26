@@ -9,6 +9,7 @@ import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import Image from 'next/image';
 import { signIn } from 'next-auth/react';
 import differenceInYears from 'date-fns/differenceInYears'; // Importez cette fonction pour vérifier l'âge
+import { SecretQuestion } from '@prisma/client';
 
 interface Role {
     id: number;
@@ -18,6 +19,9 @@ interface Role {
 export default function Signup() {
     const [role, setRole] = useState<Role[]>([]);
     const [roleId, setRoleId] = useState<number>(0);
+    const [secretQuestion, setSecretQuestion] = useState<SecretQuestion[]>([]);
+    const [secretQuestionId, setSecretQuestionId] = useState<number>(0);
+    const [secretAnswer, setSecretAnswer] = useState<string>('');
     const [dob, setDob] = useState<Date | null>(null);
     const [showOrganisationNameField, setShowOrganisationNameField] = useState<boolean>(false);
     const [formData, setFormData] = useState({
@@ -41,12 +45,30 @@ export default function Signup() {
             .catch(error => {
                 console.error('Erreur lors de la récupération des rôles:', error);
             });
+
+        fetch('/api/secret-questions')
+            .then(response => response.json())
+            .then(data => {
+                setSecretQuestion(data);
+            })
+            .catch(error => {
+                console.error('Erreur lors de la récupération des questions secrètes:', error);
+            });
     }, []);
 
     const handleRoleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
         const selectedRoleId = event.target.value as number;
         setRoleId(selectedRoleId);
         setShowOrganisationNameField(selectedRoleId === 4 || selectedRoleId === 3);
+    };
+
+    const handleSecretQuestionChange = (event: React.ChangeEvent<{ value: unknown }>) => {
+        const selectedSecretQuestionId = event.target.value as number;
+        setSecretQuestionId(selectedSecretQuestionId);
+    };
+
+    const handleSecretAnswerChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setSecretAnswer(event.target.value);
     };
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -120,7 +142,7 @@ export default function Signup() {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ ...formData, birthDate: dob, roleId }),
+                body: JSON.stringify({ ...formData, birthDate: dob, secretQuestionId, secretAnswer, roleId }),
             });
 
             if (response.ok) {
@@ -403,6 +425,45 @@ export default function Signup() {
                                     />
                                 </Grid>
                             )}
+                            {/* Question/réponse pour reset le mot de passe */}
+                            <Grid item xs={12}>
+                                <TextField
+                                    variant="outlined"
+                                    margin="normal"
+                                    required
+                                    fullWidth
+                                    select
+                                    label="Question secrète"
+                                    value={secretQuestionId}
+                                    onChange={handleSecretQuestionChange}
+                                    InputLabelProps={{
+                                        shrink: true,
+                                    }}
+                                >
+                                    {secretQuestion.map(sq => (
+                                        <MenuItem key={sq.id} value={sq.id}>
+                                            {sq.question}
+                                        </MenuItem>
+                                    ))}
+                                </TextField>
+                            </Grid>
+                            <Grid item xs={12}>
+                                <TextField
+                                    variant="outlined"
+                                    margin="normal"
+                                    required
+                                    fullWidth
+                                    id="secretAnswer"
+                                    label={`Réponse à la question secrète`}
+                                    name="secretAnswer"
+                                    autoComplete="off"
+                                    InputLabelProps={{
+                                        shrink: true,
+                                    }}
+                                    value={secretAnswer}
+                                    onChange={handleSecretAnswerChange}
+                                />
+                            </Grid>
                         </Grid>
                         {/* Bouton S'inscrire */}
                         <Button
