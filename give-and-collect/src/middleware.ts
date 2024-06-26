@@ -67,6 +67,43 @@ export async function middleware(req: NextRequest) {
     }
   }
 
+  // if (req.nextUrl.pathname.startsWith('/api/profil')) {
+  //   if (req.method === 'POST') {
+  //     // Must be authenticated
+  //     if (!token) {
+  //       return new NextResponse(JSON.stringify({ error: 'Unauthorized' }), { status: 401 });
+  //     }
+  //   }
+  //
+  //   if (req.method === 'DELETE') {
+  //     // Have to be authenticated
+  //     if (!token) {
+  //       return new NextResponse(JSON.stringify({ error: 'Unauthorized' }), { status: 401 });
+  //     }
+  //     // Have to be admin
+  //     if (token.roleId !== 1 )  {
+  //       const requestBody = await req.json();
+  //       if (requestBody?.authorId !== token.id) {
+  //         return new NextResponse(JSON.stringify({ error: 'Unauthorized' }), { status: 401 });
+  //       }
+  //     }
+  //   }
+  //
+  //   if (req.method === 'PUT') {
+  //     // Have to be authenticated
+  //     if (!token) {
+  //       return new NextResponse(JSON.stringify({ error: 'Unauthorized' }), { status: 401 });
+  //     }
+  //     // Have to be admin
+  //     if (token.roleId !== 1 )  {
+  //       const requestBody = await req.json();
+  //       if (requestBody?.authorId !== token.id) {
+  //         return new NextResponse(JSON.stringify({ error: 'Unauthorized' }), { status: 401 });
+  //       }
+  //     }
+  //   }
+  // }
+
   // -------------------Page routes protection-------------------
   if (req.nextUrl.pathname.startsWith('/admin')) {
     // Have to be authenticated
@@ -80,9 +117,12 @@ export async function middleware(req: NextRequest) {
     }
   }
 
+  if (req.nextUrl.pathname.startsWith('/profile')) {
+    // Have to be authenticated
+    if (!token) {
+      return NextResponse.redirect(new URL(signInPage, req.url));
+    }
+  }
+
   return NextResponse.next();
 }
-
-export const config = {
-  matcher: ['/api/:path*', '/chat', '/admin'],
-};

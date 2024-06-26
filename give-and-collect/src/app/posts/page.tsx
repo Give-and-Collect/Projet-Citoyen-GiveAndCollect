@@ -140,7 +140,6 @@ const PostAnnonce: React.FC = () => {
                 const newPost = await response.json();
                 alert('Annonce créée avec succès !');
                 refreshPosts();
-                console.log('Annonce créée :', newPost);
             } else {
                 console.error('Erreur lors de la publication de l\'annonce');
             }
