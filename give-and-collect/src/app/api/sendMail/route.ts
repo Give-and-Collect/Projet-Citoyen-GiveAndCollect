@@ -1,12 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
 import nodemailer from 'nodemailer';
-import { EmailContent } from '@/types/sendMail'; // Assurez-vous que ce chemin est correct pour vos types
+import { EmailContent } from '@/types/sendMail';
 import fs from 'fs';
 import path from 'path';
 
 const CONTACT_MESSAGE_FIELDS: { [key: string]: string } = {
+    firstname: 'Prénom',
     subject: 'Objet',
     message: 'Message',
+    email: 'Voici mon adresse Mail',
 };
 
 const transporter = nodemailer.createTransport({
@@ -36,12 +38,12 @@ const containsMaliciousPatterns = (input: string): boolean => {
 
 const generateEmailContent = (data: {
     firstname: string;
-    email: string;
     subject: string;
     message: string;
+    email: string;
     [key: string]: string;
 }): EmailContent => {
-    const orderedKeys = ['firstname', 'email', 'subject', 'message'];
+    const orderedKeys = ['firstname', 'subject', 'message', 'email'];
 
     const htmlData = orderedKeys.reduce((str, key) => {
         return (str += `<h3>${CONTACT_MESSAGE_FIELDS[key]}</h3><p>${sanitizeInput(data[key])}</p>`);
@@ -63,21 +65,14 @@ export async function POST(req: NextRequest) {
     try {
         const body = await req.json();
 
-        console.log('Request Body:', body);
-
         const { subject, message, authorEmail, userConnectedEmail, userConnectedFirstName } = body;
 
-        console.log('Subject:', subject);
-        console.log('Message:', message);
-        console.log('authorEmail:', authorEmail);
 
         if (!subject || !message || !authorEmail || !userConnectedEmail || !userConnectedFirstName) {
-            console.log('Missing required fields:', { subject, message});
             return NextResponse.json({ message: 'Bad request - Missing required fields' }, { status: 400 });
         }
 
         if ([subject, message, authorEmail, userConnectedEmail, userConnectedFirstName].some(input => containsMaliciousPatterns(input))) {
-            console.log('Invalid input detected:', { subject, message, userConnectedEmail ,userConnectedFirstName});
             return NextResponse.json({ message: 'Invalid input detected' }, { status: 400 });
         }
 
@@ -96,10 +91,8 @@ export async function POST(req: NextRequest) {
 
         await transporter.sendMail(mailOptions);
 
-        console.log('Email sent successfully to:', authorEmail);
         return NextResponse.json({ success: true }, { status: 200 });
     } catch (error) {
-        console.error('Error sending email:', error);
         return NextResponse.json({ message: 'Email sending failed' }, { status: 500 });
     }
 }

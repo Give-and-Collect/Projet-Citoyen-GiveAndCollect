@@ -168,18 +168,20 @@ const PostsCard: React.FC<PostsCardProps> = ({ posts, session, handlePostDelete 
                                 </Table>
                             </TableContainer>
                             <div style={{display: 'flex', justifyContent: 'space-between', marginTop: '20px'}}>
-                                <Button
-                                    variant="contained"
-                                    color="primary"
-                                    startIcon={<EmailIcon/>}
-                                    onClick={() => handleOpenDialog(post)} // Ouvre le modal pour contacter l'auteur
-                                >
-                                    Contacter l'auteur
-                                </Button>
+                                {session && (
+                                    <Button
+                                        variant="outlined"
+                                        color="primary"
+                                        startIcon={<EmailIcon/>}
+                                        onClick={() => handleOpenDialog(post)} // Ouvre le modal pour contacter l'auteur
+                                    >
+                                        Contacter l'auteur
+                                    </Button>
+                                )}
                                 {(session?.user?.role === "admin" || session?.user?.id === post.author.id) && (
                                     <Button
-                                        variant="contained"
-                                        color="secondary"
+                                        variant="outlined"
+                                        color="error"
                                         startIcon={<DeleteIcon/>}
                                         onClick={() => handlePostDelete(post.id, post.author.id)}
                                     >
@@ -190,15 +192,14 @@ const PostsCard: React.FC<PostsCardProps> = ({ posts, session, handlePostDelete 
                         </CardContent>
                     </Card>
                 ))}
-                {/* Pagination */}
-                <Pagination
-                    count={Math.ceil(filteredPosts.length / postsPerPage)}
-                    page={currentPage}
-                    onChange={handlePageChange}
-                    color="primary"
-                    style={{marginTop: '20px'}}
-                />
             </Box>
+            {/* Pagination */}
+            <Pagination
+                count={Math.ceil(filteredPosts.length / postsPerPage)}
+                page={currentPage}
+                onChange={handlePageChange}
+                sx={{ mt: 5 }}
+            />
             {/* Modal pour contacter l'auteur */}
             {currentPost && (
                 <ContactAuthorModal
