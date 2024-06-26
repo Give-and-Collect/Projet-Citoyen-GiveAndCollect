@@ -10,6 +10,7 @@ import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import UserProfile from '@/components/Profile/UserProfile';
 import Image from 'next/image';
+import MyEvents from '@/components/Profile/MyEvents/MyEvents';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -106,7 +107,7 @@ export default function FullWidthTabs() {
           <UserProfile />
         </TabPanel>
         <TabPanel value={value} index={1} dir={theme.direction}>
-          Mes évènements
+          <MyEvents />
         </TabPanel>
         <TabPanel value={value} index={2} dir={theme.direction}>
           Mes annonces
