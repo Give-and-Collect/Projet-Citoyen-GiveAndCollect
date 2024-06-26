@@ -15,7 +15,6 @@ import {
 } from '@mui/material';
 import { Send, Email, Person, Subject } from '@mui/icons-material';
 import Carousel from 'react-material-ui-carousel';
-import { getFieldsFromGroupHeaderElem } from '@mui/x-data-grid/utils/domUtils';
 
 interface FormValues {
     name: string;
