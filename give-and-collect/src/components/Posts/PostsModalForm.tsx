@@ -82,18 +82,31 @@ const PostsModalForm: React.FC<PostsModalFormProps> = ({
                             <TextField
                                 fullWidth
                                 label="Ville"
+                                type="text"
                                 value={formData.city}
-                                onChange={(e) => setFormData({ ...formData, city: e.target.value })}
+                                onChange={(e) => {
+                                    const value = e.target.value;
+                                    if (/^[a-zA-Z\s]*$/.test(value)) {
+                                        setFormData({ ...formData, city: value });
+                                    }
+                                }}
                             />
                         </Grid>
                         <Grid item xs={12}>
                             <TextField
                                 fullWidth
                                 label="Code Postal"
+                                type="text"  // Utiliser type="text" pour permettre des validations personnalisées
                                 value={formData.postalCode}
-                                onChange={(e) => setFormData({ ...formData, postalCode: e.target.value })}
+                                onChange={(e) => {
+                                    const value = e.target.value;
+                                    if (/^\d*$/.test(value)) {
+                                        setFormData({ ...formData, postalCode: value });
+                                    }
+                                }}
                             />
                         </Grid>
+
                         <Grid item xs={12}>
                             <TextField
                                 fullWidth

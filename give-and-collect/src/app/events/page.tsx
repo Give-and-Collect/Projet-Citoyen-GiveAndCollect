@@ -2,7 +2,7 @@
 
 import EventsCard from "@/components/Events/EventsCard";
 import EventsModalForm from "@/components/Events/EventsModalForm";
-import { Box, Button, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, Typography } from "@mui/material";
+import { Box, Button, FormControl, InputLabel, MenuItem, Pagination, Select, SelectChangeEvent, Typography } from "@mui/material";
 import { Event } from "@prisma/client";
 import { signIn, useSession } from "next-auth/react";
 import * as React from "react";
@@ -13,6 +13,9 @@ export default function Events() {
     const [events, setEvents] = React.useState([]);
     const [isLoading, setIsLoading] = React.useState(true);
     const [modalIsOpen, setModalIsOpen] = React.useState(false);
+
+    const [currentPage, setCurrentPage] = React.useState(1);
+    const [eventsPerPage, setEventsPerPage] = React.useState(5);
 
     const { data: session } = useSession();
 
@@ -33,6 +36,10 @@ export default function Events() {
 
     const cityHandleChange = async (event: SelectChangeEvent) => {
       setCity(event.target.value);
+    };
+
+    const handlePageChange = (event: React.ChangeEvent<unknown>, value: number) => {
+      setCurrentPage(value);
     };
 
     React.useEffect(() => {
@@ -72,17 +79,33 @@ export default function Events() {
       setIsLoading(false);
     }, [city]);
 
+    let currentEvents: Event[] = [];
     let sortedEvents: Event[] = [];
 
     if (events.length > 0) {
-      sortedEvents = events.sort((a, b) => new Date(a.startDate).getTime() - new Date(b.startDate).getTime());
+      currentEvents = events.sort((a, b) => new Date(a.startDate).getTime() - new Date(b.startDate).getTime());
+      const indexOfLastPost = currentPage * eventsPerPage;
+      const indexOfFirstPost = indexOfLastPost - eventsPerPage;
+      sortedEvents = currentEvents.slice(indexOfFirstPost, indexOfLastPost);
     } else {
       sortedEvents = [];
     }
 
     return (
       <>
-        {events.length > 0 ? (
+        <Typography
+          color="primary" 
+          textAlign="center" 
+          textTransform="uppercase" 
+          fontWeight={'bold'} 
+          fontSize={32}
+          mt={5}
+          mb={3}
+        >
+          Listes des Evènements
+        </Typography>
+
+        {sortedEvents.length > 0 ? (
           <>
             <Box sx={{ display: 'flex', justifyContent: 'center', minWidth: 120, maxWidth: 400, m: 5 }}>
               <FormControl fullWidth>
@@ -122,10 +145,10 @@ export default function Events() {
             />
 
             <Typography variant="body1" color="text.primary" sx={{ textAlign: 'left', ml: 5, mb: 1 }}>
-              {events.length} résultat(s)
+              {sortedEvents.length} résultat(s)
             </Typography>
 
-            <Box sx={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center' }}>
+            <Box sx={{ display: 'flex', flexDirection: 'column', flexWrap: 'wrap', justifyContent: 'center', alignItems: 'center', mb: 3 }}>
 
               {sortedEvents.map((event, index) => (
                 <EventsCard
@@ -145,6 +168,13 @@ export default function Events() {
                   session={session}
                 />
               ))}
+              {/* Pagination */}
+              <Pagination
+                  count={Math.ceil(currentEvents.length / eventsPerPage)}
+                  page={currentPage}
+                  onChange={handlePageChange}
+                  sx={{ mt: 5 }}
+              />
             </Box>
           </>
         ) : (
