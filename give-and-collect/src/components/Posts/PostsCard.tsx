@@ -42,7 +42,7 @@ const PostsCard: React.FC<PostsCardProps> = ({ posts, session, handlePostDelete 
     const [currentPage, setCurrentPage] = useState(1);
     const [openDialog, setOpenDialog] = useState(false);
     const [currentPost, setCurrentPost] = useState<Post | null>(null);
-    const postsPerPage = 10;
+    const postsPerPage = 5;
 
     useEffect(() => {
         const uniqueCities = Array.from(new Set(posts.map(post => post.city)));
