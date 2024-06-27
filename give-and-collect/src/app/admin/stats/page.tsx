@@ -14,9 +14,9 @@ import PeopleIcon from '@mui/icons-material/People';
 import frLocale from 'date-fns/locale/fr';
 
 interface Stats {
-    shares: number;
-    visits: number;
-    searchPosition: number;
+    shares?: number;
+    visits?: number;
+    searchPosition?: number;
     announcements: number;
     events: number;
     users: number;
@@ -31,19 +31,19 @@ const StatisticsPage: React.FC = () => {
         const fetchStats = async () => {
             try {
                 const responses = await Promise.all([
-                    fetch('/api/statistics/shares').then(res => res.json()),
-                    fetch('/api/statistics/visits').then(res => res.json()),
-                    fetch('/api/statistics/search-position').then(res => res.json()),
+                    // fetch('/api/statistics/shares').then(res => res.json()),
+                    // fetch('/api/statistics/visits').then(res => res.json()),
+                    // fetch('/api/statistics/search-position').then(res => res.json()),
                     announcementDate ? fetch(`/api/statistics/announcements?month=${announcementDate?.getMonth() + 1}&year=${announcementDate?.getFullYear()}`).then(res => res.json()) : { count: 0 },
                     eventDate ? fetch(`/api/statistics/events?month=${eventDate?.getMonth() + 1}&year=${eventDate?.getFullYear()}`).then(res => res.json()) : { count: 0 },
                     fetch('/api/statistics/users').then(res => res.json())
                 ]);
 
-                const [sharesData, visitsData, searchPositionData, announcementsData, eventsData, usersData] = await Promise.all(responses);
+                const [announcementsData, eventsData, usersData] = responses;
                 setStats({
-                    shares: sharesData.count,
-                    visits: visitsData.count,
-                    searchPosition: searchPositionData.position,
+                    // shares: sharesData.count,
+                    // visits: visitsData.count,
+                    // searchPosition: searchPositionData.position,
                     announcements: announcementsData.count,
                     events: eventsData.count,
                     users: usersData.count

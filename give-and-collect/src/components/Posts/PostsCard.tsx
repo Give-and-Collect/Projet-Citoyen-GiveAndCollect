@@ -125,7 +125,7 @@ const PostsCard: React.FC<PostsCardProps> = ({ posts, session, handlePostDelete 
                             <Typography variant="body1" component="div" style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
                                 <div style={{ display: 'flex', alignItems: 'center' }}>
                                     <Image src={'/assets/icones/ping-darkgreen.png'} alt="Home" width={50} height={50} />
-                                    <span style={{ marginLeft: '5px' }}>{post.address}, {post.city}, {post.postalCode}</span>
+                                    <span style={{ marginLeft: '5px' }}>{post.city}, {post.postalCode}</span>
                                 </div>
                             </Typography>
                             {/* Titre "Description" */}
