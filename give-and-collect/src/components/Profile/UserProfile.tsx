@@ -1,10 +1,10 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Typography } from '@mui/material';
 import { signOut, useSession } from 'next-auth/react';
 import UserProfileForm from '@/components/Profile/UserProfileForm';
 import {UserProfile, FormData} from '@/types/profile';
+import Loader from '@/components/Loader/Loader';
 
 const UserProfilePage = () => {
     const { data: session, status } = useSession();
@@ -22,6 +22,8 @@ const UserProfilePage = () => {
         roleName: '',
     });
 
+    const [isLoading, setIsLoading] = useState(true);
+
     useEffect(() => {
         if (session) {
             fetchUserProfile(session.user.id);
@@ -30,6 +32,7 @@ const UserProfilePage = () => {
 
     const fetchUserProfile = async (userId: string) => {
         try {
+            setIsLoading(true);
             const response = await fetch(`/api/profil/${userId}`);
             const userData = await response.json();
             setUser({
@@ -49,6 +52,8 @@ const UserProfilePage = () => {
             });
         } catch (error) {
             console.error('Error fetching user data:', error);
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -131,20 +136,22 @@ const UserProfilePage = () => {
         }
     };
 
-    if (!user) {
-        return <Typography variant="body1">Chargement du profil...</Typography>;
-    }
-
     return (
-        <UserProfileForm
-            formData={formData}
-            editing={editing}
-            handleChange={handleChange}
-            handleFileChange={handleFileChange}
-            handleEditToggle={handleEditToggle}
-            handleUpdateUser={handleUpdateUser}
-            handleDeleteUser={handleDeleteUser}
-        />
+        <>
+        {isLoading ? (
+            <Loader />
+        ) : (
+            <UserProfileForm
+                formData={formData}
+                editing={editing}
+                handleChange={handleChange}
+                handleFileChange={handleFileChange}
+                handleEditToggle={handleEditToggle}
+                handleUpdateUser={handleUpdateUser}
+                handleDeleteUser={handleDeleteUser}
+            />
+        )}
+        </>
     );
 };
 

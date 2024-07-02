@@ -55,15 +55,16 @@ const EventsCard: React.FC<Props> = (props) => {
     return (
       <Box sx={{ width: '100%', maxWidth: 1000, px: 2 }}>
         <Card 
+          key={props.id}
           sx={{ 
             mt: 5,
             mb: 5,
-            width: '100%',
-            borderTopLeftRadius: 15, 
-            borderTopRightRadius: 0, 
-            borderBottomLeftRadius: 0, 
-            borderBottomRightRadius: 15, 
-            boxShadow: 10 
+            maxWidth: 1000,
+            borderTopLeftRadius: 15,
+            borderTopRightRadius: 0,
+            borderBottomLeftRadius: 0,
+            borderBottomRightRadius: 15,
+            boxShadow: 10
           }}
         >
           <CardHeader
