@@ -116,23 +116,6 @@ const ContactAuthorModal: React.FC<ContactAuthorModalProps> = ({ open, onClose, 
                         }}
                     />
                     <TextField
-                        label="À:"
-                        value={currentPost.author.email}
-                        disabled
-                        fullWidth
-                        variant="outlined"
-                        sx={{ marginBottom: 2 }}
-                        InputProps={{
-                            startAdornment: (
-                                <InputAdornment position="start">
-                                    <IconButton color="primary">
-                                        <Email />
-                                    </IconButton>
-                                </InputAdornment>
-                            ),
-                        }}
-                    />
-                    <TextField
                         label="Objet"
                         value={subject}
                         onChange={handleChangeSubject}
