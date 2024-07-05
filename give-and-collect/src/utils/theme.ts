@@ -46,7 +46,7 @@ const theme = createTheme({
       paper: '#F4EEE0',
     },
     action: {
-      active: '#F4EEE0',
+      active: '#111D13',
       hover: '#DCD5C6',
       selected: '#DCD5C6',
       disabled: '#E2EAF4',

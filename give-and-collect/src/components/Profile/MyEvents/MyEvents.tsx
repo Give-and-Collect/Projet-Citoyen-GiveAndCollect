@@ -1,6 +1,7 @@
 "use client";
 
 import EventsCard from "@/components/Events/EventsCard";
+import Loader from "@/components/Loader/Loader";
 import { Box, Pagination, Typography } from "@mui/material";
 import { Event } from "@prisma/client";
 import { useSession } from "next-auth/react";
@@ -23,6 +24,7 @@ export default function MyEvents() {
 
       const fetchEvents = async () => {
         try {
+          setIsLoading(true);
           const url = 'api/events';
           const response = await fetch(url);
           const data = await response.json();
@@ -30,12 +32,11 @@ export default function MyEvents() {
         } catch (error) {
           console.error('An error occurred while fetching events:', error);
         } finally {
+          setIsLoading(false);
         }
       };
 
       fetchEvents();
-
-      setIsLoading(false);
     }, []);
 
     let currentEvents: Event[] = [];
@@ -53,41 +54,39 @@ export default function MyEvents() {
 
     return (
       <>
-        {sortedEvents.length > 0 ? (
-          <Box sx={{ display: 'flex', flexDirection: 'column', flexWrap: 'wrap', justifyContent: 'center', alignItems: 'center', mb: 3 }}>
-
-            {sortedEvents.map((event, index) => (
-              <EventsCard
-                key={index}
-                id={event.id}
-                title={event.title}
-                description={event.description}
-                address={event.address}
-                city={event.city}
-                postalCode={event.postalCode}
-                latitude={event.latitude}
-                longitude={event.longitude}
-                startDate={new Date(event.startDate)}
-                endDate={new Date(event.endDate)}
-                phone={event.phone}
-                organizerId={event.organizerId}
-                session={session}
-              />
-            ))}
-            {/* Pagination */}
-            <Pagination
-                count={Math.ceil(currentEvents.length / eventsPerPage)}
-                page={currentPage}
-                onChange={handlePageChange}
-                sx={{ mt: 5 }}
-            />
-          </Box>
-        ) : (
+      {isLoading ? (
+          <Loader />
+      ) : (
           <>
-            {isLoading ? (
-              <Typography variant="body1" color="text.primary" sx={{ textAlign: 'center', mt: 5 }}>
-                Chargement en cours...
-              </Typography>
+            {sortedEvents.length > 0 ? (
+              <Box sx={{ display: 'flex', flexDirection: 'column', flexWrap: 'wrap', justifyContent: 'center', alignItems: 'center', mb: 3 }}>
+
+                {sortedEvents.map((event, index) => (
+                  <EventsCard
+                    key={index}
+                    id={event.id}
+                    title={event.title}
+                    description={event.description}
+                    address={event.address}
+                    city={event.city}
+                    postalCode={event.postalCode}
+                    latitude={event.latitude}
+                    longitude={event.longitude}
+                    startDate={new Date(event.startDate)}
+                    endDate={new Date(event.endDate)}
+                    phone={event.phone}
+                    organizerId={event.organizerId}
+                    session={session}
+                  />
+                ))}
+                {/* Pagination */}
+                <Pagination
+                    count={Math.ceil(currentEvents.length / eventsPerPage)}
+                    page={currentPage}
+                    onChange={handlePageChange}
+                    sx={{ mt: 5 }}
+                />
+              </Box>
             ) : (
               <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', maxWidth: 400, width: '100%', height: '100%', marginLeft: 'auto', marginRight: 'auto' }}>
                 <Typography variant="body1" color="text.primary" sx={{ textAlign: 'center', mt: 5, mb: 5 }}>

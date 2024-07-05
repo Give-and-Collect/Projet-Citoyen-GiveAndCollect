@@ -11,6 +11,7 @@ import EventsCard from "../Events/EventsCard";
 import Image from "next/image";
 import Carousel from 'react-multi-carousel';
 import 'react-multi-carousel/lib/styles.css';
+import Loader from "../Loader/Loader";
 
 const HomePage = () => {
     const [events, setEvents] = React.useState([]);
@@ -19,18 +20,19 @@ const HomePage = () => {
     React.useEffect(() => {
         const fetchEvents = async () => {
             try {
+                setIsLoading(true);
                 const response = await fetch('api/events');
                 const data = await response.json();
                 const sortedEvents = data.sort((a, b) => new Date(a.startDate).getTime() - new Date(b.startDate).getTime());
                 setEvents(sortedEvents.slice(0, 3));
             } catch (error) {
                 console.error('An error occurred while fetching events:', error);
+            } finally {
+                setIsLoading(false);
             }
         };
 
         fetchEvents();
-
-        setIsLoading(false);
     }, []);
 
     let superLargeDesktopItems = 3;
@@ -76,42 +78,46 @@ const HomePage = () => {
                     </Typography>
                     <Image src={'/assets/icones/calendar-darkgreen.png'} alt="Calendar" width={50} height={50} />
                 </Box>
-                
-                {events.length > 0 ? (
-                    <>
-                        <Carousel 
-                            responsive={responsive} 
-                            infinite={true} 
-                            pauseOnHover={true}
-                            autoPlay={true} 
-                            autoPlaySpeed={5000}
-                            arrows={false}
-                            containerClass="carousel-container"
-                            itemClass="carousel-item"
-                        >
-                            {events.map((event, index) => (
-                                <Box key={index} sx={{ width: '100%' }}>
-                                    <EventsCard
-                                        title={event.title}
-                                        description={event.description}
-                                        address={event.address}
-                                        city={event.city}
-                                        postalCode={event.postalCode}
-                                        latitude={event.latitude}
-                                        longitude={event.longitude}
-                                        startDate={new Date(event.startDate)}
-                                        endDate={new Date(event.endDate)}
-                                        phone={event.phone}
-                                    />
-                                </Box>
-                            ))}
-                        </Carousel>
-                    </>
+
+                {isLoading ? (
+                    <Loader />
                 ) : (
                     <>
+                    {events.length > 0 ? (
+                        <>
+                            <Carousel 
+                                responsive={responsive} 
+                                infinite={true} 
+                                pauseOnHover={true}
+                                autoPlay={true} 
+                                autoPlaySpeed={5000}
+                                arrows={false}
+                                containerClass="carousel-container"
+                                itemClass="carousel-item"
+                            >
+                                {events.map((event, index) => (
+                                    <Box key={index} sx={{ width: '100%' }}>
+                                        <EventsCard
+                                            title={event.title}
+                                            description={event.description}
+                                            address={event.address}
+                                            city={event.city}
+                                            postalCode={event.postalCode}
+                                            latitude={event.latitude}
+                                            longitude={event.longitude}
+                                            startDate={new Date(event.startDate)}
+                                            endDate={new Date(event.endDate)}
+                                            phone={event.phone}
+                                        />
+                                    </Box>
+                                ))}
+                            </Carousel>
+                        </>
+                    ) : (
                         <Typography variant="body1" color="text.primary" sx={{ textAlign: 'center', mt: 5 }}>
-                            {isLoading ? 'Chargement en cours...' : 'Aucun évènement trouvé'}
+                            Aucun évènement trouvé
                         </Typography>
+                    )}
                     </>
                 )}
             </Container>

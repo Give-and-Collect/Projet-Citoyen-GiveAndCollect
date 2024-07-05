@@ -191,7 +191,7 @@ const ResetPassword = () => {
                                                 <IconButton
                                                     onClick={togglePasswordVisibility}
                                                     edge="end"
-                                                    style={{ backgroundColor: 'black' }}
+                                                    style={{ backgroundColor: 'black', color: '#F4EEE0'}}
                                                 >
                                                     {showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
                                                 </IconButton>
@@ -234,7 +234,7 @@ const ResetPassword = () => {
                                                 <IconButton
                                                     onClick={togglePasswordVisibility}
                                                     edge="end"
-                                                    style={{ backgroundColor: 'black' }}
+                                                    style={{ backgroundColor: 'black', color: '#F4EEE0' }}
                                                 >
                                                     {showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
                                                 </IconButton>

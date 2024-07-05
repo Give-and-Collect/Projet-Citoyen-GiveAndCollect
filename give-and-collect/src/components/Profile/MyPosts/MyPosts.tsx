@@ -5,10 +5,13 @@ import { useSession } from 'next-auth/react';
 import PostsCard from '@/components/Posts/PostsCard';
 import { Post } from '@/types/post';
 import { Typography } from '@mui/material';
+import Loader from '@/components/Loader/Loader';
 
 const MyPosts: React.FC = () => {
     const { data: session } = useSession();
     const [posts, setPosts] = useState<Post[]>([]);
+
+    const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
         if (session) {
@@ -18,6 +21,7 @@ const MyPosts: React.FC = () => {
 
     const fetchMyPosts = async () => {
         try {
+            setIsLoading(true);
             const response = await fetch('/api/posts');
             const data = await response.json();
             if (response.ok) {
@@ -29,6 +33,8 @@ const MyPosts: React.FC = () => {
             }
         } catch (error) {
             console.error('Erreur lors de la récupération des annonces:', error);
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -61,7 +67,11 @@ const MyPosts: React.FC = () => {
     }
     return (
         <div>
-            <PostsCard posts={posts} session={session} handlePostDelete={handlePostDelete} />
+            {isLoading ? (
+                <Loader />
+            ) : (
+                <PostsCard posts={posts} session={session} handlePostDelete={handlePostDelete} />
+            )}
         </div>
     );
 };

@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { SelectChangeEvent } from '@mui/material';
 import CollectionPointListMap from '../../components/CollectPoint/CollectionPointListMap';
+import Loader from '@/components/Loader/Loader';
 
 interface CollectionPoint {
     id: number;
@@ -22,14 +23,19 @@ const CollectPointPage: React.FC = () => {
     const [currentPosition, setCurrentPosition] = useState<[number, number]>(defaultCenter);
     const [selectedCity, setSelectedCity] = useState<string>('Toutes');
 
+    const [isLoading, setIsLoading] = useState(true);
+
     useEffect(() => {
         const fetchCollectionPoints = async () => {
             try {
+                setIsLoading(true);
                 const response = await fetch('/api/collection-point');
                 const data = await response.json();
                 setPointsDeCollecte(data.data);
             } catch (error) {
                 console.error('Error fetching collection points:', error);
+            } finally {
+                setIsLoading(false);
             }
         };
 
@@ -53,15 +59,21 @@ const CollectPointPage: React.FC = () => {
 
 
     return (
-        <CollectionPointListMap
-            pointsDeCollecte={pointsDeCollecte}
-            currentPosition={currentPosition}
-            selectedCity={selectedCity}
-            handleCityChange={handleCityChange}
-            handleMarkerClick={handleMarkerClick}
-            handleListClick={handleListClick}
-            cities={cities}
-        />
+        <>
+        {isLoading ? (
+            <Loader />
+        ) : (
+            <CollectionPointListMap
+                pointsDeCollecte={pointsDeCollecte}
+                currentPosition={currentPosition}
+                selectedCity={selectedCity}
+                handleCityChange={handleCityChange}
+                handleMarkerClick={handleMarkerClick}
+                handleListClick={handleListClick}
+                cities={cities}
+            />
+        )}  
+        </>
     );
 };
 
