@@ -7,7 +7,7 @@ describe('POST /api/collection-point', () => {
         jest.clearAllMocks();
     });
 
-    it('T-API-CollectionPoint-POST-01: Test de la création d\'un point de collecte avec des données valides', async () => {
+    it('Test creating a collection point with valid data', async () => {
         const postData = {
             address: '123 Main St',
             city: 'Rouen',
@@ -35,7 +35,7 @@ describe('POST /api/collection-point', () => {
         expect(json.description).toBe(postData.description);
     });
 
-    it('T-API-CollectionPoint-POST-02: Test de la création d\'un point de collecte avec des données manquantes', async () => {
+    it('Test creating a collection point with missing data', async () => {
         const postData = {
             address: '123 Main St',
             city: 'Sample City',
@@ -61,7 +61,7 @@ describe('POST /api/collection-point', () => {
 });
 
 describe('GET /api/collection-point', () => {
-    it('T-API-CollectionPoint-GET-01: Test de la récupération de tous les points de collecte actifs', async () => {
+    it('Test retrieving all active collection points', async () => {
         await prisma.collectionPoint.createMany({
             data: [
                 {
@@ -97,7 +97,7 @@ describe('GET /api/collection-point', () => {
     });
 });
 
-describe('T-API-CollectionPoint-DEFAULT-01: Test de la réponse pour une méthode HTTP non autorisée', () => {
+describe('Test response for an unauthorized HTTP method', () => {
     it('should return 405 Method Not Allowed', async () => {
         const request = new NextRequest('http://localhost/api/collection-point', {
             method: 'DELETE',
