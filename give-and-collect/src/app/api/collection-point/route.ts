@@ -8,6 +8,10 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const { address, city, postalCode, latitude, longitude, description } = body;
 
+    if (!address || !city || !postalCode || !latitude || !longitude || !description) {
+      return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
+    }
+
     const newCollectionPoint = await prisma.collectionPoint.create({
       data: {
         address,
