@@ -16,6 +16,7 @@ import {
 import { Send, Subject, Message, Email } from '@mui/icons-material';
 import { Session } from "next-auth";
 import { Post } from "@/types/post";
+import Swal from 'sweetalert2'; // Importer SweetAlert2
 
 interface ContactAuthorModalProps {
     open: boolean;
@@ -84,12 +85,12 @@ const ContactAuthorModal: React.FC<ContactAuthorModalProps> = ({ open, onClose, 
                 return response.json();
             })
             .then(() => {
-                alert('Message envoyé avec succès');
+                Swal.fire('Succès', 'Message envoyé avec succès', 'success'); // Utiliser SweetAlert pour afficher un message de succès
                 onClose();
             })
             .catch((error) => {
                 console.log(error.message);
-                alert("Une erreur est survenue lors de l'envoi du message. Veuillez réessayer plus tard.");
+                Swal.fire('Erreur', "Une erreur est survenue lors de l'envoi du message. Veuillez réessayer plus tard.", 'error'); // Utiliser SweetAlert pour afficher un message d'erreur
             });
     };
 
@@ -101,23 +102,6 @@ const ContactAuthorModal: React.FC<ContactAuthorModalProps> = ({ open, onClose, 
                     <TextField
                         label="De:"
                         value={session?.user?.email}
-                        disabled
-                        fullWidth
-                        variant="outlined"
-                        sx={{ marginBottom: 2 }}
-                        InputProps={{
-                            startAdornment: (
-                                <InputAdornment position="start">
-                                    <IconButton color="primary">
-                                        <Email />
-                                    </IconButton>
-                                </InputAdornment>
-                            ),
-                        }}
-                    />
-                    <TextField
-                        label="À:"
-                        value={currentPost.author.email}
                         disabled
                         fullWidth
                         variant="outlined"

@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from 'react';
-import SwipeableViews from 'react-swipeable-views';
+import { useSwipeable } from 'react-swipeable';
 import { useTheme } from '@mui/material/styles';
 import AppBar from '@mui/material/AppBar';
 import Tabs from '@mui/material/Tabs';
@@ -60,16 +60,26 @@ export default function FullWidthTabs() {
     setValue(newValue);
   };
 
-  const handleChangeIndex = (index: number) => {
-    setValue(index);
+  const handleSwipe = (deltaX: number) => {
+    const newIndex = value + (deltaX > 0 ? -1 : 1);
+    if (newIndex >= 0 && newIndex <= 2) {
+      setValue(newIndex);
+    }
   };
+
+  const swipeHandlers = useSwipeable({
+    onSwipedLeft: () => handleSwipe(-1),
+    onSwipedRight: () => handleSwipe(1),
+    preventDefaultTouchmoveEvent: true,
+    trackMouse: true,
+  });
 
   if (!isMounted) {
     return null;
   }
 
   return (
-    <Box sx={{ width: '100%' }}>
+    <Box sx={{ width: '100%' }} {...swipeHandlers}>
       <AppBar position="static">
         <Tabs
           value={value}
@@ -99,11 +109,7 @@ export default function FullWidthTabs() {
             />
         </Tabs>
       </AppBar>
-      <SwipeableViews
-        axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
-        index={value}
-        onChangeIndex={handleChangeIndex}
-      >
+      <div>
         <TabPanel value={value} index={0} dir={theme.direction}>
           <UserProfile />
         </TabPanel>
@@ -113,7 +119,7 @@ export default function FullWidthTabs() {
         <TabPanel value={value} index={2} dir={theme.direction}>
           <MyPosts/>
         </TabPanel>
-      </SwipeableViews>
+      </div>
     </Box>
   );
 }

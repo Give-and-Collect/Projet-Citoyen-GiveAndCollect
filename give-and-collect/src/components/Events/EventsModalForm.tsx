@@ -128,7 +128,12 @@ const EventsModalForm: React.FC<EventsModalFormProps> = ({
                             variant="outlined"
                             required
                             value={address}
-                            onChange={(e) => setAddress(e.target.value)}
+                            onChange={(e) => {
+                                const value = e.target.value;
+                                if (/^[a-zA-Z\s]*$/.test(value) || value === "") {
+                                    setAddress(value);
+                                }
+                            }}
                         />
 
                         <TextField
@@ -137,7 +142,12 @@ const EventsModalForm: React.FC<EventsModalFormProps> = ({
                             variant="outlined"
                             required
                             value={city}
-                            onChange={(e) => setCity(e.target.value)}
+                            onChange={(e) => {
+                                const value = e.target.value;
+                                if (/^[a-zA-Z\s]*$/.test(value) || value === "") {
+                                    setCity(value);
+                                }
+                            }}
                         />
 
                         <TextField
@@ -147,7 +157,12 @@ const EventsModalForm: React.FC<EventsModalFormProps> = ({
                             variant="outlined"
                             required
                             value={postalCode}
-                            onChange={(e) => setPostalCode(e.target.value)}
+                            onChange={(e) => {
+                                const value = e.target.value;
+                                if (/^\d*$/.test(value)) {
+                                    setPostalCode(value);
+                                }
+                            }}
                         />
 
                         <TextField
@@ -175,12 +190,17 @@ const EventsModalForm: React.FC<EventsModalFormProps> = ({
                         <TextField
                             id="phone"
                             label="Téléphone"
-                            helperText="Exemple : 0123456789"
+                            helperText="Exemple : 0723456789"
                             type="tel"
                             variant="outlined"
                             required
                             value={phone}
-                            onChange={(e) => setPhone(e.target.value)}
+                            onChange={(e) => {
+                                const value = e.target.value;
+                                if (/^\d*$/.test(value)) {
+                                    setPhone(value);
+                                }
+                            }}
                         />
 
                         {error && (

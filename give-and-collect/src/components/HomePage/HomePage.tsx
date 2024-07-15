@@ -108,6 +108,7 @@ const HomePage = () => {
                                             startDate={new Date(event.startDate)}
                                             endDate={new Date(event.endDate)}
                                             phone={event.phone}
+                                            homePageHeight={true}
                                         />
                                     </Box>
                                 ))}
