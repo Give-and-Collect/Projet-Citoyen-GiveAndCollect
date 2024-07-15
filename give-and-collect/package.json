@@ -48,6 +48,7 @@
     "react-swipeable-views": "^0.14.0",
     "sanitize-html": "^2.13.0",
     "styled-components": "^6.1.11",
+    "sweetalert2": "^11.12.2",
     "ts-node": "^10.9.2",
     "validator": "^13.12.0"
   },
