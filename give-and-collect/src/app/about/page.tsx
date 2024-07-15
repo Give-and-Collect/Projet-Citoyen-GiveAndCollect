@@ -1,4 +1,5 @@
-"use client";
+'use client';
+
 import React, { useState } from 'react';
 import {
     Container,
@@ -15,6 +16,7 @@ import {
 } from '@mui/material';
 import { Send, Email, Person, Subject } from '@mui/icons-material';
 import Carousel from 'react-material-ui-carousel';
+import Swal from 'sweetalert2'; // Import de SweetAlert2
 
 interface FormValues {
     name: string;
@@ -127,14 +129,23 @@ const Contact = () => {
                 body: JSON.stringify(formData),
             });
             if (response.ok) {
-                alert('Message envoyé avec succès !');
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Message envoyé avec succès !',
+                });
                 setFormData(initValues);
             } else {
-                alert("Erreur lors de l'envoi du message.");
+                Swal.fire({
+                    icon: 'error',
+                    title: "Erreur lors de l'envoi du message.",
+                });
             }
         } catch (error) {
             console.error('Erreur:', error);
-            alert("Erreur lors de l'envoi du message.");
+            Swal.fire({
+                icon: 'error',
+                title: "Erreur lors de l'envoi du message.",
+            });
         }
     };
 
@@ -153,10 +164,10 @@ const Contact = () => {
             {/* Carrousel d'images */}
             <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
                 <Typography
-                    color="primary" 
-                    textAlign="center" 
-                    textTransform="uppercase" 
-                    fontWeight={'bold'} 
+                    color="primary"
+                    textAlign="center"
+                    textTransform="uppercase"
+                    fontWeight={'bold'}
                     fontSize={26}
                     mb={3}
                 >
@@ -185,10 +196,10 @@ const Contact = () => {
             {/* Contactez-nous */}
             <Container maxWidth="md" sx={{ mt: 4, mb: 4 }}>
                 <Typography
-                    color="primary" 
-                    textAlign="center" 
-                    textTransform="uppercase" 
-                    fontWeight={'bold'} 
+                    color="primary"
+                    textAlign="center"
+                    textTransform="uppercase"
+                    fontWeight={'bold'}
                     fontSize={26}
                     mb={3}
                 >
@@ -202,7 +213,7 @@ const Contact = () => {
                                     <Grid item xs={12} sm={6}>
                                         <TextField
                                             fullWidth
-                                            label="Nom / Prénom "
+                                            label="Nom / Prénom"
                                             name="name"
                                             value={formData.name}
                                             onChange={handleChange}
