@@ -18,6 +18,7 @@ type Props = {
     phone: string;
     organizerId: number;
     session: Session;
+    homePageHeight?: boolean;
 };
 
 const EventsCard: React.FC<Props> = (props) => {
@@ -52,62 +53,85 @@ const EventsCard: React.FC<Props> = (props) => {
       });
   }
 
-    return (
-      <Box sx={{ width: '100%', maxWidth: 1000, px: 2 }}>
-        <Card 
-          key={props.id}
-          sx={{ 
-            mt: 5,
-            mb: 5,
-            maxWidth: 1000,
-            borderTopLeftRadius: 15,
-            borderTopRightRadius: 0,
-            borderBottomLeftRadius: 0,
-            borderBottomRightRadius: 15,
-            boxShadow: 10
-          }}
-        >
-          <CardHeader
-            title={props.title}
-            style={{ textAlign: 'center', textTransform: 'uppercase', color: "#F4EEE0", backgroundColor: "#111D13" }}
-          />
-          <CardContent>
-            <Typography variant="body1" color="text.primary">
-              {props.description}
+  return (
+    <Box sx={{ width: '100%', maxWidth: 1000, px: 2 }}>
+      <Card
+        key={props.id}
+        sx={{
+          mt: 5,
+          mb: 5,
+          maxWidth: 1000,
+          borderTopLeftRadius: 15,
+          borderTopRightRadius: 0,
+          borderBottomLeftRadius: 0,
+          borderBottomRightRadius: 15,
+          boxShadow: 10,
+          height: props.homePageHeight ? 400 : 'auto',
+        }}
+      >
+        <CardHeader
+          title={
+            <Typography
+              variant="h6"
+              component="div"
+              sx={{
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                whiteSpace: props.homePageHeight ? 'nowrap' : 'normal',
+              }}
+            >
+              {props.title}
             </Typography>
+          }
+          style={{ textAlign: 'center', textTransform: 'uppercase', color: "#F4EEE0", backgroundColor: "#111D13" }}
+        />
+        <CardContent>
+          <Typography
+            variant="body1"
+            color="text.primary"
+            sx={{
+              display: '-webkit-box',
+              WebkitBoxOrient: 'vertical',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              WebkitLineClamp: props.homePageHeight ? 4 : 'none',
+            }}
+          >
+            {props.description}
+          </Typography>
 
-            <div style={{ display: 'flex', alignItems: 'center', marginTop: 15 }}>
-              <Image src={'/assets/icones/ping-darkgreen.png'} alt="Home" width={50} height={50} />
-              <a href={`https://www.google.com/maps/search/?api=1&query=${props.latitude},${props.longitude}`} target="_blank" rel="noopener noreferrer">
-                <Typography>{props.address}, {props.postalCode} {props.city}</Typography>
-              </a>
-            </div>
+          <div style={{ display: 'flex', alignItems: 'center', marginTop: 15 }}>
+            <Image src={'/assets/icones/ping-darkgreen.png'} alt="Home" width={50} height={50} />
+            <a href={`https://www.google.com/maps/search/?api=1&query=${props.latitude},${props.longitude}`} target="_blank" rel="noopener noreferrer">
+              <Typography>{props.address}, {props.postalCode} {props.city}</Typography>
+            </a>
+          </div>
 
-            <div style={{ display: 'flex', alignItems: 'center', marginTop: 15 }}>
-              <Image src={'/assets/icones/calendar-darkgreen.png'} alt="Home" width={50} height={50} />
-              <Typography>{props.startDate.toLocaleString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric', hour: 'numeric', minute: 'numeric', timeZone: 'UTC' })} - {props.endDate.toLocaleString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric', hour: 'numeric', minute: 'numeric', timeZone: 'UTC' })}</Typography>
-            </div>
+          <div style={{ display: 'flex', alignItems: 'center', marginTop: 15 }}>
+            <Image src={'/assets/icones/calendar-darkgreen.png'} alt="Home" width={50} height={50} />
+            <Typography>{props.startDate.toLocaleString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric', hour: 'numeric', minute: 'numeric', timeZone: 'UTC' })} - {props.endDate.toLocaleString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric', hour: 'numeric', minute: 'numeric', timeZone: 'UTC' })}</Typography>
+          </div>
 
-            <div style={{ display: 'flex', alignItems: 'center', marginTop: 15 }}>
-              <Image src={'/assets/icones/phone-darkgreen.png'} alt="Home" width={50} height={50} />
-              <a href={"tel:" + props.phone}><Typography>{formatPhoneNumber(props.phone)}</Typography></a>
-            </div>
+          <div style={{ display: 'flex', alignItems: 'center', marginTop: 15 }}>
+            <Image src={'/assets/icones/phone-darkgreen.png'} alt="Home" width={50} height={50} />
+            <a href={"tel:" + props.phone}><Typography>{formatPhoneNumber(props.phone)}</Typography></a>
+          </div>
 
-            {props.session && (props.session.user.roleId === 1 || props.session.user.id === props.organizerId) && (
-              <Button
-                  variant="outlined"
-                  color="error"
-                  startIcon={<DeleteIcon />}
-                  onClick={() => handleDelete(props.id)}
-                  sx={{ mt: 2, mb: 2, ml: 2, alignSelf: 'flex-start' }}
-              >
-                  Supprimer
-              </Button>
-            )}
-          </CardContent>
-        </Card>
-      </Box>
-    );
+          {props.session && (props.session.user.roleId === 1 || props.session.user.id === props.organizerId) && (
+            <Button
+              variant="outlined"
+              color="error"
+              startIcon={<DeleteIcon />}
+              onClick={() => handleDelete(props.id)}
+              sx={{ mt: 2, mb: 2, ml: 2, alignSelf: 'flex-start' }}
+            >
+              Supprimer
+            </Button>
+          )}
+        </CardContent>
+      </Card>
+    </Box>
+  );
 };
 
 export default EventsCard;
