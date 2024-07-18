@@ -144,8 +144,8 @@ const ResetPassword = () => {
                             onChange={(e) => setEmail(e.target.value)}
                         />
                         <Button
+                            component="button"
                             fullWidth
-                            padding="30px"
                             variant="contained"
                             color="primary"
                             sx={{ mt: 3, mb: 1 }}
@@ -155,7 +155,7 @@ const ResetPassword = () => {
                         </Button>
                         {!!secretQuestion && (
                             <>
-                                <Typography variant="h7">
+                                <Typography variant="body1">
                                     {secretQuestion}
                                 </Typography>
                                 <TextField
@@ -243,8 +243,8 @@ const ResetPassword = () => {
                                     }}
                                 />
                                 <Button
+                                    component="button"
                                     fullWidth
-                                    padding="30px"
                                     variant="contained"
                                     color="primary"
                                     sx={{ mt: 3, mb: 1 }}
@@ -261,7 +261,7 @@ const ResetPassword = () => {
                         )}
                         <Grid container justifyContent="flex-end">
                             <Grid item>
-                                <Link href="/login" variant="body2">
+                                <Link href="/login">
                                     Retour à la connexion
                                 </Link>
                             </Grid>

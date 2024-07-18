@@ -70,7 +70,6 @@ export default function FullWidthTabs() {
   const swipeHandlers = useSwipeable({
     onSwipedLeft: () => handleSwipe(-1),
     onSwipedRight: () => handleSwipe(1),
-    preventDefaultTouchmoveEvent: true,
     trackMouse: true,
   });
 

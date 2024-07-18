@@ -8,7 +8,7 @@ import { useSession } from "next-auth/react";
 import * as React from "react";
 
 export default function MyEvents() {
-    const [events, setEvents] = React.useState([]);
+    const [events, setEvents] = React.useState<Event[]>([]);
     const [isLoading, setIsLoading] = React.useState(true);
 
     const [currentPage, setCurrentPage] = React.useState(1);
@@ -76,7 +76,7 @@ export default function MyEvents() {
                     endDate={new Date(event.endDate)}
                     phone={event.phone}
                     organizerId={event.organizerId}
-                    session={session}
+                    session={session!}
                   />
                 ))}
                 {/* Pagination */}

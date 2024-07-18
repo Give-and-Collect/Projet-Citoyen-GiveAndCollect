@@ -296,7 +296,7 @@ function ResponsiveAppBar() {
                   <a onClick={() => signIn()}><Typography textAlign="center">Se connecter</Typography></a>
                 </MenuItem>
                 <MenuItem key={'Signup'} onClick={handleCloseUserMenu}>
-                  <a href='/signup'><Typography textAlign="center">S'inscrire</Typography></a>
+                  <a href='/signup'><Typography textAlign="center">S&apos;inscrire</Typography></a>
                 </MenuItem>
               </Menu>
             )}
