@@ -21,7 +21,8 @@ import {
     Select,
     MenuItem,
     Button,
-    Pagination
+    Pagination,
+    SelectChangeEvent
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EmailIcon from '@mui/icons-material/Email';
@@ -49,7 +50,7 @@ const PostsCard: React.FC<PostsCardProps> = ({ posts, session, handlePostDelete 
         setCities(uniqueCities);
     }, [posts]);
 
-    const handleCityChange = (event: React.ChangeEvent<{ value: unknown }>) => {
+    const handleCityChange = (event: SelectChangeEvent) => {
         setSelectedCity(event.target.value as string);
     };
 
@@ -175,7 +176,7 @@ const PostsCard: React.FC<PostsCardProps> = ({ posts, session, handlePostDelete 
                                         startIcon={<EmailIcon/>}
                                         onClick={() => handleOpenDialog(post)} // Ouvre le modal pour contacter l'auteur
                                     >
-                                        Contacter l'auteur
+                                        Contacter l&apos;auteur
                                     </Button>
                                 )}
                                 {(session?.user.roleId === 1 || session?.user.id === post.author.id) && (

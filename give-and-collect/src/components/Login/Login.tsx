@@ -96,8 +96,8 @@ export default function Login(props: Props) {
                             </Grid>
                         </Grid>
                         <Button
+                            component="button"
                             fullWidth
-                            padding="30px"
                             variant="contained"
                             color="primary"
                             sx={{ mt: 3, mb: 1 }}

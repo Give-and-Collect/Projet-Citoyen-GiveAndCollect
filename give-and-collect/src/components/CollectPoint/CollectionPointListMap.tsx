@@ -53,15 +53,15 @@ const customMarkerIcon = L.icon({
     popupAnchor: [0, -40],
 });
 
-const CollectionPointListMap: React.FC<Props> = React.memo(({
-                                                                pointsDeCollecte = [],
-                                                                currentPosition,
-                                                                selectedCity,
-                                                                handleCityChange,
-                                                                handleMarkerClick,
-                                                                handleListClick,
-                                                                cities = []
-                                                            }) => {
+const CollectionPointListMapComponent: React.FC<Props> = ({
+    pointsDeCollecte = [],
+    currentPosition,
+    selectedCity,
+    handleCityChange,
+    handleMarkerClick,
+    handleListClick,
+    cities = []
+}) => {
     const isSmallScreen = useMediaQuery((theme: Theme) => theme.breakpoints.down('md'));
 
     const filteredPoints = React.useMemo(() => {
@@ -213,6 +213,8 @@ const CollectionPointListMap: React.FC<Props> = React.memo(({
             )}
         </Box>
     );
-});
+};
+
+const CollectionPointListMap = React.memo(CollectionPointListMapComponent);
 
 export default CollectionPointListMap;

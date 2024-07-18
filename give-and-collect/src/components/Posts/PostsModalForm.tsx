@@ -153,7 +153,7 @@ const PostsModalForm: React.FC<PostsModalFormProps> = ({
                                         fullWidth
                                         label="Taille"
                                         value={line.taille}
-                                        onChange={(e) => handleChange(e, index, 'taille')}
+                                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChange(e, index, 'taille')}
                                     />
                                 </Grid>
                                 <Grid item xs={12} sm={6} md={2}>
@@ -175,7 +175,7 @@ const PostsModalForm: React.FC<PostsModalFormProps> = ({
                                         label="Quantité"
                                         type="number"
                                         value={line.quantite}
-                                        onChange={(e) => handleChange(e, index, 'quantite')}
+                                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChange(e, index, 'quantite')}
                                         inputProps={{ min: 0 }}
                                     />
                                 </Grid>
@@ -193,7 +193,7 @@ const PostsModalForm: React.FC<PostsModalFormProps> = ({
                         </Grid>
                         <Grid item xs={12} sm={6}>
                             <Button variant="contained" color="success" onClick={handlePublish} fullWidth>
-                                Publier l'annonce
+                                Publier l&apos;annonce
                             </Button>
                         </Grid>
                         <Grid item xs={12} sm={6}>

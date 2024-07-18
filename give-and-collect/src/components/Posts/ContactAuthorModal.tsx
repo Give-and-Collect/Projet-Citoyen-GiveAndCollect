@@ -96,7 +96,7 @@ const ContactAuthorModal: React.FC<ContactAuthorModalProps> = ({ open, onClose, 
 
     return (
         <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
-            <DialogTitle>Contacter l'auteur</DialogTitle>
+            <DialogTitle>Contacter l&apos;auteur</DialogTitle>
             <DialogContent>
                 <Box sx={{ marginBottom: 2, marginTop: 2 }}>
                     <TextField

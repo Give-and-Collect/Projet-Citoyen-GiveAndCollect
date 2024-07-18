@@ -1,8 +1,8 @@
-import NextAuth from "next-auth";
+import NextAuth, { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { login } from "@/lib/auth";
 
-export const authOptions = {
+export const authOptions: NextAuthOptions = {
     // Configure one or more authentication providers
     providers: [
         CredentialsProvider({
@@ -32,7 +32,7 @@ export const authOptions = {
     },
 
     session: {
-        jwt: true
+        strategy: "jwt",
     },
 
     callbacks: {
@@ -59,12 +59,12 @@ export const authOptions = {
                     firstname: token.firstname,
                     lastname: token.lastname,
                     email: token.email,
-                    roleId: token.roleId
+                    roleId: token.roleId,
                 },
             };
         },
-    }
-}
+    },
+};
 
 const handler = NextAuth(authOptions);
 
