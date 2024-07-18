@@ -8,6 +8,7 @@ import { getSession } from 'next-auth/react';
 import { Add } from '@mui/icons-material';
 import PostsCard from '../../components/Posts/PostsCard';
 import {Session} from "next-auth";
+import Loader from '@/components/Loader/Loader';
 
 const PostAnnonce: React.FC = () => {
     const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -25,6 +26,8 @@ const PostAnnonce: React.FC = () => {
     const [types, setTypes] = useState<{ id: number, name: string }[]>([]);
     const [posts, setPosts] = useState<any[]>([]);
     const [session, setSession] = useState<Session | null>();
+    
+    const [isLoading, setIsLoading] = useState(true);
 
     const openModal = () => setModalIsOpen(true);
     const closeModal = () => setModalIsOpen(false);
@@ -58,6 +61,7 @@ const PostAnnonce: React.FC = () => {
     useEffect(() => {
         const fetchPosts = async () => {
             try {
+                setIsLoading(true);
                 const response = await fetch('/api/posts');
                 if (!response.ok) {
                     throw new Error('Erreur lors de la récupération des annonces');
@@ -66,6 +70,8 @@ const PostAnnonce: React.FC = () => {
                 setPosts(data);
             } catch (error) {
                 console.error('Erreur:', error);
+            } finally {
+                setIsLoading(false);
             }
         };
 
@@ -159,42 +165,48 @@ const PostAnnonce: React.FC = () => {
     }
 
     return (
-        <Container maxWidth="md" sx={{ mt: 4, mb: 4 }}>
-            <Typography
-                color="primary" 
-                textAlign="center" 
-                textTransform="uppercase" 
-                fontWeight={'bold'} 
-                fontSize={32}
-                mt={5}
-                mb={3}
-            >
-                Listes des Annonces
-            </Typography>
-            
-            <Box display="flex" justifyContent="flex-end" mb={2}>
-                {session && <Button variant="contained" color="secondary" onClick={openModal} startIcon={<Add />}>
-                    Ajouter une annonce
-                </Button>}
-            </Box>
-            
-            <PostsModalForm
-                isOpen={modalIsOpen}
-                onClose={closeModal}
-                formData={formData}
-                setFormData={setFormData}
-                categories={categories.filter(category => category.type === 'category').map(category => category.name)}
-                handleAddLine={handleAddLine}
-                handleDeleteLine={handleDeleteLine}
-                handleChange={handleChange}
-                handlePublish={handlePublish}
-                types={types}
-                genres={categories.filter(category => category.type === 'genre').map(category => category.name)}
-            />
-            <Box mt={3}>
-                <PostsCard posts={posts} session={session} handlePostDelete={handlePostDelete} />
-            </Box>
-        </Container>
+        <>
+        {isLoading ? (
+            <Loader />
+        ) : (
+            <Container maxWidth="md" sx={{ mt: 4, mb: 4 }}>
+                <Typography
+                    color="primary" 
+                    textAlign="center" 
+                    textTransform="uppercase" 
+                    fontWeight={'bold'} 
+                    fontSize={32}
+                    mt={5}
+                    mb={3}
+                >
+                    Listes des Annonces
+                </Typography>
+                
+                <Box display="flex" justifyContent="flex-end" mb={2}>
+                    {session && <Button variant="contained" color="secondary" onClick={openModal} startIcon={<Add />}>
+                        Ajouter une annonce
+                    </Button>}
+                </Box>
+                
+                <PostsModalForm
+                    isOpen={modalIsOpen}
+                    onClose={closeModal}
+                    formData={formData}
+                    setFormData={setFormData}
+                    categories={categories.filter(category => category.type === 'category').map(category => category.name)}
+                    handleAddLine={handleAddLine}
+                    handleDeleteLine={handleDeleteLine}
+                    handleChange={handleChange}
+                    handlePublish={handlePublish}
+                    types={types}
+                    genres={categories.filter(category => category.type === 'genre').map(category => category.name)}
+                />
+                <Box mt={3}>
+                    <PostsCard posts={posts} session={session} handlePostDelete={handlePostDelete} />
+                </Box>
+            </Container>
+        )}
+        </>
     );
 
 };

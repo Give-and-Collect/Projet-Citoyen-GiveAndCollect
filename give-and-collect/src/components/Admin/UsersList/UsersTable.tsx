@@ -1,7 +1,9 @@
 "use client";
 
-import { Button, MenuItem, Select } from "@mui/material";
+import Loader from "@/components/Loader/Loader";
+import { Button, MenuItem, Select, Typography } from "@mui/material";
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
+import { frFR } from '@mui/x-data-grid/locales';
 import { Role } from "@prisma/client";
 import { useEffect, useState } from "react";
 
@@ -51,6 +53,12 @@ const columns: GridColDef[] = [
       width: 150,
       minWidth: 150,
       renderCell: (params) => (
+        // If role is admin, the delete button is disabled
+        params.row.roleId === 1 ?
+        <Button disabled variant="contained" color="error">
+          Supprimer
+        </Button>
+        :
         <Button onClick={() => handleDelete(params.row.id)} variant="contained" color="error">
           Supprimer
         </Button>
@@ -88,6 +96,7 @@ const columns: GridColDef[] = [
           value={roleSelected}
           onChange={(e) => handleChange(Number(e.target.value))}
           style={{ width: '100%', height: 40 }}
+          disabled={currentRole === 1}
         >
           {roles.map((role) => (
             <MenuItem key={role.id} value={role.id}>{role.name}</MenuItem>
@@ -122,48 +131,71 @@ const columns: GridColDef[] = [
   
   export default function UsersTable() {
     const [users, setUsers] = useState<User[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
 
     // fetch users data
     useEffect(() => {
         const fetchData = async () => {
             try {
-            const response = await fetch('../api/users');
-            const data = await response.json();
-            // Déconstruction du json pour obtenir les données attendues
-            const usersData = data.map((user: any) => ({
-                id: user.id,
-                firstname: user.firstname,
-                lastname: user.lastname,
-                roleId: user.roleId,
-                role: user.role,
-                adsPosted: user.posts._count,
-                eventsPosted: user.events._count,
-            }));
-            setUsers(usersData);
+              setIsLoading(true);
+              const response = await fetch('../api/users');
+              const data = await response.json();
+              // Déconstruction du json pour obtenir les données attendues
+              const usersData = data.map((user: any) => ({
+                  id: user.id,
+                  firstname: user.firstname,
+                  lastname: user.lastname,
+                  roleId: user.roleId,
+                  role: user.role,
+                  adsPosted: user.posts._count,
+                  eventsPosted: user.events._count,
+              }));
+              setUsers(usersData);
             } catch (error) {
-            console.error(error);
+              console.error(error);
+            } finally {
+              setIsLoading(false);
             }
         }
         fetchData();
     }, []);
 
     return (
-      <div style={{ marginLeft: 'auto', marginRight: 'auto', marginTop: 50, marginBottom: 50, width: '90%' }}>
-        <DataGrid
-          rows={users}
-          columns={columns}
-          initialState={{
-            pagination: {
-              paginationModel: { page: 0, pageSize: 5 },
-            },
-          }}
-          pageSizeOptions={[5, 10]}
-          autoPageSize
-          sx={{ 
-            height: 400,
-            width: '100%',
-          }}
-        />
-      </div>
+      <>
+        {isLoading ? (
+          <Loader />
+        ) : (
+          <>
+          <Typography
+            color="primary" 
+            textAlign="center" 
+            textTransform="uppercase" 
+            fontWeight={'bold'} 
+            fontSize={32}
+            mt={5}
+          >
+            Liste des utilisateurs
+          </Typography>
+          <div style={{ marginLeft: 'auto', marginRight: 'auto', marginTop: 50, marginBottom: 50, width: '90%' }}>
+            <DataGrid
+              rows={users}
+              columns={columns}
+              initialState={{
+                pagination: {
+                  paginationModel: { page: 0, pageSize: 5 },
+                },
+              }}
+              pageSizeOptions={[5, 10]}
+              autoPageSize
+              sx={{ 
+                height: 400,
+                width: '100%',
+              }}
+              localeText={frFR.components.MuiDataGrid.defaultProps.localeText}
+            />
+          </div>
+          </>
+        )}
+      </>
     );
   }

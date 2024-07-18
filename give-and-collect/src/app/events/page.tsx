@@ -2,7 +2,9 @@
 
 import EventsCard from "@/components/Events/EventsCard";
 import EventsModalForm from "@/components/Events/EventsModalForm";
-import { Box, Button, FormControl, InputLabel, MenuItem, Pagination, Select, SelectChangeEvent, Typography } from "@mui/material";
+import Loader from "@/components/Loader/Loader";
+import { Add } from "@mui/icons-material";
+import { Box, Button, Container, FormControl, InputLabel, MenuItem, Pagination, Select, SelectChangeEvent, Typography } from "@mui/material";
 import { Event } from "@prisma/client";
 import { signIn, useSession } from "next-auth/react";
 import * as React from "react";
@@ -46,6 +48,7 @@ export default function Events() {
 
       const fetchCities = async () => {
         try {
+          setIsLoading(true);
           const response = await fetch('api/events');
           const data = await response.json();
           if (data.length > 0) {
@@ -58,6 +61,7 @@ export default function Events() {
         } catch (error) {
           console.error('An error occurred while fetching cities:', error);
         } finally {
+          setIsLoading(false);
         }
       };
 
@@ -75,8 +79,6 @@ export default function Events() {
   
       fetchCities();
       fetchEvents();
-
-      setIsLoading(false);
     }, [city]);
 
     let currentEvents: Event[] = [];
@@ -93,45 +95,27 @@ export default function Events() {
 
     return (
       <>
-        <Typography
-          color="primary" 
-          textAlign="center" 
-          textTransform="uppercase" 
-          fontWeight={'bold'} 
-          fontSize={32}
-          mt={5}
-          mb={3}
-        >
-          Listes des Evènements
-        </Typography>
-
-        {sortedEvents.length > 0 ? (
-          <>
-            <Box sx={{ display: 'flex', justifyContent: 'center', minWidth: 120, maxWidth: 400, m: 5 }}>
-              <FormControl fullWidth>
-                <InputLabel id="city-select-label">Sélectionnez une ville :</InputLabel>
-                <Select
-                  labelId="city-select-label"
-                  id="city-select"
-                  value={city}
-                  label="Sélectionnez une ville :"
-                  onChange={cityHandleChange}
-                  defaultValue=""
-                >
-                  <MenuItem value={""}>Tous les évènements</MenuItem>
-                  
-                  {cityList.map((city, index) => (
-                    <MenuItem key={index} value={city}>{city}</MenuItem>
-                  ))}
-
-                </Select>
-              </FormControl>
-
+      {isLoading ? (
+          <Loader />
+      ) : (
+          <Container maxWidth="md" sx={{ mt: 4, mb: 4 }}>
+            <Typography
+              color="primary" 
+              textAlign="center" 
+              textTransform="uppercase" 
+              fontWeight={'bold'} 
+              fontSize={32}
+              mt={5}
+              mb={3}
+            >
+              Listes des Evènements
+            </Typography>
+            <Box display="flex" justifyContent="flex-end" mb={2}>
               <Button
                 variant="contained"
                 color="secondary"
                 onClick={() => openModal()}
-                sx={{ ml: 2 }}
+                startIcon={<Add />}
               >
                 Créer un évènement
               </Button>
@@ -144,68 +128,70 @@ export default function Events() {
                 session={session}
             />
 
-            <Typography variant="body1" color="text.primary" sx={{ textAlign: 'left', ml: 5, mb: 1 }}>
-              {sortedEvents.length} résultat(s)
-            </Typography>
+            {sortedEvents.length > 0 ? (
+              <>
+                <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mt: 5, mb: 5 }}>
+                  <FormControl fullWidth variant="outlined">
+                    <InputLabel id="city-select-label">Sélectionnez une ville :</InputLabel>
+                    <Select
+                      labelId="city-select-label"
+                      id="city-select"
+                      value={city}
+                      label="Sélectionnez une ville :"
+                      onChange={cityHandleChange}
+                      defaultValue=""
+                    >
+                      <MenuItem value={""}>Tous les évènements</MenuItem>
+                      
+                      {cityList.map((city, index) => (
+                        <MenuItem key={index} value={city}>{city}</MenuItem>
+                      ))}
 
-            <Box sx={{ display: 'flex', flexDirection: 'column', flexWrap: 'wrap', justifyContent: 'center', alignItems: 'center', mb: 3 }}>
+                    </Select>
+                  </FormControl>
+                </Box>
 
-              {sortedEvents.map((event, index) => (
-                <EventsCard
-                  key={index}
-                  id={event.id}
-                  title={event.title}
-                  description={event.description}
-                  address={event.address}
-                  city={event.city}
-                  postalCode={event.postalCode}
-                  latitude={event.latitude}
-                  longitude={event.longitude}
-                  startDate={new Date(event.startDate)}
-                  endDate={new Date(event.endDate)}
-                  phone={event.phone}
-                  organizerId={event.organizerId}
-                  session={session}
-                />
-              ))}
-              {/* Pagination */}
-              <Pagination
-                  count={Math.ceil(currentEvents.length / eventsPerPage)}
-                  page={currentPage}
-                  onChange={handlePageChange}
-                  sx={{ mt: 5 }}
-              />
-            </Box>
-          </>
-        ) : (
-          <>
-            {isLoading ? (
-              <Typography variant="body1" color="text.primary" sx={{ textAlign: 'center', mt: 5 }}>
-                Chargement en cours...
-              </Typography>
+                <Typography variant="body1" color="text.primary" sx={{ textAlign: 'left', ml: 5, mb: 1 }}>
+                  {sortedEvents.length} résultat(s)
+                </Typography>
+
+                <Box sx={{ maxWidth: 1000, width: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
+
+                  {sortedEvents.map((event, index) => (
+                    <EventsCard
+                      key={index}
+                      id={event.id}
+                      title={event.title}
+                      description={event.description}
+                      address={event.address}
+                      city={event.city}
+                      postalCode={event.postalCode}
+                      latitude={event.latitude}
+                      longitude={event.longitude}
+                      startDate={new Date(event.startDate)}
+                      endDate={new Date(event.endDate)}
+                      phone={event.phone}
+                      organizerId={event.organizerId}
+                      session={session}
+                    />
+                  ))}
+                  {/* Pagination */}
+                  <Pagination
+                      count={Math.ceil(currentEvents.length / eventsPerPage)}
+                      page={currentPage}
+                      onChange={handlePageChange}
+                      sx={{ mt: 5 }}
+                  />
+                </Box>
+              </>
             ) : (
               <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', maxWidth: 400, width: '100%', height: '100%', marginLeft: 'auto', marginRight: 'auto' }}>
                 <Typography variant="body1" color="text.primary" sx={{ textAlign: 'center', mt: 5, mb: 5 }}>
                     Aucun évènement trouvé
                 </Typography>
-
-                <Button
-                    variant="contained"
-                    color="secondary"
-                    onClick={() => openModal()}
-                >
-                    Créer un évènement
-                </Button>
-
-                <EventsModalForm
-                    isOpen={modalIsOpen}
-                    onClose={closeModal}
-                    onEventCreated={eventCreated}
-                    session={session}
-                />
               </Box>
             )}
-          </>
+          </Container>
         )}
       </>
     );

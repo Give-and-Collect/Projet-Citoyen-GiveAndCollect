@@ -12,6 +12,7 @@ import AnnouncementIcon from '@mui/icons-material/Announcement';
 import EventIcon from '@mui/icons-material/Event';
 import PeopleIcon from '@mui/icons-material/People';
 import frLocale from 'date-fns/locale/fr';
+import Loader from '@/components/Loader/Loader';
 
 interface Stats {
     shares?: number;
@@ -26,10 +27,12 @@ const StatisticsPage: React.FC = () => {
     const [stats, setStats] = useState<Stats | null>(null);
     const [announcementDate, setAnnouncementDate] = useState<Date | null>(new Date());
     const [eventDate, setEventDate] = useState<Date | null>(new Date());
+    const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
         const fetchStats = async () => {
             try {
+                setIsLoading(true);
                 const responses = await Promise.all([
                     // fetch('/api/statistics/shares').then(res => res.json()),
                     // fetch('/api/statistics/visits').then(res => res.json()),
@@ -50,6 +53,8 @@ const StatisticsPage: React.FC = () => {
                 });
             } catch (error) {
                 console.error('Erreur lors de la récupération des statistiques', error);
+            } finally {
+                setIsLoading(false);
             }
         };
 
@@ -74,73 +79,81 @@ const StatisticsPage: React.FC = () => {
     };
 
     return (
-        <Box sx={{ padding: 2 }}>
-            <Typography
-                color="primary" 
-                textAlign="center" 
-                textTransform="uppercase" 
-                fontWeight={'bold'} 
-                fontSize={32}
-                mt={5}
-            >
-                Statistiques du site
-            </Typography>
-            <Box sx={{ marginTop: 2, marginBottom: 6 }}>
-                <Grid container spacing={2}>
-                {statsData.map((stat, index) => (
-                    <Grid item xs={12} sm={6} md={4} key={index}>
-                        <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', borderColor: `${stat.color}.main`, borderWidth: 2, borderStyle: 'solid' }}>
-                            <CardContent>
-                                <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 2 }}>
-                                    <Typography variant="h6">{stat.label}</Typography>
-                                    <Box sx={{ color: `${stat.color}.main` }}>
-                                        {stat.icon}
-                                    </Box>
-                                </Box>
-                                <Typography variant="h4">{stat.value}</Typography>
-                            </CardContent>
-                            {stat.isSelectable && (
-                                <CardContent sx={{ borderTop: `1px solid ${stat.color}.main`, paddingTop: 1 }}>
-                                    <LocalizationProvider dateAdapter={AdapterDateFns} locale={frLocale}>
-                                        <DatePicker
-                                            views={['year', 'month']}
-                                            label="Mois et année"
-                                            minDate={new Date('2022-01-01')}
-                                            maxDate={new Date('2030-12-31')}
-                                            value={stat.label === "Nombre d'annonces" ? announcementDate : eventDate}
-                                            onChange={stat.label === "Nombre d'annonces" ? handleAnnouncementDateChange : handleEventDateChange}
-                                            renderInput={(params) => (
-                                                <TextField
-                                                    {...params}
-                                                    InputProps={{
-                                                        endAdornment: (
-                                                            <React.Fragment>
-                                                                {params?.InputProps?.endAdornment}
-                                                            </React.Fragment>
-                                                        ),
-                                                        sx: {
-                                                            '&.MuiInputBase-inputAdornedEnd': {
-                                                                color: `${stat.color}.main`,
-                                                            }
-                                                        }
-                                                    }}
-                                                    sx={{
-                                                        '& .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline': {
-                                                            borderColor: `${stat.color}.main`
-                                                        }
-                                                    }}
+        <>
+            {isLoading ? (
+                <Loader />
+            )
+            : (
+                <Box sx={{ padding: 2 }}>
+                    <Typography
+                        color="primary" 
+                        textAlign="center" 
+                        textTransform="uppercase" 
+                        fontWeight={'bold'} 
+                        fontSize={32}
+                        mt={5}
+                    >
+                        Statistiques du site
+                    </Typography>
+                    <Box sx={{ marginTop: 2, marginBottom: 6 }}>
+                        <Grid container spacing={2}>
+                        {statsData.map((stat, index) => (
+                            <Grid item xs={12} sm={6} md={4} key={index}>
+                                <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', borderColor: `${stat.color}.main`, borderWidth: 2, borderStyle: 'solid' }}>
+                                    <CardContent>
+                                        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 2 }}>
+                                            <Typography variant="h6">{stat.label}</Typography>
+                                            <Box sx={{ color: `${stat.color}.main` }}>
+                                                {stat.icon}
+                                            </Box>
+                                        </Box>
+                                        <Typography variant="h4">{stat.value}</Typography>
+                                    </CardContent>
+                                    {stat.isSelectable && (
+                                        <CardContent sx={{ borderTop: `1px solid ${stat.color}.main`, paddingTop: 1 }}>
+                                            <LocalizationProvider dateAdapter={AdapterDateFns} locale={frLocale}>
+                                                <DatePicker
+                                                    views={['year', 'month']}
+                                                    label="Mois et année"
+                                                    minDate={new Date('2022-01-01')}
+                                                    maxDate={new Date('2030-12-31')}
+                                                    value={stat.label === "Nombre d'annonces" ? announcementDate : eventDate}
+                                                    onChange={stat.label === "Nombre d'annonces" ? handleAnnouncementDateChange : handleEventDateChange}
+                                                    renderInput={(params) => (
+                                                        <TextField
+                                                            {...params}
+                                                            InputProps={{
+                                                                endAdornment: (
+                                                                    <React.Fragment>
+                                                                        {params?.InputProps?.endAdornment}
+                                                                    </React.Fragment>
+                                                                ),
+                                                                sx: {
+                                                                    '&.MuiInputBase-inputAdornedEnd': {
+                                                                        color: `${stat.color}.main`,
+                                                                    }
+                                                                }
+                                                            }}
+                                                            sx={{
+                                                                '& .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline': {
+                                                                    borderColor: `${stat.color}.main`
+                                                                }
+                                                            }}
+                                                        />
+                                                    )}
                                                 />
-                                            )}
-                                        />
-                                    </LocalizationProvider>
-                                </CardContent>
-                            )}
-                        </Card>
+                                            </LocalizationProvider>
+                                        </CardContent>
+                                    )}
+                                </Card>
+                            </Grid>
+                        ))}
                     </Grid>
-                ))}
-            </Grid>
-            </Box>
-        </Box>
+                    </Box>
+                </Box>
+            )}
+            
+        </>
     );
 };
 

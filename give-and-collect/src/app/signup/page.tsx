@@ -8,8 +8,9 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import Image from 'next/image';
 import { signIn } from 'next-auth/react';
-import differenceInYears from 'date-fns/differenceInYears'; // Importez cette fonction pour vérifier l'âge
+import differenceInYears from 'date-fns/differenceInYears';
 import { SecretQuestion } from '@prisma/client';
+import Swal from 'sweetalert2'; // Import de SweetAlert2
 
 interface Role {
     id: number;
@@ -38,7 +39,6 @@ export default function Signup() {
         fetch('/api/role')
             .then(response => response.json())
             .then(data => {
-                // Filtrer les rôles pour exclure le rôle admin (id = 1)
                 const filteredRoles = data.filter((role: Role) => role.id !== 1);
                 setRole(filteredRoles);
             })
@@ -117,22 +117,38 @@ export default function Signup() {
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         if (formData.password !== formData.confirmPassword) {
-            alert("Les mots de passe ne correspondent pas");
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Les mots de passe ne correspondent pas!',
+            });
             return;
         }
 
         if (!isEmailValid(formData.email)) {
-            alert("L'adresse e-mail n'est pas valide");
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'L\'adresse e-mail n\'est pas valide!',
+            });
             return;
         }
 
         if (!isPhoneValid(formData.phone)) {
-            alert("Le numéro de téléphone n'est pas valide");
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Le numéro de téléphone n\'est pas valide!',
+            });
             return;
         }
 
         if (dob && differenceInYears(new Date(), dob) < 18) {
-            alert("Vous devez avoir au moins 18 ans pour vous inscrire");
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Vous devez avoir au moins 18 ans pour vous inscrire!',
+            });
             return;
         }
 
@@ -147,20 +163,41 @@ export default function Signup() {
 
             if (response.ok) {
                 const data = await response.json();
-                window.alert('Votre compte a bien été enregistré');
-                signIn();
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Bien joué!',
+                    text: 'Votre compte a bien été enregistré!',
+                }).then(() => {
+                    signIn();
+                });
             } else {
                 const errorData = await response.json();
                 if (errorData.error === 'Email already exists') {
-                    window.alert("L'adresse email est déjà utilisée");
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'L\'adresse email est déjà utilisée!',
+                    });
                 } else if (errorData.error === 'Phone number already exists') {
-                    window.alert("Le numéro de téléphone est déjà utilisé");
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'Le numéro de téléphone est déjà utilisé!',
+                    });
                 } else {
-                    window.alert('L\'inscription a échoué. Veuillez réessayer plus tard.');
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'L\'inscription a échoué. Veuillez réessayer plus tard.',
+                    });
                 }
             }
         } catch (error) {
-            window.alert('L\'inscription a échoué. Veuillez réessayer plus tard.');
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'L\'inscription a échoué. Veuillez réessayer plus tard.',
+            });
         }
     };
 
@@ -278,7 +315,7 @@ export default function Signup() {
                                                 <IconButton
                                                     onClick={togglePasswordVisibility}
                                                     edge="end"
-                                                    style={{ backgroundColor: 'black' }}
+                                                    style={{ backgroundColor: 'black', color: '#F4EEE0' }}
                                                 >
                                                     {showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
                                                 </IconButton>
@@ -326,7 +363,7 @@ export default function Signup() {
                                                 <IconButton
                                                     onClick={togglePasswordVisibility}
                                                     edge="end"
-                                                    style={{ backgroundColor: 'black' }}
+                                                    style={{ backgroundColor: 'black', color: '#F4EEE0' }}
                                                 >
                                                     {showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
                                                 </IconButton>

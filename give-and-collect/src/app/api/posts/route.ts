@@ -1,13 +1,12 @@
-import prisma from '../../../utils/db';
+import prisma from "@/utils/db";
 import {NextRequest, NextResponse} from "next/server";
 
-export async function POST(req: NextRequest, res: NextResponse) {
+export async function POST(req: NextRequest) {
     // Créer une nouvelle annonce
     const {address, city, postalCode, latitude, longitude, description, authorId, postTypeId, items} = await req.json();
 
     try {
         const categories: Set<string> = new Set(items.flatMap((item: any) => item.categories));
-        console.log('categories ', categories);
         const categoryNameById: Record<string, number> = {};
 
         for (let category of categories) {
@@ -58,7 +57,6 @@ export async function POST(req: NextRequest, res: NextResponse) {
 
         return NextResponse.json(post);
     } catch (error) {
-        console.log(error);
         return NextResponse.json({error: 'Erreur lors de la création de l\'annonce'}, {status: 500});
     }
 }
@@ -89,7 +87,6 @@ export async function GET(req: NextRequest) {
         });
         return NextResponse.json(posts);
     } catch (error) {
-        console.log(error);
         return NextResponse.json({ error: 'Erreur lors de la récupération des annonces' }, { status: 500 });
     }
 }
