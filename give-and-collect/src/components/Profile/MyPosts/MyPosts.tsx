@@ -26,7 +26,7 @@ const MyPosts: React.FC = () => {
             const data = await response.json();
             if (response.ok) {
                 // Filtrer les posts par l'ID de l'utilisateur connecté
-                const userPosts = data.filter((post: Post) => post.author.id === session.user.id);
+                const userPosts = data.filter((post: Post) => post.author.id === session?.user.id);
                 setPosts(userPosts);
             } else {
                 console.error('Erreur lors de la récupération des annonces:', data.error);
@@ -63,7 +63,7 @@ const MyPosts: React.FC = () => {
     }
 
     if (!posts){
-        return <Typography variant={"body1"}>Vous n'avez pas encore publier d'annonces </Typography>;
+        return <Typography variant={"body1"}>Vous n&apos;avez pas encore publier d&apos;annonces </Typography>;
     }
     return (
         <div>

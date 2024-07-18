@@ -2,8 +2,8 @@
 
 import React, { useState, useEffect } from 'react';
 import { SelectChangeEvent } from '@mui/material';
-import CollectionPointListMap from '../../components/CollectPoint/CollectionPointListMap';
 import Loader from '@/components/Loader/Loader';
+import dynamic from 'next/dynamic';
 
 interface CollectionPoint {
     id: number;
@@ -57,7 +57,9 @@ const CollectPointPage: React.FC = () => {
 
     const cities = ['Toutes', ...Array.from(new Set(pointsDeCollecte.map(point => point.city)))];
 
-
+    const CollectionPointListMap = dynamic(() => import('@/components/CollectPoint/CollectionPointListMap'), { ssr: false });
+    
+    
     return (
         <>
         {isLoading ? (

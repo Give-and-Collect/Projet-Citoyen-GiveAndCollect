@@ -16,8 +16,8 @@ type Props = {
     startDate: Date;
     endDate: Date;
     phone: string;
-    organizerId: number;
-    session: Session;
+    organizerId?: number;
+    session?: Session;
     homePageHeight?: boolean;
 };
 

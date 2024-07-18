@@ -1,12 +1,6 @@
 import {NextRequest, NextResponse} from "next/server";
 import prisma from "@/utils/db";
 
-export const config = {
-    api: {
-        bodyParser: false,
-    },
-};
-
 export async function DELETE(request: NextRequest, { params }: { params: { id: number } }) {
     const { id } = params;
 

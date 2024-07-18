@@ -12,10 +12,14 @@ import Image from "next/image";
 import Carousel from 'react-multi-carousel';
 import 'react-multi-carousel/lib/styles.css';
 import Loader from "../Loader/Loader";
+import { Event } from "@prisma/client";
+import { useSession } from "next-auth/react";
 
 const HomePage = () => {
-    const [events, setEvents] = React.useState([]);
+    const [events, setEvents] = React.useState<Event[]>([]);
     const [isLoading, setIsLoading] = React.useState(true);
+
+    const { data: session } = useSession();
 
     React.useEffect(() => {
         const fetchEvents = async () => {
@@ -23,7 +27,7 @@ const HomePage = () => {
                 setIsLoading(true);
                 const response = await fetch('api/events');
                 const data = await response.json();
-                const sortedEvents = data.sort((a, b) => new Date(a.startDate).getTime() - new Date(b.startDate).getTime());
+                const sortedEvents = data.sort((a: Event, b: Event) => new Date(a.startDate).getTime() - new Date(b.startDate).getTime());
                 setEvents(sortedEvents.slice(0, 3));
             } catch (error) {
                 console.error('An error occurred while fetching events:', error);
@@ -98,6 +102,8 @@ const HomePage = () => {
                                 {events.map((event, index) => (
                                     <Box key={index} sx={{ width: '100%' }}>
                                         <EventsCard
+                                            key={index}
+                                            id={event.id}
                                             title={event.title}
                                             description={event.description}
                                             address={event.address}
