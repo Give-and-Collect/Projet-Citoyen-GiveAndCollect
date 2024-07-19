@@ -42,11 +42,10 @@ const CollectionPointForm: React.FC<CollectionPointFormProps> = ({ open, onClose
             }
 
             const data = await response.json();
-            onSubmit(data); // Appel de la fonction de soumission passée en prop
-            onClose(); // Fermer la modal
+            onSubmit(data);
+            onClose();
         } catch (error) {
             console.error('Erreur lors de l\'ajout du point de collecte:', error);
-            // Vous pouvez ajouter une gestion d'erreur ici, si nécessaire
         }
     };
 
@@ -61,6 +60,7 @@ const CollectionPointForm: React.FC<CollectionPointFormProps> = ({ open, onClose
                         margin="normal"
                         value={address}
                         onChange={(e) => setAddress(e.target.value)}
+                        data-testid="address-input"
                     />
                     <TextField
                         label="Ville"
@@ -68,6 +68,7 @@ const CollectionPointForm: React.FC<CollectionPointFormProps> = ({ open, onClose
                         margin="normal"
                         value={city}
                         onChange={(e) => setCity(e.target.value)}
+                        data-testid="city-input"
                     />
                     <TextField
                         label="Code Postal"
@@ -75,6 +76,7 @@ const CollectionPointForm: React.FC<CollectionPointFormProps> = ({ open, onClose
                         margin="normal"
                         value={postalCode}
                         onChange={(e) => setPostalCode(e.target.value)}
+                        data-testid="postalcode-input"
                     />
                     <TextField
                         label="Latitude"
@@ -82,6 +84,7 @@ const CollectionPointForm: React.FC<CollectionPointFormProps> = ({ open, onClose
                         margin="normal"
                         value={latitude}
                         onChange={(e) => setLatitude(e.target.value)}
+                        data-testid="latitude-input"
                     />
                     <TextField
                         label="Longitude"
@@ -89,6 +92,7 @@ const CollectionPointForm: React.FC<CollectionPointFormProps> = ({ open, onClose
                         margin="normal"
                         value={longitude}
                         onChange={(e) => setLongitude(e.target.value)}
+                        data-testid="longitude-input"
                     />
                     <TextField
                         label="Description"
@@ -96,10 +100,11 @@ const CollectionPointForm: React.FC<CollectionPointFormProps> = ({ open, onClose
                         margin="normal"
                         value={description}
                         onChange={(e) => setDescription(e.target.value)}
+                        data-testid="description-input"
                     />
                     <DialogActions>
-                        <Button onClick={onClose} color="primary">Annuler</Button>
-                        <Button type="submit" color="primary">Ajouter</Button>
+                        <Button onClick={onClose} color="primary" data-testid="cancel-button" variant="outlined">Annuler</Button>
+                        <Button type="submit" color="success" data-testid="submit-button" variant="contained">Ajouter</Button>
                     </DialogActions>
                 </form>
             </DialogContent>

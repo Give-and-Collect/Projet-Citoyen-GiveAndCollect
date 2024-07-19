@@ -5,7 +5,6 @@ import { Container, Typography, Box, Button } from '@mui/material';
 import CollectionPointsCard from '@/components/CollectPoint/CollectionPointsCard';
 import CollectionPointForm from '@/components/CollectPoint/CollectionPointForm';
 import Loader from '@/components/Loader/Loader';
-import Swal from 'sweetalert2';
 
 interface CollectionPoint {
     id: number;
@@ -53,44 +52,23 @@ const CollectionPointsPage: React.FC = () => {
 
     const handleDelete = async (id: number) => {
         try {
-            const result = await Swal.fire({
-                title: 'Êtes-vous sûr?',
-                text: "Vous ne pourrez pas récupérer ce point de collecte !",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Oui, supprimer!',
-                cancelButtonText: 'Annuler'
-            });
+            // Simuler la confirmation sans alerte
+            const userConfirmed = window.confirm("Êtes-vous sûr de vouloir supprimer ce point de collecte ?");
 
-            if (result.isConfirmed) {
+            if (userConfirmed) {
                 const response = await fetch(`/api/collection-point/${id}`, {
                     method: 'DELETE',
                 });
 
                 if (response.ok) {
-                    const data = await response.json();
-                    console.log('Point de collecte supprimé:', data);
-
-                    await Swal.fire({
-                        icon: 'success',
-                        title: 'Supprimé!',
-                        text: 'Le point de collecte a été supprimé.',
-                    });
-
+                    console.log('Point de collecte supprimé:', await response.json());
                     fetchCollectionPoints(); // Recharger les points après suppression
                 } else {
-                    throw new Error('Erreur lors de la suppression du point de collecte.');
+                    console.error('Erreur lors de la suppression du point de collecte.');
                 }
             }
         } catch (error) {
             console.error('Erreur lors de la suppression du point de collecte:', error);
-            await Swal.fire({
-                icon: 'error',
-                title: 'Erreur',
-                text: 'Erreur lors de la suppression du point de collecte.',
-            });
         }
     };
 
@@ -98,22 +76,12 @@ const CollectionPointsPage: React.FC = () => {
         try {
             // Optionnel : ajouter le point localement avant d'attendre la confirmation du serveur
             setPoints(prevPoints => [newPoint, ...prevPoints]);
-
-            await Swal.fire({
-                icon: 'success',
-                title: 'Ajouté!',
-                text: 'Le point de collecte a été ajouté.',
-            });
+            console.log('Point de collecte ajouté:', newPoint);
 
             fetchCollectionPoints(); // Recharger les points après ajout
             closeModal(); // Fermer la modal après ajout réussi
         } catch (error) {
             console.error('Erreur lors de l\'ajout du point de collecte:', error);
-            await Swal.fire({
-                icon: 'error',
-                title: 'Erreur',
-                text: 'Erreur lors de l\'ajout du point de collecte.',
-            });
         }
     };
 
@@ -142,7 +110,12 @@ const CollectionPointsPage: React.FC = () => {
                     )}
 
                     <Box display="flex" justifyContent="flex-end" mb={2}>
-                        <Button variant="contained" color="secondary" onClick={openModal}>
+                        <Button
+                            variant="contained"
+                            color="secondary"
+                            onClick={openModal}
+                            data-testid="add-button"
+                        >
                             Ajouter un point de collecte
                         </Button>
                     </Box>
