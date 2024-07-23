@@ -1,5 +1,5 @@
 import { NextRequest } from 'next/server';
-import { POST, GET, defaultHandler } from '@/app/api/collection-point/route';
+import { POST, GET } from '@/app/api/collection-point/route';
 import prisma from '@/utils/db';
 
 describe('POST /api/collection-point', () => {
@@ -97,16 +97,3 @@ describe('GET /api/collection-point', () => {
     });
 });
 
-describe('Test response for an unauthorized HTTP method', () => {
-    it('should return 405 Method Not Allowed', async () => {
-        const request = new NextRequest('http://localhost/api/collection-point', {
-            method: 'DELETE',
-        });
-
-        const response = await defaultHandler(request);
-        const json = await response.json();
-
-        expect(response.status).toBe(405);
-        expect(json.error).toBe('Method Not Allowed');
-    });
-});
