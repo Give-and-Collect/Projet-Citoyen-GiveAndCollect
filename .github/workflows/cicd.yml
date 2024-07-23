@@ -39,10 +39,11 @@ jobs:
         working-directory: give-and-collect
         run: npm run build
 
-
   e2e-tests:
     runs-on: ubuntu-latest
     needs: [build]
+    env:
+      EMAIL_USER: ${{ secrets.EMAIL_USER }}
     strategy:
       matrix:
         browser: ['chrome', 'edge']
