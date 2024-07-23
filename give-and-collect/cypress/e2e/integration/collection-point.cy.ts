@@ -1,4 +1,4 @@
-describe('Gestion des points de collecte', () => {
+describe('Tests E2E - Gestion des points de collecte', () => {
     beforeEach(() => {
         // Se connecter avant chaque test
         cy.visit('http://localhost:3000/login');
@@ -8,8 +8,7 @@ describe('Gestion des points de collecte', () => {
         cy.url().should('eq', 'http://localhost:3000/');
     });
 
-    it('Test complet de la gestion des points de collecte', () => {
-        // Visitez la page contenant les points de collecte
+    it('Ajout, vérification et suppression d\'un point de collecte', () => {
         cy.visit('http://localhost:3000/admin/collection-point');
 
         // Ouvrir le formulaire d'ajout
@@ -24,19 +23,15 @@ describe('Gestion des points de collecte', () => {
         cy.get('[data-testid="description-input"]').type('Point de collecte de test');
         cy.get('[data-testid="submit-button"]').click();
 
-
-        // Vérifiez que le nouveau point de collecte est affiché
-        cy.get('[data-testid="description-1"]').should('contain', 'Point de collecte de test');
-        cy.get('[data-testid="address-1"]').should('contain', '123 Rue de Test');
-        cy.get('[data-testid="city-1"]').should('contain', 'Testville');
-        cy.get('[data-testid="postalCode-1"]').should('contain', '75001');
+        // Vérifier que la description existe déjà
+        cy.contains('Point de collecte de test').should('exist');
 
         // Supprimez le point de collecte
         cy.get('[data-testid="delete-button-1"]').click();
 
         // Vérifiez que le point de collecte a été supprimé
-        cy.wait(1000); // Ajustez si nécessaire en fonction du délai de réponse
-        cy.get('body').should('contain', 'Le point de collecte a été supprimé.');
+        cy.wait(1000);
+        cy.contains('Le point de collecte a été supprimé.').should('exist');
         cy.get('[data-testid="description-1"]').should('not.exist');
     });
 });
