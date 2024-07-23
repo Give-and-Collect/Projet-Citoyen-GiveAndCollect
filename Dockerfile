@@ -9,7 +9,7 @@ RUN apt-get update -yq \
 && apt-get install nodejs -yq \
 && apt-get clean -y
 
-ADD . /app/
+ADD give-and-collect /app/
 
 WORKDIR /app
 
