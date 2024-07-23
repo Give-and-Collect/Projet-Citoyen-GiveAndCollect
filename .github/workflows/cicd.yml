@@ -7,6 +7,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      EMAIL_USER: ${{ secrets.EMAIL_USER }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -36,6 +38,7 @@ jobs:
       - name: Build project
         working-directory: give-and-collect
         run: npm run build
+
 
   e2e-tests:
     runs-on: ubuntu-latest
