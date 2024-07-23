@@ -1,4 +1,5 @@
 import prisma from "@/utils/db";
+import { Event } from "@prisma/client";
 import { NextResponse } from "next/server";
 import { NextRequest } from "next/server";
 
@@ -6,7 +7,7 @@ export async function GET(request: NextRequest, { params }: { params: { city: st
   const { city } = params;
 
   try {
-    let events = [];
+    let events: Event[] = [];
 
     // Fetch events for the specified city
     if (city) {

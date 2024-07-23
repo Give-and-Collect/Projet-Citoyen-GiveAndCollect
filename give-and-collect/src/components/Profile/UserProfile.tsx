@@ -30,7 +30,7 @@ const UserProfilePage = () => {
         }
     }, [session]);
 
-    const fetchUserProfile = async (userId: string) => {
+    const fetchUserProfile = async (userId: number) => {
         try {
             setIsLoading(true);
             const response = await fetch(`/api/profil/${userId}`);

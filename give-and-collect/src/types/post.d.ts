@@ -20,18 +20,26 @@ export interface Category {
     type: string;
 }
 
+export interface ItemCategory {
+    id: number;
+    item: PostItem;
+    category: Category;
+}
+
 export interface Role {
     id: number;
     name: string;
 }
 
 export interface PostItem {
+    id: number;
     size: string;
     quantity: number;
-    categories: { id: number; itemId: number; categoryId: number }[];
+    ItemCategory: ItemCategory[];
 }
 
 interface Author {
+    id: number;
     firstname: string;
     lastname: string;
     email: string;
@@ -48,12 +56,7 @@ export interface Post {
     postalCode: string;
     description: string;
     creationDate: string;
-    author: {
-        firstname: string;
-        lastname: string;
-        email: string;
-        roleId: number;
-    };
+    author: Author;
     postType: {
         name: string;
     };

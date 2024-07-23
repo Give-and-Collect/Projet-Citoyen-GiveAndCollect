@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import PostsCard from '@/components/Posts/PostsCard';
 import { Post } from '@/types/post';
@@ -13,30 +13,29 @@ const MyPosts: React.FC = () => {
 
     const [isLoading, setIsLoading] = useState(true);
 
-    useEffect(() => {
-        if (session) {
-            fetchMyPosts();
-        }
-    }, [session]);
-
-    const fetchMyPosts = async () => {
+    const fetchMyPosts = useCallback(async () => {
         try {
             setIsLoading(true);
             const response = await fetch('/api/posts');
             const data = await response.json();
             if (response.ok) {
-                // Filtrer les posts par l'ID de l'utilisateur connecté
-                const userPosts = data.filter((post: Post) => post.author.id === session.user.id);
+                const userPosts = data.filter((post: Post) => post.author.id === session?.user.id);
                 setPosts(userPosts);
             } else {
                 console.error('Erreur lors de la récupération des annonces:', data.error);
             }
         } catch (error) {
-            console.error('Erreur lors de la récupération des annonces:', error);
+            console.error('Failed to fetch posts:', error);
         } finally {
             setIsLoading(false);
         }
-    };
+    }, [session]);
+
+    useEffect(() => {
+        if (session) {
+            fetchMyPosts();
+        }
+    }, [session, fetchMyPosts]);
 
     const handlePostDelete = async (id: number, authorId: number) => {
         try {
@@ -63,7 +62,7 @@ const MyPosts: React.FC = () => {
     }
 
     if (!posts){
-        return <Typography variant={"body1"}>Vous n'avez pas encore publier d'annonces </Typography>;
+        return <Typography variant={"body1"}>Vous n&apos;avez pas encore publier d&apos;annonces </Typography>;
     }
     return (
         <div>

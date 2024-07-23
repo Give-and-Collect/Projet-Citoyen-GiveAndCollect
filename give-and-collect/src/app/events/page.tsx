@@ -11,8 +11,8 @@ import * as React from "react";
 
 export default function Events() {
     const [city, setCity] = React.useState('');
-    const [cityList, setCityList] = React.useState([]);
-    const [events, setEvents] = React.useState([]);
+    const [cityList, setCityList] = React.useState<string[]>([]);
+    const [events, setEvents] = React.useState<Event[]>([]);
     const [isLoading, setIsLoading] = React.useState(true);
     const [modalIsOpen, setModalIsOpen] = React.useState(false);
 
@@ -52,7 +52,7 @@ export default function Events() {
           const response = await fetch('api/events');
           const data = await response.json();
           if (data.length > 0) {
-            const cities = data.map(event => event.city);
+            const cities: string[] = data.map((event: Event) => event.city);
             const uniqueCities = [...new Set(cities)];
             setCityList(uniqueCities);
           } else {
@@ -125,7 +125,7 @@ export default function Events() {
                 isOpen={modalIsOpen}
                 onClose={closeModal}
                 onEventCreated={eventCreated}
-                session={session}
+                session={session!}
             />
 
             {sortedEvents.length > 0 ? (
@@ -172,7 +172,7 @@ export default function Events() {
                       endDate={new Date(event.endDate)}
                       phone={event.phone}
                       organizerId={event.organizerId}
-                      session={session}
+                      session={session!}
                     />
                   ))}
                   {/* Pagination */}
