@@ -4,8 +4,8 @@ describe('User authentication', () => {
         cy.visit('http://localhost:3000/login'); // Assurez-vous de remplacer l'URL par celle de votre page de connexion
 
         // Entrer les identifiants
-        cy.get('input[name="email"]').type('cypress@yopmail.com');
-        cy.get('input[name="password"]').type('Cypress.123');
+        cy.get('input[name="email"]').type(Cypress.env('CYPRESS_EMAIL'), { delay: 100 });
+        cy.get('input[name="password"]').type(Cypress.env('CYPRESS_PASSWORD'), { delay: 100 });
 
         // Cliquer sur le bouton "Se connecter" en utilisant cy.get
         cy.get('button').contains('Se connecter').click();

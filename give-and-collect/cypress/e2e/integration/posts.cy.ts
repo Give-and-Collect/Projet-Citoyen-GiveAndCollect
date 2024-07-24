@@ -2,8 +2,8 @@ describe('creation posts', () => {
     beforeEach(() => {
         // Se connecter avant chaque test
         cy.visit('http://localhost:3000/login');
-        cy.get('input[name="email"]').type('cypress@yopmail.com');
-        cy.get('input[name="password"]').type('Cypress.123');
+        cy.get('input[name="email"]').type(Cypress.env('CYPRESS_EMAIL'), { delay: 100 });
+        cy.get('input[name="password"]').type(Cypress.env('CYPRESS_PASSWORD'), { delay: 100 });
         cy.get('button').contains('Se connecter').click();
         cy.url().should('eq', 'http://localhost:3000/');
     });
@@ -15,7 +15,6 @@ describe('creation posts', () => {
         cy.get('button').contains('Ajouter une annonce', { timeout: 10000 }).should('be.visible').click();
 
         cy.get('label').contains('Adresse').parent().find('input').should('be.visible').type('adresse de test');
-
         cy.get('label').contains('Ville').parent().find('input').should('be.visible').type('Sample City');
         cy.get('label').contains('Code Postal').parent().find('input').should('be.visible').type('12345');
         cy.get('label').contains('Description').parent().find('input').should('be.visible').type('Sample description');
