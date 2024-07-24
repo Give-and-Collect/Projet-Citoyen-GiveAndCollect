@@ -5,7 +5,7 @@ import { CollectionPoint } from '@/types/collectionPoint';
 interface CollectionPointFormProps {
     open: boolean;
     onClose: () => void;
-    onSubmit: (point: CollectionPoint) => void;
+    onSubmit: (point: CollectionPoint) => Promise<void>;
 }
 
 const CollectionPointForm: React.FC<CollectionPointFormProps> = ({ open, onClose, onSubmit }) => {
@@ -20,12 +20,14 @@ const CollectionPointForm: React.FC<CollectionPointFormProps> = ({ open, onClose
         event.preventDefault();
 
         const newPoint = {
+            id: 0,
             address,
             city,
             postalCode,
             latitude,
             longitude,
             description,
+            isActive: true,
         };
 
         try {
@@ -42,7 +44,7 @@ const CollectionPointForm: React.FC<CollectionPointFormProps> = ({ open, onClose
             }
 
             const data = await response.json();
-            onSubmit(data);
+            await onSubmit(data);
             onClose();
         } catch (error) {
             console.error('Erreur lors de l\'ajout du point de collecte:', error);

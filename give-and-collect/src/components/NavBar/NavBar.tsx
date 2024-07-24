@@ -268,7 +268,7 @@ function ResponsiveAppBar() {
                       <Link href={"/admin/collection-point"}>
                         <Typography textAlign="center" sx={{ display: 'flex', alignItems: 'center' }}>
                           <LocationOnIcon  sx={{ marginRight: '10px' }} />
-                          <span>Point de collect</span>
+                          <span>Points de collecte</span>
                         </Typography>
                       </Link>
                     </MenuItem>
