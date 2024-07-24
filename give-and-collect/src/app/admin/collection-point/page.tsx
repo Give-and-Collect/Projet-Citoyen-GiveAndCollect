@@ -5,17 +5,7 @@ import { Container, Typography, Box, Button } from '@mui/material';
 import CollectionPointsCard from '@/components/CollectPoint/CollectionPointsCard';
 import CollectionPointForm from '@/components/CollectPoint/CollectionPointForm';
 import Loader from '@/components/Loader/Loader';
-
-interface CollectionPoint {
-    id: number;
-    address: string;
-    city: string;
-    postalCode: string;
-    latitude: string;
-    longitude: string;
-    description: string;
-    isActive: boolean;
-}
+import { CollectionPoint } from '@/types/collectionPoint'; // Importer le type
 
 const CollectionPointsPage: React.FC = () => {
     const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -52,9 +42,7 @@ const CollectionPointsPage: React.FC = () => {
 
     const handleDelete = async (id: number) => {
         try {
-            // Simuler la confirmation sans alerte
             const userConfirmed = window.confirm("Êtes-vous sûr de vouloir supprimer ce point de collecte ?");
-
             if (userConfirmed) {
                 const response = await fetch(`/api/collection-point/${id}`, {
                     method: 'DELETE',
@@ -74,7 +62,6 @@ const CollectionPointsPage: React.FC = () => {
 
     const handleAddPoint = async (newPoint: CollectionPoint) => {
         try {
-            // Optionnel : ajouter le point localement avant d'attendre la confirmation du serveur
             setPoints(prevPoints => [newPoint, ...prevPoints]);
             console.log('Point de collecte ajouté:', newPoint);
 

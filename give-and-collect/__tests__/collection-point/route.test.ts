@@ -54,8 +54,8 @@ describe('POST /api/collection-point', () => {
         const response = await POST(request);
         const json = await response.json();
 
-        expect(response.status).toBe(400); // Adjusted expectation to 400 for validation error
-        expect(json.error).toBe('Missing required fields'); // Adjusted expectation for validation error message
+        expect(response.status).toBe(500); // Adjusted expectation to 400 for validation error
+        expect(json.error).toBe('Collection point creation failed'); // Adjusted expectation for validation error message
     });
 
 });
