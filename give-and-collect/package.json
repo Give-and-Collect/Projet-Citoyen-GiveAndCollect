@@ -8,7 +8,9 @@
     "start": "next start",
     "lint": "next lint",
     "test": "jest",
-    "test:watch": "jest --watch"
+    "test:watch": "jest --watch",
+    "cypress": "cypress run --headless",
+    "runHeaded": "./node_modules/.bin/cypress run --headed --browser chrome"
   },
   "dependencies": {
     "@date-io/date-fns": "^2.17.0",
