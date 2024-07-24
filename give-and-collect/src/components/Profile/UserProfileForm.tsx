@@ -1,3 +1,4 @@
+import React from 'react';
 import {
     Avatar,
     Box,
@@ -10,9 +11,9 @@ import {
     Grid,
     Input,
     TextField,
-    Typography,
     Chip,
 } from '@mui/material';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 
 interface FormData {
     firstname: string;
@@ -51,11 +52,7 @@ const UserProfileForm = ({
                 <CardHeader title="Profil Utilisateur" />
                 <CardContent>
                     <Box sx={{ display: 'flex', justifyContent: 'center', mb: 3 }}>
-                        <Avatar
-                            alt={formData.firstname}
-                            src={formData.profilePicture ? URL.createObjectURL(formData.profilePicture) : '/default-avatar.png'}
-                            sx={{ width: 100, height: 100 }}
-                        />
+                        <AccountCircleIcon sx={{ fontSize: 170 }} />
                     </Box>
                     <Grid container spacing={2}>
                         <Grid item xs={12}>
@@ -110,17 +107,6 @@ const UserProfileForm = ({
                                 onChange={handleChange}
                                 disabled={!editing}
                             />
-                        </Grid>
-                        <Grid item xs={12} marginBottom={2}>
-                            <FormControl fullWidth disabled={!editing}>
-                                <FormLabel>Photo de profil</FormLabel>
-                                <Input
-                                    name="profilePicture"
-                                    type="file"
-                                    onChange={handleFileChange}
-                                    disableUnderline
-                                />
-                            </FormControl>
                         </Grid>
                     </Grid>
 
