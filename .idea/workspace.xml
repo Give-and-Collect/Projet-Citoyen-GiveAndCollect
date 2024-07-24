@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="e1dc5287-180e-42b1-a883-e0cf36bfc369" name="Changes" comment="feat: :sparkles: docker" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="test-E2E" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 4
+}</component>
+  <component name="ProjectId" id="2jexLwYFXvKnnJ9L5DdrsFiSxEc" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Jest.GET /api/category.should return a list of categories with status 200.executor": "Run",
+    "Jest.GET /api/category.should return an empty list with status 200 if no categories are found.executor": "Run",
+    "Jest.GET /api/category.should return an error message with status 500 if there is a database connection error.executor": "Run",
+    "Jest.POST /api/collection-point.Test creating a collection point with valid data.executor": "Run",
+    "Jest.POST /api/contact.Test sending email when EMAIL_USER environment variable is not defined.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "feature-ci-cd",
+    "last_opened_file_path": "C:/Users/achra/Documents/Projet/Projet-Citoyen-GiveAndCollect",
+    "node.js.detected.package.eslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs.jest.jest_package": "C:/Users/achra/Documents/Projet/Projet-Citoyen-GiveAndCollect/give-and-collect/node_modules/jest",
+    "nodejs_package_manager_path": "npm",
+    "npm.build.executor": "Run",
+    "ts.external.directory.path": "C:\\Users\\achra\\Documents\\Projet\\Projet-Citoyen-GiveAndCollect\\give-and-collect\\node_modules\\typescript\\lib",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\achra\Documents\Projet\Projet-Citoyen-GiveAndCollect" />
+      <recent name="C:\Users\achra\Documents\Projet\Projet-Citoyen-GiveAndCollect\give-and-collect" />
+    </key>
+  </component>
+  <component name="RunManager" selected="npm.build">
+    <configuration name="GET /api/category.should return an empty list with status 200 if no categories are found" type="JavaScriptTestRunnerJest" temporary="true" nameIsGenerated="true">
+      <node-interpreter value="project" />
+      <jest-package value="$PROJECT_DIR$/give-and-collect/node_modules/jest" />
+      <working-dir value="$PROJECT_DIR$/give-and-collect" />
+      <envs />
+      <scope-kind value="TEST" />
+      <test-file value="$PROJECT_DIR$/give-and-collect/__tests__/category/route.test.ts" />
+      <test-names>
+        <test-name value="GET /api/category" />
+        <test-name value="should return an empty list with status 200 if no categories are found" />
+      </test-names>
+      <method v="2" />
+    </configuration>
+    <configuration name="GET /api/category.should return an error message with status 500 if there is a database connection error" type="JavaScriptTestRunnerJest" temporary="true" nameIsGenerated="true">
+      <node-interpreter value="project" />
+      <jest-package value="$PROJECT_DIR$/give-and-collect/node_modules/jest" />
+      <working-dir value="$PROJECT_DIR$/give-and-collect" />
+      <envs />
+      <scope-kind value="TEST" />
+      <test-file value="$PROJECT_DIR$/give-and-collect/__tests__/category/route.test.ts" />
+      <test-names>
+        <test-name value="GET /api/category" />
+        <test-name value="should return an error message with status 500 if there is a database connection error" />
+      </test-names>
+      <method v="2" />
+    </configuration>
+    <configuration name="POST /api/collection-point.Test creating a collection point with valid data" type="JavaScriptTestRunnerJest" temporary="true" nameIsGenerated="true">
+      <node-interpreter value="project" />
+      <jest-package value="$PROJECT_DIR$/give-and-collect/node_modules/jest" />
+      <working-dir value="$PROJECT_DIR$/give-and-collect" />
+      <envs />
+      <scope-kind value="TEST" />
+      <test-file value="$PROJECT_DIR$/give-and-collect/__tests__/collection-point/route.test.ts" />
+      <test-names>
+        <test-name value="POST /api/collection-point" />
+        <test-name value="Test creating a collection point with valid data" />
+      </test-names>
+      <method v="2" />
+    </configuration>
+    <configuration name="POST /api/contact.Test sending email when EMAIL_USER environment variable is not defined" type="JavaScriptTestRunnerJest" temporary="true" nameIsGenerated="true">
+      <node-interpreter value="project" />
+      <jest-package value="$PROJECT_DIR$/give-and-collect/node_modules/jest" />
+      <working-dir value="$PROJECT_DIR$/give-and-collect" />
+      <envs />
+      <scope-kind value="TEST" />
+      <test-file value="$PROJECT_DIR$/give-and-collect/__tests__/contact/route.test.ts" />
+      <test-names>
+        <test-name value="POST /api/contact" />
+        <test-name value="Test sending email when EMAIL_USER environment variable is not defined" />
+      </test-names>
+      <method v="2" />
+    </configuration>
+    <configuration name="build" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
+      <package-json value="$PROJECT_DIR$/give-and-collect/package.json" />
+      <command value="run" />
+      <scripts>
+        <script value="build" />
+      </scripts>
+      <node-interpreter value="project" />
+      <envs />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="npm.build" />
+        <item itemvalue="Jest.POST /api/contact.Test sending email when EMAIL_USER environment variable is not defined" />
+        <item itemvalue="Jest.POST /api/collection-point.Test creating a collection point with valid data" />
+        <item itemvalue="Jest.GET /api/category.should return an error message with status 500 if there is a database connection error" />
+        <item itemvalue="Jest.GET /api/category.should return an empty list with status 200 if no categories are found" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-js-predefined-1d06a55b98c1-0b3e54e931b4-JavaScript-WS-241.17011.90" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="e1dc5287-180e-42b1-a883-e0cf36bfc369" name="Changes" comment="" />
+      <created>1721761300477</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1721761300477</updated>
+      <workItem from="1721761302054" duration="4834000" />
+      <workItem from="1721768301310" duration="4938000" />
+      <workItem from="1721830915639" duration="15298000" />
+      <workItem from="1721853321652" duration="3538000" />
+    </task>
+    <task id="LOCAL-00001" summary="Merge branch 'dev' into test-E2E">
+      <option name="closed" value="true" />
+      <created>1721764756360</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1721764756361</updated>
+    </task>
+    <task id="LOCAL-00002" summary="feat: :sparkles: change refacto">
+      <option name="closed" value="true" />
+      <created>1721768427102</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1721768427102</updated>
+    </task>
+    <task id="LOCAL-00003" summary="feat: :sparkles: change refacto">
+      <option name="closed" value="true" />
+      <created>1721768624403</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1721768624403</updated>
+    </task>
+    <task id="LOCAL-00004" summary="feat: :sparkles: change refacto">
+      <option name="closed" value="true" />
+      <created>1721768682990</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1721768682990</updated>
+    </task>
+    <task id="LOCAL-00005" summary="feat: :sparkles: change refacto">
+      <option name="closed" value="true" />
+      <created>1721768865519</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1721768865519</updated>
+    </task>
+    <task id="LOCAL-00006" summary="feat: :sparkles: change refacto">
+      <option name="closed" value="true" />
+      <created>1721769062810</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1721769062810</updated>
+    </task>
+    <task id="LOCAL-00007" summary="feat: :sparkles: change refacto">
+      <option name="closed" value="true" />
+      <created>1721769130483</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1721769130483</updated>
+    </task>
+    <task id="LOCAL-00008" summary="feat: :sparkles: cicd">
+      <option name="closed" value="true" />
+      <created>1721769259284</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1721769259285</updated>
+    </task>
+    <task id="LOCAL-00009" summary="feat: :sparkles: cicd">
+      <option name="closed" value="true" />
+      <created>1721774695193</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1721774695193</updated>
+    </task>
+    <task id="LOCAL-00010" summary="feat: :sparkles: add mail and password in .env">
+      <option name="closed" value="true" />
+      <created>1721835569687</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1721835569687</updated>
+    </task>
+    <task id="LOCAL-00011" summary="feat: :sparkles: add 2 cicd dev and main">
+      <option name="closed" value="true" />
+      <created>1721843777233</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1721843777233</updated>
+    </task>
+    <task id="LOCAL-00012" summary="feat: :sparkles: docker">
+      <option name="closed" value="true" />
+      <created>1721854047941</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1721854047941</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Merge branch 'dev' into test-E2E" />
+    <MESSAGE value="feat: :sparkles: change refacto" />
+    <MESSAGE value="feat: :sparkles: cicd" />
+    <MESSAGE value="Merge branch 'dev' into feature-ci-cd" />
+    <MESSAGE value="feat: :sparkles: add mail and password in .env" />
+    <MESSAGE value="feat: :sparkles: add 2 cicd dev and main" />
+    <MESSAGE value="feat: :sparkles: docker" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat: :sparkles: docker" />
+  </component>
+</project>

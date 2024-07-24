@@ -1,0 +1,102 @@
+Index: Dockerfile
+===================================================================
+diff --git a/Dockerfile b/Dockerfile
+deleted file mode 100644
+--- a/Dockerfile	(revision 6355b6b8fad977bc6ebe7496ab4f1251ad334289)
++++ /dev/null	(revision 6355b6b8fad977bc6ebe7496ab4f1251ad334289)
+@@ -1,21 +0,0 @@
+-# FROM node:20-alpine3.18
+-FROM debian:10
+-
+-LABEL org.opencontainers.image.source=https://github.com/OWNER/REPO
+-
+-RUN apt-get update -yq \
+-&& apt-get install curl gnupg -yq \
+-&& curl -sL https://deb.nodesource.com/setup_18.x | bash \
+-&& apt-get install nodejs -yq \
+-&& apt-get clean -y
+-
+-ADD give-and-collect /app/
+-
+-WORKDIR /app
+-
+-RUN npm install
+-RUN npm run build
+-
+-EXPOSE 3000
+-
+-CMD npm run start
+\ No newline at end of file
+Index: give-and-collect/Dockerfile
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/give-and-collect/Dockerfile b/give-and-collect/Dockerfile
+new file mode 100644
+--- /dev/null	(date 1721848554578)
++++ b/give-and-collect/Dockerfile	(date 1721848554578)
+@@ -0,0 +1,25 @@
++# Utiliser une image Node.js comme base
++FROM node:20-alpine
++
++# Ajouter un label pour indiquer la source du code
++LABEL org.opencontainers.image.source=https://github.com/OWNER/REPO
++
++# Définir le répertoire de travail
++WORKDIR /app
++
++COPY package*.json ./
++
++# Installer les dépendances de l'application
++RUN npm install
++
++# Copier le reste des fichiers de l'application dans le conteneur
++COPY .. .
++
++# Construire l'application
++RUN npm run build
++
++# Exposer le port sur lequel l'application va écouter
++EXPOSE 3000
++
++# Définir la commande par défaut à exécuter lorsque le conteneur démarre
++CMD ["npm", "run", "start"]
+Index: docker-compose.yml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/docker-compose.yml b/docker-compose.yml
+new file mode 100644
+--- /dev/null	(date 1721848652672)
++++ b/docker-compose.yml	(date 1721848652672)
+@@ -0,0 +1,28 @@
++version: '3.9'
++
++services:
++  app:
++    build:
++      context: give-and-collect
++      dockerfile: Dockerfile
++    ports:
++      - "3000:3000"
++    environment:
++      DATABASE_URL: ${DATABASE_URL}
++      NEXTAUTH_SECRET: ${NEXTAUTH_SECRET}
++      EMAIL_USER: ${EMAIL_USER}
++      EMAIL_PASS: ${EMAIL_PASS}
++      CYPRESS_EMAIL: ${CYPRESS_EMAIL}
++      CYPRESS_PASSWORD: ${CYPRESS_PASSWORD}
++    volumes:
++      - .:/app
++
++  cypress:
++    image: cypress/included:12.12.0
++    depends_on:
++      - app
++    environment:
++      CYPRESS_BASE_URL: http://app:3000
++      CYPRESS_EMAIL: ${CYPRESS_EMAIL}
++      CYPRESS_PASSWORD: ${CYPRESS_PASSWORD}
++    entrypoint: [ "npx", "cypress", "run" ]
