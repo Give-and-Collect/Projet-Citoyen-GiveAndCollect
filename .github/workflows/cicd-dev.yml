@@ -1,0 +1,67 @@
+name: CI/CD Dev
+
+on:
+  push:
+    branches:
+      - dev
+
+jobs:
+  run-tests:
+    runs-on: ubuntu-latest
+    env:
+      EMAIL_USER: ${{ secrets.EMAIL_USER }}
+      EMAIL_PASS: ${{ secrets.EMAIL_PASS }}
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
+      CYPRESS_EMAIL: ${{ secrets.CYPRESS_EMAIL }}
+      CYPRESS_PASSWORD: ${{ secrets.CYPRESS_PASSWORD }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+
+      - name: Cache node_modules
+        id: cache-node_modules
+        uses: actions/cache@v3
+        with:
+          path: give-and-collect/node_modules
+          key: ${{ runner.os }}-node_modules-${{ hashFiles('give-and-collect/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node_modules-
+
+      - name: Install dependencies
+        working-directory: give-and-collect
+        run: npm install
+
+      - name: Run unit tests
+        working-directory: give-and-collect
+        run: npm run test
+
+      - name: Start application for E2E tests
+        working-directory: give-and-collect
+        run: npm run start &
+        continue-on-error: true
+        timeout-minutes: 1
+
+      - name: Run Cypress E2E tests
+        uses: cypress-io/github-action@v4
+        with:
+          browser: 'chrome'
+
+      - name: Upload Cypress videos
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: cypress-videos
+          path: give-and-collect/cypress/videos
+
+      - name: Upload Cypress screenshots
+        uses: actions/upload-artifact@v3
+        if: failure()
+        with:
+          name: cypress-screenshots
+          path: give-and-collect/cypress/screenshots
