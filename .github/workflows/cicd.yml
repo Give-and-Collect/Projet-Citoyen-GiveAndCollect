@@ -7,21 +7,90 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-
+    env:
+      EMAIL_USER: ${{ secrets.EMAIL_USER }}
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v2
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
         with:
-          node-version: '18'
+          node-version: '20'
+
+      - name: Cache node_modules
+        id: cache-node_modules
+        uses: actions/cache@v3
+        with:
+          path: give-and-collect/node_modules
+          key: ${{ runner.os }}-node_modules-${{ hashFiles('give-and-collect/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node_modules-
 
       - name: Install dependencies
+        working-directory: give-and-collect
         run: npm install
 
-      - name: Run tests
-        run: npm test
+      - name: Run unit tests
+        working-directory: give-and-collect
+        run: npm run test
 
-      - name: Build application
+      - name: Build project
+        working-directory: give-and-collect
         run: npm run build
+
+  e2e-tests:
+    runs-on: ubuntu-latest
+    needs: [build]
+    env:
+      EMAIL_USER: ${{ secrets.EMAIL_USER }}
+    strategy:
+      matrix:
+        browser: ['chrome', 'edge']
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+
+      - name: Cache node_modules
+        id: cache-node_modules
+        uses: actions/cache@v3
+        with:
+          path: give-and-collect/node_modules
+          key: ${{ runner.os }}-node_modules-${{ hashFiles('give-and-collect/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node_modules-
+
+      - name: Install dependencies
+        working-directory: give-and-collect
+        run: npm install
+
+      - name: Start application
+        working-directory: give-and-collect
+        run: npm run start &
+        # Ensure the app has time to start
+        continue-on-error: true
+        timeout-minutes: 1
+
+      - name: Run Cypress tests
+        uses: cypress-io/github-action@v4
+        with:
+          browser: ${{ matrix.browser }}
+
+      - name: Upload Cypress videos
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: cypress-videos
+          path: give-and-collect/cypress/videos
+
+      - name: Upload Cypress screenshots
+        uses: actions/upload-artifact@v3
+        if: failure()
+        with:
+          name: cypress-screenshots
+          path: give-and-collect/cypress/screenshots
