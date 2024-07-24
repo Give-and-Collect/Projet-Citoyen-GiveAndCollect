@@ -30,7 +30,6 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json(newCollectionPoint, { status: 200 });
   } catch (error) {
-    console.error('Error creating collection point:', error);
     return NextResponse.json({ error: 'Collection point creation failed' }, { status: 500 });
   }
 }
