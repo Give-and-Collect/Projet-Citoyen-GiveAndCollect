@@ -20,6 +20,13 @@ jobs:
         with:
           push: true
           tags: ghcr.io/${{ vars.ACTOR }}/test-cicd:latest
+          build-args: |
+            DATABASE_URL=${{ secrets.DATABASE_URL }}
+            NEXTAUTH_SECRET=${{ secrets.NEXTAUTH_SECRET }}
+            EMAIL_USER=${{ secrets.EMAIL_USER }}
+            EMAIL_PASS=${{ secrets.EMAIL_PASS }}
+            CYPRESS_EMAIL=${{ secrets.CYPRESS_EMAIL }}
+            CYPRESS_PASSWORD=${{ secrets.CYPRESS_PASSWORD }}
 
   deploy:
     needs: docker
