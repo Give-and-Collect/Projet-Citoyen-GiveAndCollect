@@ -19,9 +19,7 @@ RUN npm install
 # Copier tous les fichiers du projet
 COPY give-and-collect .
 
-# Copier le fichier .env dans le conteneur
-COPY give-and-collect/.env ./
-
+RUN ls -a
 
 # Générer le client Prisma pour Linux
 RUN npx prisma generate
