@@ -11,13 +11,13 @@ RUN apk add --no-cache \
 WORKDIR /app
 
 # Copier les fichiers package.json et package-lock.json
-COPY package*.json ./
+COPY give-and-collect/package*.json ./
 
 # Installer les dépendances
 RUN npm install
 
 # Copier tous les fichiers du projet
-COPY . .
+COPY give-and-collect .
 
 # Générer le client Prisma pour Linux
 RUN npx prisma generate

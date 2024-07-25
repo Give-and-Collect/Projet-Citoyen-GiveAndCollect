@@ -8,12 +8,6 @@ jobs:
   docker:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v3
-      - name: open repo
-        run: |
-          ls -a
-          cd give-and-collect
       - name: Login to DockerHub
         uses: docker/login-action@v1
         with:
@@ -24,7 +18,6 @@ jobs:
       - name: Build docker image with ghcr
         uses: docker/build-push-action@v4
         with:
-          context: .
           push: true
           tags: ghcr.io/${{ vars.ACTOR }}/test-cicd:latest
 
