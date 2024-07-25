@@ -24,6 +24,7 @@ jobs:
       - name: Build docker image with ghcr
         uses: docker/build-push-action@v4
         with:
+          context: .
           push: true
           tags: ghcr.io/${{ vars.ACTOR }}/test-cicd:latest
 
