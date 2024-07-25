@@ -10,7 +10,9 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
-
+      - name: open repo
+        run: |
+          cd ${{github.event.repository.name}}
       - name: Login to DockerHub
         uses: docker/login-action@v1
         with:
