@@ -44,7 +44,9 @@ jobs:
           # Optional: If you need to execute specific commands on the server
           script: |
             echo "Connected to the server via SSH"
-
+            sudo apt update && sudo apt install -y docker.io
+            sudo systemctl start docker
+            sudo systemctl enable docker
             docker login ghcr.io -u ${{ vars.ACTOR }} -p ${{ secrets.TOKEN }}
             docker stop test-cicd || true
             docker rm test-cicd || true
