@@ -13,7 +13,7 @@ jobs:
       - name: open repo
         run: |
           ls -a
-          cd ${{github.event.repository.name}}/give-and-collect
+          cd /give-and-collect
       - name: Login to DockerHub
         uses: docker/login-action@v1
         with:
