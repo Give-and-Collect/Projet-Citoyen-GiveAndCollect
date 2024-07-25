@@ -14,8 +14,6 @@ services:
       EMAIL_PASS: ${EMAIL_PASS}
       CYPRESS_EMAIL: ${CYPRESS_EMAIL}
       CYPRESS_PASSWORD: ${CYPRESS_PASSWORD}
-    volumes:
-      - .:/app
 
   cypress:
     image: cypress/included:12.12.0

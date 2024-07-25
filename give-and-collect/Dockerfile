@@ -1,19 +1,26 @@
-# Utiliser une image Node.js comme base
+# Utiliser l'image de base officielle Node.js
 FROM node:20-alpine
 
-# Ajouter un label pour indiquer la source du code
-LABEL org.opencontainers.image.source=https://github.com/OWNER/REPO
+# Installer les outils de construction nécessaires
+RUN apk add --no-cache \
+    python3 \
+    make \
+    g++
 
-# Définir le répertoire de travail
+# Créer et définir le répertoire de travail
 WORKDIR /app
 
+# Copier les fichiers package.json et package-lock.json
 COPY package*.json ./
 
-# Installer les dépendances de l'application
+# Installer les dépendances
 RUN npm install
 
-# Copier le reste des fichiers de l'application dans le conteneur
+# Copier tous les fichiers du projet
 COPY . .
+
+# Générer le client Prisma pour Linux
+RUN npx prisma generate
 
 # Construire l'application
 RUN npm run build
@@ -21,5 +28,5 @@ RUN npm run build
 # Exposer le port sur lequel l'application va écouter
 EXPOSE 3000
 
-# Définir la commande par défaut à exécuter lorsque le conteneur démarre
-CMD ["npm", "run", "start"]
+# Démarrer l'application
+CMD ["npm", "start"]

@@ -1,6 +1,6 @@
 import prisma from "@/utils/db";
 import { User } from "next-auth";
-import bcrypt from "bcrypt";
+import bcrypt from 'bcryptjs';
 
 type LoginFn = (email: string, password: string) => Promise<User>;
 

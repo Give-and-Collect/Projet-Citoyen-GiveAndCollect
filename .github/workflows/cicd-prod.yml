@@ -1,0 +1,48 @@
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  # Définir le job de build Docker
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ vars.ACTOR }}
+          password: ${{ secrets.TOKEN }}
+
+      - name: Build docker image with ghcr
+        uses: docker/build-push-action@v4
+        with:
+          push: true
+          tags: ghcr.io/${{ vars.ACTOR }}/test-cicd:latest
+
+  deploy:
+    needs: docker
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: SSH to Server
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ vars.SSH_HOST }}
+          username: ubuntu
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          # Optional: If you need to execute specific commands on the server
+          script: |
+            echo "Connected to the server via SSH"
+
+            docker login ghcr.io -u ${{ vars.ACTOR }} -p ${{ secrets.TOKEN }}
+            docker stop test-cicd || true
+            docker rm test-cicd || true
+            docker pull ghcr.io/${{ vars.ACTOR }}/test-cicd:latest
+            docker run -d --name test-cicd -p 3001:3000 ghcr.io/${{ vars.ACTOR }}/test-cicd:latest
