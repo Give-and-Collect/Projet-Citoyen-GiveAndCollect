@@ -13,6 +13,7 @@ WORKDIR /app
 # Copier les fichiers package.json et package-lock.json
 COPY give-and-collect/package*.json ./
 
+
 # Installer les dépendances
 RUN npm install
 
