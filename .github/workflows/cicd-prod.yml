@@ -64,4 +64,4 @@ jobs:
             sudo docker pull ghcr.io/${{ vars.ACTOR }}/giveandcollect:latest
             ls
             pwd
-            sudo docker-compose up -d
+            docker-compose up -d
