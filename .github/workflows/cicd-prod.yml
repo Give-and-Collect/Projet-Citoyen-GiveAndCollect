@@ -61,4 +61,6 @@ jobs:
             sudo docker stop giveandcollect || true
             sudo docker rm giveandcollect || true
             sudo docker pull ghcr.io/${{ vars.ACTOR }}/giveandcollect:latest
+            ls
+            pwd
             sudo docker-compose up -d
