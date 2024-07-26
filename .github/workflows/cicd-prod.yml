@@ -19,7 +19,7 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           push: true
-          tags: ghcr.io/${{ vars.ACTOR }}/test-cicd:latest
+          tags: ghcr.io/${{ vars.ACTOR }}/giveandcollect:latest
           build-args: |
             DATABASE_URL=${{ secrets.DATABASE_URL }}
             NEXTAUTH_SECRET=${{ secrets.NEXTAUTH_SECRET }}
@@ -35,19 +35,25 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v3
 
+      - name: Set up SSH
+        uses: webfactory/ssh-agent@v0.7.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Copy Docker Compose file to server
+        run: scp -o StrictHostKeyChecking=no docker-compose.yml ubuntu@${{ vars.SSH_HOST }}:/home/ubuntu/projects/
+
       - name: SSH to Server
         uses: appleboy/ssh-action@master
         with:
           host: ${{ vars.SSH_HOST }}
           username: ubuntu
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          # Optional: If you need to execute specific commands on the server
           script: |
             echo "Connected to the server via SSH"
-            sudo systemctl start docker
-            sudo systemctl enable docker
+            cd /home/ubuntu/projects/
             sudo docker login ghcr.io -u ${{ vars.ACTOR }} -p ${{ secrets.TOKEN }}
-            sudo docker stop test-cicd || true
-            sudo docker rm test-cicd || true
-            sudo docker pull ghcr.io/${{ vars.ACTOR }}/test-cicd:latest
-            sudo docker run -d --name test-cicd -p 80:3000 ghcr.io/${{ vars.ACTOR }}/test-cicd:latest
+            sudo docker stop giveandcollect || true
+            sudo docker rm giveandcollect || true
+            sudo docker pull ghcr.io/${{ vars.ACTOR }}/giveandcollect:latest
+            sudo docker-compose up -d

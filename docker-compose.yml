@@ -1,26 +1,12 @@
-version: '3.9'
+version: '3.8'
 
 services:
-  app:
-    build:
-      context: give-and-collect
-      dockerfile: Dockerfile
+  next_app:
+    image: giveandcollect:latest
+    container_name: giveandcollect
     ports:
-      - "3000:3000"
-    environment:
-      DATABASE_URL: ${DATABASE_URL}
-      NEXTAUTH_SECRET: ${NEXTAUTH_SECRET}
-      EMAIL_USER: ${EMAIL_USER}
-      EMAIL_PASS: ${EMAIL_PASS}
-      CYPRESS_EMAIL: ${CYPRESS_EMAIL}
-      CYPRESS_PASSWORD: ${CYPRESS_PASSWORD}
-
-  cypress:
-    image: cypress/included:12.12.0
-    depends_on:
-      - app
-    environment:
-      CYPRESS_BASE_URL: http://app:3000
-      CYPRESS_EMAIL: ${CYPRESS_EMAIL}
-      CYPRESS_PASSWORD: ${CYPRESS_PASSWORD}
-    entrypoint: [ "npx", "cypress", "run" ]
+      - "80:3000"
+    networks:
+      - app-network
+networks:
+  app-network:
