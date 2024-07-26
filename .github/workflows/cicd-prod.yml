@@ -41,7 +41,7 @@ jobs:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
       - name: Copy Docker Compose file to server
-        run: scp -o StrictHostKeyChecking=no docker-compose.yml ubuntu@${{ vars.SSH_HOST }}:/home/ubuntu/projects/
+        run: scp -o StrictHostKeyChecking=no docker-compose.yml ubuntu@${{ vars.SSH_HOST }}:/home/ubuntu/projects/docker-compose.yml
 
       - name: SSH to Server
         uses: appleboy/ssh-action@master
