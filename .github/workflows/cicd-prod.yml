@@ -19,7 +19,7 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           push: true
-          tags: ghcr.io/${{ vars.ACTOR }}/giveandcollect:latest
+          tags: ghcr.io/${{ vars.ACTOR }}/test-cicd:latest
           build-args: |
             DATABASE_URL=${{ secrets.DATABASE_URL }}
             NEXTAUTH_SECRET=${{ secrets.NEXTAUTH_SECRET }}
@@ -44,7 +44,7 @@ jobs:
           script: |
             echo "Connected to the server via SSH"
             sudo docker login ghcr.io -u ${{ vars.ACTOR }} -p ${{ secrets.TOKEN }}
-            sudo docker stop giveandcollect || true
-            sudo docker rm giveandcollect || true
-            sudo docker pull ghcr.io/${{ vars.ACTOR }}/giveandcollect:latest
-            sudo docker run -d --name test-cicd -p 80:3000 ghcr.io/${{ vars.ACTOR }}/giveandcollect:latest
+            sudo docker stop test-cicd:latest || true
+            sudo docker rm test-cicd:latest || true
+            sudo docker pull ghcr.io/${{ vars.ACTOR }}/test-cicd:latest
+            sudo docker run -d --name test-cicd -p 80:3000 ghcr.io/${{ vars.ACTOR }}/test-cicd:latest
