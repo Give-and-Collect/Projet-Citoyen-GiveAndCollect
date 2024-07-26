@@ -56,7 +56,8 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             echo "Connected to the server via SSH"
-            cd /home/ubuntu/projects/
+            cd /home/ubuntu/
+            ls
             sudo docker login ghcr.io -u ${{ vars.ACTOR }} -p ${{ secrets.TOKEN }}
             sudo docker stop giveandcollect || true
             sudo docker rm giveandcollect || true
