@@ -49,5 +49,5 @@ jobs:
             sudo docker rmi $(docker images -a -q)
             sudo docker rm test-cicd:latest || true
             sudo docker pull ghcr.io/${{ vars.ACTOR }}/test-cicd:latest
-            sudo docker run -d --name giveandcollect -p 80:3000 ghcr.io/${{ vars.ACTOR }}/giveandcollect:latest
+            sudo docker run -d --name test-cicd -p 80:3000 ghcr.io/${{ vars.ACTOR }}/test-cicd:latest
             sudo docker-compose up -d
