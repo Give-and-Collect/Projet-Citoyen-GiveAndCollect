@@ -8,5 +8,14 @@ services:
       - "80:3000"
     networks:
       - app-network
+    labels:
+      - "com.centurylinklabs.watchtower.enable=true"
+
+  watchtower:
+    image: containrrr/watchtower
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    command: --interval 30 --label-enable
+
 networks:
   app-network:
