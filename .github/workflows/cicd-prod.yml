@@ -7,14 +7,14 @@ jobs:
   docker:
     runs-on: ubuntu-latest
     steps:
-      - name: Login to DockerHub
+      - name: Login to GitHub Container Registry
         uses: docker/login-action@v1
         with:
           registry: ghcr.io
           username: ${{ vars.ACTOR }}
           password: ${{ secrets.TOKEN }}
 
-      - name: Build docker image with ghcr
+      - name: Build and push docker image with ghcr
         uses: docker/build-push-action@v4
         with:
           push: true
@@ -39,12 +39,6 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
-      - name: List files in repository
-        run: ls
-
-      - name: Print working directory
-        run: pwd
-
       - name: Copy Docker Compose file to server
         run: scp -o StrictHostKeyChecking=no ./docker-compose.yml ubuntu@${{ vars.SSH_HOST }}:/home/ubuntu/docker-compose.yml
 
@@ -57,16 +51,18 @@ jobs:
           script: |
             echo "Connected to the server via SSH"
             cd /home/ubuntu/
-            sudo docker login ghcr.io -u ${{ vars.ACTOR }} -p ${{ secrets.TOKEN }}
-            # Stop and remove the existing container with the old name
-            sudo docker stop test-cicd || true
-            sudo docker rm test-cicd || true
-            # Stop and remove the existing container with the new name
-            sudo docker stop giveandcollect || true
-            sudo docker rm giveandcollect || true
+            # Login to GitHub Container Registry
+            echo ${{ secrets.TOKEN }} | sudo docker login ghcr.io -u ${{ vars.ACTOR }} --password-stdin
+            # Installer docker-compose si ce n'est pas déjà installé
+            if ! [ -x "$(command -v docker-compose)" ]; then
+              sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+              sudo chmod +x /usr/local/bin/docker-compose
+            fi
+            # Stop and remove the existing containers if they exist
+            sudo docker-compose down || true
             # Clean up unused Docker images and containers to free up space
             sudo docker system prune -af
             # Pull the latest image
-            sudo docker pull ghcr.io/${{ vars.ACTOR }}/giveandcollect:latest
+            sudo docker-compose pull
             # Run the new container
-            sudo docker-compose up -d
+            sudo docker-compose up -d --build
