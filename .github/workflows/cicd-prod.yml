@@ -58,6 +58,11 @@ jobs:
             echo "Connected to the server via SSH"
             cd /home/ubuntu/
             sudo docker login ghcr.io -u ${{ vars.ACTOR }} -p ${{ secrets.TOKEN }}
+            # Installer docker-compose si ce n'est pas déjà installé
+            if ! [ -x "$(command -v docker-compose)" ]; then
+              sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+              sudo chmod +x /usr/local/bin/docker-compose
+            fi
             # Stop and remove the existing container with the old name
             sudo docker stop test-cicd || true
             sudo docker rm test-cicd || true
