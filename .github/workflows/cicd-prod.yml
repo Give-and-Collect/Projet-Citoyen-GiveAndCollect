@@ -43,6 +43,7 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             echo "Connected to the server via SSH"
+            sudo service docker start 
             sudo docker stop giveandcollect
             sudo docker rm giveandcollect
             sudo docker rmi test-cicd:latest
