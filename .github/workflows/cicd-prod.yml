@@ -4,7 +4,6 @@ on:
       - main
 
 jobs:
-  # Définir le job de build Docker
   docker:
     runs-on: ubuntu-latest
     steps:
@@ -19,7 +18,7 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           push: true
-          tags: ghcr.io/${{ vars.ACTOR }}/test-cicd:latest
+          tags: ghcr.io/${{ vars.ACTOR }}/giveandcollect:latest
           build-args: |
             DATABASE_URL=${{ secrets.DATABASE_URL }}
             NEXTAUTH_SECRET=${{ secrets.NEXTAUTH_SECRET }}
@@ -35,6 +34,20 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v3
 
+      - name: Set up SSH
+        uses: webfactory/ssh-agent@v0.7.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: List files in repository
+        run: ls
+
+      - name: Print working directory
+        run: pwd
+
+      - name: Copy Docker Compose file to server
+        run: scp -o StrictHostKeyChecking=no ./docker-compose.yml ubuntu@${{ vars.SSH_HOST }}:/home/ubuntu/docker-compose.yml
+
       - name: SSH to Server
         uses: appleboy/ssh-action@master
         with:
@@ -43,9 +56,17 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             echo "Connected to the server via SSH"
+            cd /home/ubuntu/
             sudo docker login ghcr.io -u ${{ vars.ACTOR }} -p ${{ secrets.TOKEN }}
-            sudo docker stop $(docker ps -q) && docker rm $(docker ps -a -q)
-            sudo docker stop test-cicd:latest || true
-            sudo docker rm test-cicd:latest || true
-            sudo docker pull ghcr.io/${{ vars.ACTOR }}/test-cicd:latest
-            sudo docker run -d --name test-cicd -p 80:3000 ghcr.io/${{ vars.ACTOR }}/test-cicd:latest
+            # Stop and remove the existing container with the old name
+            sudo docker stop test-cicd || true
+            sudo docker rm test-cicd || true
+            # Stop and remove the existing container with the new name
+            sudo docker stop giveandcollect || true
+            sudo docker rm giveandcollect || true
+            # Clean up unused Docker images and containers to free up space
+            sudo docker system prune -af
+            # Pull the latest image
+            sudo docker pull ghcr.io/${{ vars.ACTOR }}/giveandcollect:latest
+            # Run the new container
+            sudo docker-compose up -d
