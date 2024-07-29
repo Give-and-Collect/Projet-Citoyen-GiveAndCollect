@@ -31,12 +31,24 @@ ENV NEXTAUTH_URL=${NEXTAUTH_URL}
 # Copier les fichiers package.json et package-lock.json
 COPY give-and-collect/package*.json ./
 
+
+# Installer les dépendances
+RUN npm install
+
 # Copier tous les fichiers du projet
 COPY give-and-collect .
-RUN chmod +x entrypoint.sh
+
+RUN ls -a
+
+# Générer le client Prisma pour Linux
+RUN npx prisma generate
+RUN npx prisma migrate deploy
+
+# Construire l'application
+RUN npm run build
 
 # Exposer le port sur lequel l'application va écouter
 EXPOSE 3000
 
 # Démarrer l'application
-ENTRYPOINT ["/bin/sh", "/app/entrypoint.sh"]
+CMD ["npm", "start"]
