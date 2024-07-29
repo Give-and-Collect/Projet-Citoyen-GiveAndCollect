@@ -3,6 +3,10 @@ on:
     branches:
       - main
 
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: true
+
 jobs:
   # Définir le job de build Docker
   docker:
