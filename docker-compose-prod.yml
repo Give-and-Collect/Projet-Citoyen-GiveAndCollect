@@ -5,7 +5,7 @@ services:
     image: giveandcollect:latest
     container_name: giveandcollect
     ports:
-      - "3000:3000"
+      - "80:3000"
     networks:
       - app-network
     labels:
