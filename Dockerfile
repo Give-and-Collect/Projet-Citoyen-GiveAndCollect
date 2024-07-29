@@ -38,4 +38,4 @@ COPY give-and-collect .
 EXPOSE 3000
 
 # Démarrer l'application
-ENTRYPOINT ["/entrypoint.sh"]
+ENTRYPOINT ["entrypoint.sh"]
