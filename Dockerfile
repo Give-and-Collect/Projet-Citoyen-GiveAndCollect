@@ -40,6 +40,9 @@ COPY give-and-collect .
 
 RUN ls -a
 
+# Générer le client Prisma pour Linux
+RUN npx prisma generate
+
 # Construire l'application
 RUN npm run build
 
