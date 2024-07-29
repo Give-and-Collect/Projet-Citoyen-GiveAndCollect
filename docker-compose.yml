@@ -17,5 +17,12 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
     command: --interval 30 --label-enable
 
-networks:
-  app-network:
+  db:
+    image: postgres:13
+    container_name: postgres
+    environment:
+      POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+      POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+      POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
+    networks:
+      - app-network
