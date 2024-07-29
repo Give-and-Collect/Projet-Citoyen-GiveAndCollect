@@ -78,7 +78,7 @@ const HomePage = () => {
             <Container>
                 <Box sx={{ display: 'flex', alignItems: 'center', mt: 8 }}>
                     <Typography variant="h4" color="text.primary" sx={{ fontWeight: 'bold', mr: 1 }}>
-                        Evènements à venir
+                        Evènements à test
                     </Typography>
                     <Image src={'/assets/icones/calendar-darkgreen.png'} alt="Calendar" width={50} height={50} />
                 </Box>
