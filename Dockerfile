@@ -33,6 +33,7 @@ COPY give-and-collect/package*.json ./
 
 # Copier tous les fichiers du projet
 COPY give-and-collect .
+RUN chmod +x entrypoint.sh
 
 # Exposer le port sur lequel l'application va écouter
 EXPOSE 3000
