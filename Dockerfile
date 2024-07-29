@@ -33,7 +33,7 @@ COPY give-and-collect/package*.json ./
 
 # Copier tous les fichiers du projet
 COPY give-and-collect .
-COPY ./entrypoint.sh ./entrypoint.sh
+COPY give-and-collect/entrypoint.sh ./entrypoint.sh
 
 # Exposer le port sur lequel l'application va écouter
 EXPOSE 3000
