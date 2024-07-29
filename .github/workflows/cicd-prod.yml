@@ -47,7 +47,7 @@ jobs:
             sudo service docker start 
             sudo docker stop giveandcollect
             sudo docker rm giveandcollect
-            sudo docker system prune -a
+            sudo docker system prune -a -f
             sudo docker login ghcr.io -u ${{ vars.ACTOR }} -p ${{ secrets.TOKEN }}
             sudo docker pull ghcr.io/${{ vars.ACTOR }}/test-cicd:latest
             sudo docker run -d --name giveandcollect -p 80:3000 ghcr.io/${{ vars.ACTOR }}/test-cicd:latest
