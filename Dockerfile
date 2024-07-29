@@ -39,4 +39,4 @@ RUN chmod +x entrypoint.sh
 EXPOSE 3000
 
 # Démarrer l'application
-ENTRYPOINT ["/bin/sh /app/entrypoint.sh"]
+ENTRYPOINT ["/bin/sh", "/app/entrypoint.sh"]
