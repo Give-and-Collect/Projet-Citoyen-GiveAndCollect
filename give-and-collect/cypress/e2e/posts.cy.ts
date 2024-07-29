@@ -34,5 +34,11 @@ describe('creation posts', () => {
         cy.get('button').contains('Publier l\'annonce').should('be.visible').click();
 
         cy.contains('Sample City').should('be.visible');
+
+        // Sélectionner et cliquer sur le dernier bouton de suppression
+        cy.get('[data-testid^="delete-button-"]').last().click();
+
+        // Vérifier que l'annonce a été supprimée
+        cy.contains('Sample City').should('not.exist');
     });
 });
