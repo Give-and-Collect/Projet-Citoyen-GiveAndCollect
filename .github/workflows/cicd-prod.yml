@@ -27,6 +27,7 @@ jobs:
             EMAIL_PASS=${{ secrets.EMAIL_PASS }}
             CYPRESS_EMAIL=${{ secrets.CYPRESS_EMAIL }}
             CYPRESS_PASSWORD=${{ secrets.CYPRESS_PASSWORD }}
+            NEXTAUTH_URL=${{ secrets.NEXTAUTH_URL }}
 
   deploy:
     needs: docker

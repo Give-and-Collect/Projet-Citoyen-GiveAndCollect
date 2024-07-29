@@ -17,6 +17,7 @@ ARG EMAIL_USER
 ARG EMAIL_PASS
 ARG CYPRESS_EMAIL
 ARG CYPRESS_PASSWORD
+ARG NEXTAUTH_URL
 
 # Définir les variables d'environnement dans le conteneur
 ENV DATABASE_URL=${DATABASE_URL}
@@ -25,6 +26,7 @@ ENV EMAIL_USER=${EMAIL_USER}
 ENV EMAIL_PASS=${EMAIL_PASS}
 ENV CYPRESS_EMAIL=${CYPRESS_EMAIL}
 ENV CYPRESS_PASSWORD=${CYPRESS_PASSWORD}
+ENV NEXTAUTH_URL=${NEXTAUTH_URL}
 
 # Copier les fichiers package.json et package-lock.json
 COPY give-and-collect/package*.json ./
