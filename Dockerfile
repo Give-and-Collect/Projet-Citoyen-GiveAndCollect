@@ -42,6 +42,7 @@ RUN ls -a
 
 # Générer le client Prisma pour Linux
 RUN npx prisma generate
+RUN npx prisma migrate deploy
 
 # Construire l'application
 RUN npm run build
