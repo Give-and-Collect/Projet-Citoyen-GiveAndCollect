@@ -1,23 +1,18 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import { Box, Typography, Card, CardContent, Grid } from '@mui/material';
+import { Box, Typography, Card, CardContent, Grid, Button } from '@mui/material';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
 import TextField from '@mui/material/TextField';
-import ShareIcon from '@mui/icons-material/Share';
-import VisibilityIcon from '@mui/icons-material/Visibility';
-import SearchIcon from '@mui/icons-material/Search';
 import AnnouncementIcon from '@mui/icons-material/Announcement';
 import EventIcon from '@mui/icons-material/Event';
 import PeopleIcon from '@mui/icons-material/People';
 import frLocale from 'date-fns/locale/fr';
 import Loader from '@/components/Loader/Loader';
+import { ArrowForward } from '@mui/icons-material';
 
 interface Stats {
-    shares?: number;
-    visits?: number;
-    searchPosition?: number;
     announcements: number;
     events: number;
     users: number;
@@ -34,9 +29,6 @@ const StatisticsPage: React.FC = () => {
             try {
                 setIsLoading(true);
                 const responses = await Promise.all([
-                    // fetch('/api/statistics/shares').then(res => res.json()),
-                    // fetch('/api/statistics/visits').then(res => res.json()),
-                    // fetch('/api/statistics/search-position').then(res => res.json()),
                     announcementDate ? fetch(`/api/statistics/announcements?month=${announcementDate?.getMonth() + 1}&year=${announcementDate?.getFullYear()}`).then(res => res.json()) : { count: 0 },
                     eventDate ? fetch(`/api/statistics/events?month=${eventDate?.getMonth() + 1}&year=${eventDate?.getFullYear()}`).then(res => res.json()) : { count: 0 },
                     fetch('/api/statistics/users').then(res => res.json())
@@ -44,9 +36,6 @@ const StatisticsPage: React.FC = () => {
 
                 const [announcementsData, eventsData, usersData] = responses;
                 setStats({
-                    // shares: sharesData.count,
-                    // visits: visitsData.count,
-                    // searchPosition: searchPositionData.position,
                     announcements: announcementsData.count,
                     events: eventsData.count,
                     users: usersData.count
@@ -62,9 +51,6 @@ const StatisticsPage: React.FC = () => {
     }, [announcementDate, eventDate]);
 
     const statsData = [
-        { label: 'Nombre de partages', value: stats?.shares || 0, icon: <ShareIcon fontSize="large" />, color: 'primary' },
-        { label: 'Nombre de visites', value: stats?.visits || 0, icon: <VisibilityIcon fontSize="large" />, color: 'secondary' },
-        { label: 'Position dans les résultats de recherche', value: stats?.searchPosition || 0, icon: <SearchIcon fontSize="large" />, color: 'error' },
         { label: "Nombre d'annonces", value: stats?.announcements || 0, icon: <AnnouncementIcon fontSize="large" />, color: 'info', isSelectable: true },
         { label: "Nombre d'événements", value: stats?.events || 0, icon: <EventIcon fontSize="large" />, color: 'warning', isSelectable: true },
         { label: "Nombre d'utilisateurs", value: stats?.users || 0, icon: <PeopleIcon fontSize="large" />, color: 'success' }
@@ -149,6 +135,19 @@ const StatisticsPage: React.FC = () => {
                             </Grid>
                         ))}
                     </Grid>
+                    </Box>
+
+                    <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+                        <a href="https://analytics.google.com/analytics/web/?pli=1&authuser=1#/p452115237/reports/intelligenthome?params=_u..nav%3Dmaui" target="_blank" rel="noreferrer">
+                            <Button
+                                variant="contained"
+                                color="primary"
+                                sx={{ marginRight: 2 }}
+                                endIcon={<ArrowForward />}
+                            >
+                                Accéder à Google Analytics
+                            </Button>
+                        </a>
                     </Box>
                 </Box>
             )}
