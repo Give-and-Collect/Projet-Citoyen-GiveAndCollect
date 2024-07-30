@@ -18,9 +18,11 @@ ARG EMAIL_PASS
 ARG CYPRESS_EMAIL
 ARG CYPRESS_PASSWORD
 ARG NEXTAUTH_URL
+ARG DATABASE_URL
 
 # Définir les variables d'environnement dans le conteneur
 ENV DATABASE_TEST_URL=${DATABASE_TEST_URL}
+ENV DATABASE_URL=${DATABASE_URL}
 ENV NEXTAUTH_SECRET=${NEXTAUTH_SECRET}
 ENV EMAIL_USER=${EMAIL_USER}
 ENV EMAIL_PASS=${EMAIL_PASS}
@@ -42,7 +44,6 @@ RUN ls -a
 
 # Générer le client Prisma pour Linux
 RUN npx prisma generate
-RUN npx prisma db push
 
 # Construire l'application
 RUN npm run build
