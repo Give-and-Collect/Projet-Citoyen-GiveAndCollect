@@ -27,7 +27,7 @@ jobs:
           username: ubuntu
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            sudo docker compose up -d test-db
+            sudo docker compose up -d test-db-1
 
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -64,7 +64,7 @@ jobs:
           username: ubuntu
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            sudo docker compose down test-db
+            sudo docker compose down test-db-1
 
   unit-tests:
     runs-on: ubuntu-latest
@@ -83,7 +83,7 @@ jobs:
           username: ubuntu
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            sudo docker compose up -d test-db
+            sudo docker compose up -d test-db-1
       - name: Checkout repository
         uses: actions/checkout@v3
 
@@ -107,7 +107,7 @@ jobs:
           username: ubuntu
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            sudo docker compose down test-db
+            sudo docker compose down test-db-1
 
   e2e-tests:
     runs-on: ubuntu-latest
@@ -128,7 +128,7 @@ jobs:
           username: ubuntu
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            sudo docker compose up -d test-db
+            sudo docker compose up -d test-db-1
 
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -199,4 +199,4 @@ jobs:
           username: ubuntu
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            sudo docker compose down test-db
+            sudo docker compose down test-db-1
