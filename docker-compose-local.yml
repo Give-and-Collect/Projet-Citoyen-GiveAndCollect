@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  next_app:
+    image: ghcr.io/marina-ash/test-cicd:latest
+    ports:
+      - "3000:3000"
+    env_file:
+      - give-and-collect/.env
+
+  db:
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER_DEV}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD_DEV}
+      POSTGRES_DB: ${POSTGRES_DB_DEV}
+    env_file:
+      - give-and-collect/.env
+
+  test-db:
+    image: postgres:13
+    container_name: postgres
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER_TEST}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD_TEST}
+      POSTGRES_DB: ${POSTGRES_DB_TEST}
+    env_file:
+      - give-and-collect/.env
