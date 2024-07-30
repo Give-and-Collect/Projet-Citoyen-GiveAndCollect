@@ -1,6 +1,7 @@
 import NextAuth, { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { login } from "@/lib/auth";
+import jwt from "jsonwebtoken";
 
 export const authOptions: NextAuthOptions = {
     // Configure one or more authentication providers
@@ -33,36 +34,49 @@ export const authOptions: NextAuthOptions = {
 
     session: {
         strategy: "jwt",
+        maxAge: 12 * 60 * 60, // 12 hours
     },
 
     callbacks: {
         async jwt({token, user}) {
+            const now = Math.floor(Date.now() / 1000);
+            const exp = now + (12 * 60 * 60); // 12 hours from now
+
             if (user) {
-                return {
+                token = {
                     ...token,
                     id: user.id,
                     firstname: user.firstname,
                     lastname: user.lastname,
                     email: user.email,
                     roleId: user.roleId,
+                    exp: exp,
                 };
+            } else if (token.exp && (token.exp as number) < now) {
+                throw new Error("Token expired");
             }
+            
             return token;
         },
 
         async session({session, token}) {
-            return {
-                ...session,
-                user: {
-                    ...session.user,
-                    id: token.id,
-                    firstname: token.firstname,
-                    lastname: token.lastname,
-                    email: token.email,
-                    roleId: token.roleId,
-                },
+            session.user = {
+                ...session.user,
+                id: token.id as number,
+                firstname: token.firstname as string,
+                lastname: token.lastname as string,
+                email: token.email as string,
+                roleId: token.roleId as number,
             };
+
+            session.expires = new Date(token.exp as number * 1000).toISOString();
+            return session;
         },
+    },
+
+    jwt: {
+        secret: process.env.NEXTAUTH_SECRET,
+        maxAge: 12 * 60 * 60, // 12 hours
     },
 };
 
