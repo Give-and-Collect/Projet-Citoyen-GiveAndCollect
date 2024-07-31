@@ -1,7 +1,7 @@
 name: CI/CD Dev
 
 on:
-  pull_request:
+  push:
     branches:
       - main
       - dev
@@ -17,6 +17,14 @@ jobs:
       EMAIL_PASS: ${{ secrets.EMAIL_PASS }}
       DATABASE_URL: ${{ secrets.DATABASE_TEST_URL }}
       NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
+      CYPRESS_EMAIL: ${{ secrets.CYPRESS_EMAIL }}
+      CYPRESS_PASSWORD: ${{ secrets.CYPRESS_PASSWORD }}
+      DATABASE_TEST_URL: ${{ secrets.DATABASE_TEST_URL }}
+      NEXTAUTH_URL: ${{ secrets.NEXTAUTH_URL }}
+      NEXT_PUBLIC_MEASUREMENT_ID: ${{ secrets.NEXT_PUBLIC_MEASUREMENT_ID }}
+      DATABASE_USER: ${{ secrets.DATABASE_USER }}
+      DATABASE_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
+      DATABASE_NAME: ${{ secrets.DATABASE_NAME }}
 
     steps:
       - name: Checkout repository
@@ -32,6 +40,23 @@ jobs:
           key: ${{ runner.os }}-buildx-${{ github.sha }}
           restore-keys: |
             ${{ runner.os }}-buildx-
+
+      - name: Create .env file
+        run: |
+          cat <<EOF > ./give-and-collect/.env
+          DATABASE_TEST_URL=${{ secrets.DATABASE_TEST_URL }}
+          NEXTAUTH_SECRET=${{ secrets.NEXTAUTH_SECRET }}
+          EMAIL_USER=${{ secrets.EMAIL_USER }}
+          EMAIL_PASS=${{ secrets.EMAIL_PASS }}
+          CYPRESS_EMAIL=${{ secrets.CYPRESS_EMAIL }}
+          CYPRESS_PASSWORD=${{ secrets.CYPRESS_PASSWORD }}
+          NEXTAUTH_URL=${{ secrets.NEXTAUTH_URL }}
+          DATABASE_URL=${{ secrets.DATABASE_TEST_URL }}
+          NEXT_PUBLIC_MEASUREMENT_ID=${{ secrets.NEXT_PUBLIC_MEASUREMENT_ID }}
+          DATABASE_USER=${{ secrets.DATABASE_USER }}
+          DATABASE_PASSWORD=${{ secrets.DATABASE_PASSWORD }}
+          DATABASE_NAME=${{ secrets.DATABASE_NAME }}
+          EOF
 
       - name: Build and start containers
         run: docker-compose -f docker-compose.yml up -d
@@ -83,6 +108,12 @@ jobs:
       NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
       CYPRESS_EMAIL: ${{ secrets.CYPRESS_EMAIL }}
       CYPRESS_PASSWORD: ${{ secrets.CYPRESS_PASSWORD }}
+      DATABASE_TEST_URL: ${{ secrets.DATABASE_TEST_URL }}
+      NEXTAUTH_URL: ${{ secrets.NEXTAUTH_URL }}
+      NEXT_PUBLIC_MEASUREMENT_ID: ${{ secrets.NEXT_PUBLIC_MEASUREMENT_ID }}
+      DATABASE_USER: ${{ secrets.DATABASE_USER }}
+      DATABASE_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
+      DATABASE_NAME: ${{ secrets.DATABASE_NAME }}
 
     steps:
       - name: Checkout repository
@@ -98,6 +129,23 @@ jobs:
           key: ${{ runner.os }}-buildx-${{ github.sha }}
           restore-keys: |
             ${{ runner.os }}-buildx-
+
+      - name: Create .env file
+        run: |
+          cat <<EOF > ./give-and-collect/.env
+          DATABASE_TEST_URL=${{ secrets.DATABASE_TEST_URL }}
+          NEXTAUTH_SECRET=${{ secrets.NEXTAUTH_SECRET }}
+          EMAIL_USER=${{ secrets.EMAIL_USER }}
+          EMAIL_PASS=${{ secrets.EMAIL_PASS }}
+          CYPRESS_EMAIL=${{ secrets.CYPRESS_EMAIL }}
+          CYPRESS_PASSWORD=${{ secrets.CYPRESS_PASSWORD }}
+          NEXTAUTH_URL=${{ secrets.NEXTAUTH_URL }}
+          DATABASE_URL=${{ secrets.DATABASE_TEST_URL }}
+          NEXT_PUBLIC_MEASUREMENT_ID=${{ secrets.NEXT_PUBLIC_MEASUREMENT_ID }}
+          DATABASE_USER=${{ secrets.DATABASE_USER }}
+          DATABASE_PASSWORD=${{ secrets.DATABASE_PASSWORD }}
+          DATABASE_NAME=${{ secrets.DATABASE_NAME }}
+          EOF
 
       - name: Build and start containers
         run: docker-compose -f docker-compose.yml up -d
@@ -130,8 +178,9 @@ jobs:
 
       - name: Start application for E2E tests
         working-directory: give-and-collect
-        run: npm run start &
-        run: npx wait-on http://localhost:3000
+        run: |
+          npm run start &
+          npx wait-on http://localhost:3000
 
       - name: Run Cypress E2E tests
         working-directory: give-and-collect
