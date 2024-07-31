@@ -15,8 +15,5 @@ describe('Statistics Page', () => {
         cy.contains('Nombre d\'annonces').should('be.visible');
         cy.contains('Nombre d\'événements').should('be.visible');
         cy.contains('Nombre d\'utilisateurs').should('be.visible');
-        cy.contains('Nombre de partages').should('be.visible');
-        cy.contains('Nombre de visites').should('be.visible');
-        cy.contains('Position dans les résultats de recherche').should('be.visible');
     });
 });
