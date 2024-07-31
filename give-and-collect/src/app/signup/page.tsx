@@ -10,7 +10,7 @@ import Image from 'next/image';
 import { signIn } from 'next-auth/react';
 import differenceInYears from 'date-fns/differenceInYears';
 import { SecretQuestion } from '@prisma/client';
-import Swal from 'sweetalert2'; // Import de SweetAlert2
+import { Toaster, toast } from 'react-hot-toast';
 
 interface Role {
     id: number;
@@ -34,6 +34,14 @@ export default function Signup() {
         phone: '',
         nomOrganisation: '',
     });
+
+    const showToast = (type: string, message: string) => {
+        if (type === 'success') {
+          toast.success(message);
+        } else if (type === 'error') {
+          toast.error(message);
+        }
+    };
 
     useEffect(() => {
         fetch('/api/role')
@@ -117,38 +125,22 @@ export default function Signup() {
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         if (formData.password !== formData.confirmPassword) {
-            Swal.fire({
-                icon: 'error',
-                title: 'Oops...',
-                text: 'Les mots de passe ne correspondent pas!',
-            });
+            showToast('error', 'Les mots de passe ne correspondent pas !');
             return;
         }
 
         if (!isEmailValid(formData.email)) {
-            Swal.fire({
-                icon: 'error',
-                title: 'Oops...',
-                text: 'L\'adresse e-mail n\'est pas valide!',
-            });
+            showToast('error', 'L\'adresse e-mail n\'est pas valide !');
             return;
         }
 
         if (!isPhoneValid(formData.phone)) {
-            Swal.fire({
-                icon: 'error',
-                title: 'Oops...',
-                text: 'Le numéro de téléphone n\'est pas valide!',
-            });
+            showToast('error', 'Le numéro de téléphone n\'est pas valide !');
             return;
         }
 
         if (dob && differenceInYears(new Date(), dob) < 18) {
-            Swal.fire({
-                icon: 'error',
-                title: 'Oops...',
-                text: 'Vous devez avoir au moins 18 ans pour vous inscrire!',
-            });
+            showToast('error', 'Vous devez avoir au moins 18 ans pour vous inscrire !');
             return;
         }
 
@@ -163,41 +155,20 @@ export default function Signup() {
 
             if (response.ok) {
                 const data = await response.json();
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Bien joué!',
-                    text: 'Votre compte a bien été enregistré!',
-                }).then(() => {
-                    signIn();
-                });
+                showToast('success', 'Votre compte a bien été enregistré.');
+                signIn();
             } else {
                 const errorData = await response.json();
                 if (errorData.error === 'Email already exists') {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Oops...',
-                        text: 'L\'adresse email est déjà utilisée!',
-                    });
+                    showToast('error', 'L\'adresse email est déjà utilisée !');
                 } else if (errorData.error === 'Phone number already exists') {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Oops...',
-                        text: 'Le numéro de téléphone est déjà utilisé!',
-                    });
+                    showToast('error', 'Le numéro de téléphone est déjà utilisé !');
                 } else {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Oops...',
-                        text: 'L\'inscription a échoué. Veuillez réessayer plus tard.',
-                    });
+                    showToast('error', 'L\'inscription a échoué. Veuillez réessayer plus tard.');
                 }
             }
         } catch (error) {
-            Swal.fire({
-                icon: 'error',
-                title: 'Oops...',
-                text: 'L\'inscription a échoué. Veuillez réessayer plus tard.',
-            });
+            showToast('error', 'L\'inscription a échoué. Veuillez réessayer plus tard.');
         }
     };
 
@@ -502,6 +473,21 @@ export default function Signup() {
                                 />
                             </Grid>
                         </Grid>
+
+                        {/* Toaster */}
+                        <Toaster
+                            position="bottom-center"
+                            reverseOrder={false}
+                            toastOptions={{
+                            // Custom styles and options
+                            duration: 4000,
+                            style: {
+                                background: '#333',
+                                color: '#fff',
+                            },
+                            }}
+                        />
+
                         {/* Bouton S'inscrire */}
                         <Button
                             type="submit"

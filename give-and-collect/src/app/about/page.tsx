@@ -16,7 +16,8 @@ import {
 } from '@mui/material';
 import { Send, Email, Person, Subject } from '@mui/icons-material';
 import Carousel from 'react-material-ui-carousel';
-import Swal from 'sweetalert2'; // Import de SweetAlert2
+import { Toaster, toast } from 'react-hot-toast';
+import { containsMaliciousPatterns } from '@/utils/validation';
 
 interface FormValues {
     name: string;
@@ -77,22 +78,17 @@ const CustomCard = styled(Card)(({ theme }) => ({
     },
 }));
 
-export const containsMaliciousPatterns = (input: string): boolean => {
-    const patterns = [
-        /<script.*?>.*?<\/script.*?>/i,
-        /<.*?onerror=.*?>/i,
-        /' OR '1'='1/i,
-        /;.*--/i,
-        /https?:\/\/[^\s]+/i,
-        /(\bhttps?:\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/i,
-        /&#x3C;.*?&#x3E;/i
-    ];
-    return patterns.some(pattern => pattern.test(input));
-};
-
 const Contact = () => {
     const [formData, setFormData] = useState<FormValues>(initValues);
     const [errorMessage, setErrorMessage] = useState<string>('');
+
+    const showToast = (type: string, message: string) => {
+        if (type === 'success') {
+          toast.success(message);
+        } else if (type === 'error') {
+          toast.error(message);
+        }
+    };
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
@@ -129,23 +125,14 @@ const Contact = () => {
                 body: JSON.stringify(formData),
             });
             if (response.ok) {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Message envoyé avec succès !',
-                });
+                showToast('success', 'Message envoyé avec succès !');
                 setFormData(initValues);
             } else {
-                Swal.fire({
-                    icon: 'error',
-                    title: "Erreur lors de l'envoi du message.",
-                });
+                showToast('error', 'Une erreur est survenue lors de l\'envoi du message. Veuillez réessayer plus tard.');
             }
         } catch (error) {
             console.error('Erreur:', error);
-            Swal.fire({
-                icon: 'error',
-                title: "Erreur lors de l'envoi du message.",
-            });
+            showToast('error', 'Une erreur est survenue lors de l\'envoi du message. Veuillez réessayer plus tard.');
         }
     };
 
@@ -285,6 +272,20 @@ const Contact = () => {
                                             <Typography color="error">{errorMessage}</Typography>
                                         </Grid>
                                     )}
+
+                                    <Toaster
+                                        position="bottom-center"
+                                        reverseOrder={false}
+                                        toastOptions={{
+                                        // Custom styles and options
+                                        duration: 4000,
+                                        style: {
+                                            background: '#333',
+                                            color: '#fff',
+                                        },
+                                        }}
+                                    />
+
                                     <Grid item xs={12} sx={{ textAlign: 'center' }}>
                                         <Button
                                             variant="contained"

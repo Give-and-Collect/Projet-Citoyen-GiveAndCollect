@@ -1,4 +1,4 @@
-import { containsMaliciousPatterns } from '@/app/about/page';
+import { containsMaliciousPatterns } from '@/utils/validation';
 
 describe('containsMaliciousPatterns', () => {
     it('should return true for input containing <script> tag', () => {
