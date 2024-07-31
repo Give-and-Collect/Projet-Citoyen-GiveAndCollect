@@ -1,7 +1,7 @@
 name: CI/CD Dev
 
 on:
-  push:
+  pull_request:
     branches:
       - main
       - dev
@@ -116,7 +116,7 @@ jobs:
       EMAIL_USER: ${{ secrets.EMAIL_USER }}
       EMAIL_PASS: ${{ secrets.EMAIL_PASS }}
       DATABASE_URL: ${{ secrets.DATABASE_TEST_URL }}
-      NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
+      NEXTAUTH_SECRET: ${{ vars.NEXTAUTH_TEST_SECRET }}
       CYPRESS_EMAIL: ${{ secrets.CYPRESS_EMAIL }}
       CYPRESS_PASSWORD: ${{ secrets.CYPRESS_PASSWORD }}
 
