@@ -36,13 +36,14 @@ const columns: GridColDef[] = [
           }
         }
 
-        return (
-          <RoleSelect
-            currentRole={params.row.roleId}
-            onChange={(newValue) => handleRoleChange(params.row.id, newValue)}
-          />
-        );
-      }
+            return (
+                <RoleSelect
+                    currentRole={params.row.roleId}
+                    onChange={(newValue) => handleRoleChange(params.row.id, newValue)}
+                    data-testid={`role-select-${params.row.id}`}
+                />
+            );
+        }
     },
     { field: 'adsPosted', headerName: 'Annonces postées', type: 'number', width: 150, minWidth: 150 },
     { field: 'eventsPosted', headerName: 'Evènements postés', type: 'number', width: 150, minWidth: 150 },
@@ -161,41 +162,42 @@ const columns: GridColDef[] = [
     }, []);
 
     return (
-      <>
-        {isLoading ? (
-          <Loader />
-        ) : (
-          <>
-          <Typography
-            color="primary" 
-            textAlign="center" 
-            textTransform="uppercase" 
-            fontWeight={'bold'} 
-            fontSize={32}
-            mt={5}
-          >
-            Liste des utilisateurs
-          </Typography>
-          <div style={{ marginLeft: 'auto', marginRight: 'auto', marginTop: 50, marginBottom: 50, width: '90%' }}>
-            <DataGrid
-              rows={users}
-              columns={columns}
-              initialState={{
-                pagination: {
-                  paginationModel: { page: 0, pageSize: 5 },
-                },
-              }}
-              pageSizeOptions={[5, 10]}
-              autoPageSize
-              sx={{ 
-                height: 400,
-                width: '100%',
-              }}
-              localeText={frFR.components.MuiDataGrid.defaultProps.localeText}
-            />
-          </div>
-          </>
-        )}
-      </>
+        <>
+            {isLoading ? (
+                <Loader />
+            ) : (
+                <>
+                    <Typography
+                        color="primary"
+                        textAlign="center"
+                        textTransform="uppercase"
+                        fontWeight={'bold'}
+                        fontSize={32}
+                        mt={5}
+                    >
+                        Liste des utilisateurs
+                    </Typography>
+                    <div style={{ marginLeft: 'auto', marginRight: 'auto', marginTop: 50, marginBottom: 50, width: '90%' }}>
+                        <DataGrid
+                            rows={users}
+                            columns={columns}
+                            initialState={{
+                                pagination: {
+                                    paginationModel: { page: 0, pageSize: 5 },
+                                },
+                            }}
+                            pageSizeOptions={[5, 10]}
+                            autoPageSize
+                            sx={{
+                                height: 400,
+                                width: '100%',
+                            }}
+                            localeText={frFR.components.MuiDataGrid.defaultProps.localeText}
+                            data-testid="users-table"
+                        />
+                    </div>
+                </>
+            )}
+        </>
     );
   }

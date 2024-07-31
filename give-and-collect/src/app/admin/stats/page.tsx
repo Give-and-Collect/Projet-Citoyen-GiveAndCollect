@@ -83,58 +83,59 @@ const StatisticsPage: React.FC = () => {
                     </Typography>
                     <Box sx={{ marginTop: 2, marginBottom: 6 }}>
                         <Grid container spacing={2}>
-                        {statsData.map((stat, index) => (
-                            <Grid item xs={12} sm={6} md={4} key={index}>
-                                <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', borderColor: `${stat.color}.main`, borderWidth: 2, borderStyle: 'solid' }}>
-                                    <CardContent>
-                                        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 2 }}>
-                                            <Typography variant="h6">{stat.label}</Typography>
-                                            <Box sx={{ color: `${stat.color}.main` }}>
-                                                {stat.icon}
+                            {statsData.map((stat, index) => (
+                                <Grid item xs={12} sm={6} md={4} key={index}>
+                                    <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', borderColor: `${stat.color}.main`, borderWidth: 2, borderStyle: 'solid' }}>
+                                        <CardContent>
+                                            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 2 }}>
+                                                <Typography variant="h6">{stat.label}</Typography>
+                                                <Box sx={{ color: `${stat.color}.main` }}>
+                                                    {stat.icon}
+                                                </Box>
                                             </Box>
-                                        </Box>
-                                        <Typography variant="h4">{stat.value}</Typography>
-                                    </CardContent>
-                                    {stat.isSelectable && (
-                                        <CardContent sx={{ borderTop: `1px solid ${stat.color}.main`, paddingTop: 1 }}>
-                                            <LocalizationProvider dateAdapter={AdapterDateFns} locale={frLocale}>
-                                                <DatePicker
-                                                    views={['year', 'month']}
-                                                    label="Mois et année"
-                                                    minDate={new Date('2022-01-01')}
-                                                    maxDate={new Date('2030-12-31')}
-                                                    value={stat.label === "Nombre d'annonces" ? announcementDate : eventDate}
-                                                    onChange={stat.label === "Nombre d'annonces" ? handleAnnouncementDateChange : handleEventDateChange}
-                                                    renderInput={(params) => (
-                                                        <TextField
-                                                            {...params}
-                                                            InputProps={{
-                                                                endAdornment: (
-                                                                    <React.Fragment>
-                                                                        {params?.InputProps?.endAdornment}
-                                                                    </React.Fragment>
-                                                                ),
-                                                                sx: {
-                                                                    '&.MuiInputBase-inputAdornedEnd': {
-                                                                        color: `${stat.color}.main`,
-                                                                    }
-                                                                }
-                                                            }}
-                                                            sx={{
-                                                                '& .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline': {
-                                                                    borderColor: `${stat.color}.main`
-                                                                }
-                                                            }}
-                                                        />
-                                                    )}
-                                                />
-                                            </LocalizationProvider>
+                                            <Typography variant="h4" data-testid={`${stat.label.replace(/\s+/g, '-').toLowerCase()}-stats`}>{stat.value}</Typography>
                                         </CardContent>
-                                    )}
-                                </Card>
-                            </Grid>
-                        ))}
-                    </Grid>
+                                        {stat.isSelectable && (
+                                            <CardContent sx={{ borderTop: `1px solid ${stat.color}.main`, paddingTop: 1 }}>
+                                                <LocalizationProvider dateAdapter={AdapterDateFns} locale={frLocale}>
+                                                    <DatePicker
+                                                        views={['year', 'month']}
+                                                        label="Mois et année"
+                                                        minDate={new Date('2022-01-01')}
+                                                        maxDate={new Date('2030-12-31')}
+                                                        value={stat.label === "Nombre d'annonces" ? announcementDate : eventDate}
+                                                        onChange={stat.label === "Nombre d'annonces" ? handleAnnouncementDateChange : handleEventDateChange}
+                                                        renderInput={(params) => (
+                                                            <TextField
+                                                                {...params}
+                                                                data-testid={stat.label === "Nombre d'annonces" ? "announcement-date-picker" : "event-date-picker"}
+                                                                InputProps={{
+                                                                    endAdornment: (
+                                                                        <React.Fragment>
+                                                                            {params?.InputProps?.endAdornment}
+                                                                        </React.Fragment>
+                                                                    ),
+                                                                    sx: {
+                                                                        '&.MuiInputBase-inputAdornedEnd': {
+                                                                            color: `${stat.color}.main`,
+                                                                        }
+                                                                    }
+                                                                }}
+                                                                sx={{
+                                                                    '& .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline': {
+                                                                        borderColor: `${stat.color}.main`
+                                                                    }
+                                                                }}
+                                                            />
+                                                        )}
+                                                    />
+                                                </LocalizationProvider>
+                                            </CardContent>
+                                        )}
+                                    </Card>
+                                </Grid>
+                            ))}
+                        </Grid>
                     </Box>
 
                     <Box sx={{ display: 'flex', justifyContent: 'center' }}>

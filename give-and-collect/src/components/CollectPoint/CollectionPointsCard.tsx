@@ -2,6 +2,7 @@ import React from 'react';
 import { Card, CardContent, Typography, Box, Button, Chip } from '@mui/material';
 import { CollectionPoint } from '@/types/collectionPoint';
 import { styled } from '@mui/material/styles';
+import DeleteIcon from "@mui/icons-material/Delete";
 
 interface CollectionPointsCardProps {
     points: CollectionPoint[];
@@ -44,6 +45,7 @@ const CollectionPointsCard: React.FC<CollectionPointsCardProps> = ({ points, onD
                                 color="error"
                                 onClick={() => onDelete(point.id)}
                                 sx={{ borderRadius: 1 }}
+                                startIcon={<DeleteIcon/>}
                                 data-testid={`delete-button-${point.id}`}
                             >
                                 Supprimer

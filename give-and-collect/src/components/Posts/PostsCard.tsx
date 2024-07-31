@@ -185,6 +185,8 @@ const PostsCard: React.FC<PostsCardProps> = ({ posts, session, handlePostDelete 
                                         color="error"
                                         startIcon={<DeleteIcon/>}
                                         onClick={() => handlePostDelete(post.id, post.author.id)}
+                                        data-testid={`delete-button-${post.id}`} // Assure-toi que l'ID est unique pour chaque bouton
+                                        aria-label={`Supprimer l'annonce ${post.id}`}
                                     >
                                         Supprimer
                                     </Button>
