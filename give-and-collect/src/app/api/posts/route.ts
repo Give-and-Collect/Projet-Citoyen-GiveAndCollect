@@ -57,7 +57,6 @@ export async function POST(req: NextRequest) {
 
         return NextResponse.json(post);
     } catch (error) {
-        console.log(error)
         return NextResponse.json({error: 'Erreur lors de la création de l\'annonce'}, {status: 500});
     }
 }

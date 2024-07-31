@@ -16,7 +16,7 @@ import {
 import { Send, Subject, Message, Email } from '@mui/icons-material';
 import { Session } from "next-auth";
 import { Post } from "@/types/post";
-import Swal from 'sweetalert2'; // Importer SweetAlert2
+import { Toaster, toast } from 'react-hot-toast';
 
 interface ContactAuthorModalProps {
     open: boolean;
@@ -48,6 +48,14 @@ const ContactAuthorModal: React.FC<ContactAuthorModalProps> = ({ open, onClose, 
     const [subject, setSubject] = useState('');
     const [message, setMessage] = useState('');
     const [errorMessage, setErrorMessage] = useState<string>('');
+
+    const showToast = (type: string, message: string) => {
+        if (type === 'success') {
+          toast.success(message);
+        } else if (type === 'error') {
+          toast.error(message);
+        }
+    };
 
     const handleChangeSubject = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { value } = e.target;
@@ -85,12 +93,12 @@ const ContactAuthorModal: React.FC<ContactAuthorModalProps> = ({ open, onClose, 
                 return response.json();
             })
             .then(() => {
-                Swal.fire('Succès', 'Message envoyé avec succès', 'success'); // Utiliser SweetAlert pour afficher un message de succès
+                showToast('success', 'Message envoyé avec succès.');
                 onClose();
             })
             .catch((error) => {
                 console.log(error.message);
-                Swal.fire('Erreur', "Une erreur est survenue lors de l'envoi du message. Veuillez réessayer plus tard.", 'error'); // Utiliser SweetAlert pour afficher un message d'erreur
+                showToast('error', 'Une erreur est survenue lors de l\'envoi du message. Veuillez réessayer plus tard.');
             });
     };
 
@@ -157,6 +165,18 @@ const ContactAuthorModal: React.FC<ContactAuthorModalProps> = ({ open, onClose, 
                             {errorMessage}
                         </Typography>
                     )}
+                    <Toaster
+                        position="bottom-center"
+                        reverseOrder={false}
+                        toastOptions={{
+                        // Custom styles and options
+                        duration: 4000,
+                        style: {
+                            background: '#333',
+                            color: '#fff',
+                        },
+                        }}
+                    />
                     <CustomButton
                         variant="contained"
                         color="primary"

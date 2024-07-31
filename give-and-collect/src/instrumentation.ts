@@ -1,4 +1,5 @@
 import prisma from "@/utils/db";
+import bcrypt from "bcryptjs";
 
 const categories: Record<string, string> = {
     'Chaussures': 'category',
@@ -68,5 +69,32 @@ export async function register() {
         await prisma.role.createMany({data: rolesToCreate.map(name => ({name}))});
         await prisma.postType.createMany({data: postTypesToCreate.map(name => ({name}))});
         await prisma.secretQuestion.createMany({data: secretQuestionsToCreate.map(question => ({question}))});
+
+        const email = process.env.CYPRESS_EMAIL ?? ''
+        const password = process.env.CYPRESS_PASSWORD ?? ''
+
+        const hashedPassword = await bcrypt.hash(password, 15);
+
+        const user = await prisma.user.findUnique({
+            where: {
+                email
+            }
+        })
+        if (!user) {
+            await prisma.user.create({
+                data: {
+                    birthDate: new Date(),
+                    firstname: 'admin',
+                    lastname: 'admin',
+                    email,
+                    password: hashedPassword,
+                    phone: '',
+                    nomOrganisation: '',
+                    secretAnswer: '',
+                    secretQuestionId: 1,
+                    roleId: 1,
+                }
+            });
+        }
     }
 }

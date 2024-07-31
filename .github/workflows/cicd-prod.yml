@@ -1,7 +1,11 @@
 on:
-  pull_request:
+  push:
     branches:
       - main
+
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: true
 
 jobs:
   # Définir le job de build Docker
@@ -27,6 +31,7 @@ jobs:
             EMAIL_PASS=${{ secrets.EMAIL_PASS }}
             CYPRESS_EMAIL=${{ secrets.CYPRESS_EMAIL }}
             CYPRESS_PASSWORD=${{ secrets.CYPRESS_PASSWORD }}
+            NEXTAUTH_URL=${{ secrets.NEXTAUTH_URL }}
 
   deploy:
     needs: docker
@@ -44,9 +49,8 @@ jobs:
           script: |
             echo "Connected to the server via SSH"
             sudo service docker start 
-            sudo docker stop giveandcollect
-            sudo docker rm giveandcollect
-            sudo docker system prune -a
+            sudo docker compose down
+            sudo docker image rm ghcr.io/marina-ash/test-cicd:latest
             sudo docker login ghcr.io -u ${{ vars.ACTOR }} -p ${{ secrets.TOKEN }}
             sudo docker pull ghcr.io/${{ vars.ACTOR }}/test-cicd:latest
-            sudo docker run -d --name giveandcollect -p 80:3000 ghcr.io/${{ vars.ACTOR }}/test-cicd:latest
+            sudo docker compose up -d
