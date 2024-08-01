@@ -117,23 +117,29 @@ const PostsModalForm: React.FC<PostsModalFormProps> = ({
                         </Grid>
                         <Grid item xs={12}>
                             <FormControl fullWidth>
-                                <InputLabel>Type</InputLabel>
+                                <InputLabel id="type-label">Type</InputLabel>
                                 <Select
+                                    labelId="type-label"
                                     value={formData.type}
                                     onChange={(e) => setFormData({ ...formData, type: e.target.value })}
+                                    inputProps={{ 'data-testid': 'type-select' }}
                                 >
                                     {types.map(type => (
-                                        <MenuItem value={type.id} key={type.id}>{type.name}</MenuItem>
+                                        <MenuItem key={type.id} value={type.id} data-testid={`type-option-${type.id}`}>
+                                            {type.name}
+                                        </MenuItem>
                                     ))}
                                 </Select>
                             </FormControl>
                         </Grid>
+
                         {formData.lignes.map((line, index) => (
                             <Grid container item spacing={2} alignItems="center" key={index}>
                                 <Grid item xs={12} sm={6} md={3}>
                                     <FormControl fullWidth>
-                                        <InputLabel>Catégorie</InputLabel>
+                                        <InputLabel id={"type-category-" + index}>Catégorie</InputLabel>
                                         <Select
+                                            labelId={"type-category-" + index}
                                             value={line.categorie}
                                             onChange={(e) => handleChange(e as SelectChangeEvent<string>, index, 'categorie')}
                                         >
@@ -158,8 +164,9 @@ const PostsModalForm: React.FC<PostsModalFormProps> = ({
                                 </Grid>
                                 <Grid item xs={12} sm={6} md={2}>
                                     <FormControl fullWidth>
-                                        <InputLabel>Genre</InputLabel>
+                                        <InputLabel id={"type-genre-" + index}>Genre</InputLabel>
                                         <Select
+                                            labelId={"type-genre-" + index}
                                             value={line.genre}
                                             onChange={(e) => handleChange(e as SelectChangeEvent<string>, index, 'genre')}
                                         >

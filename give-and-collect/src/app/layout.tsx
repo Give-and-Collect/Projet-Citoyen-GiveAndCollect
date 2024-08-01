@@ -7,6 +7,7 @@ import Footer from "@/components/Footer/Footer";
 import theme from "@/utils/theme";
 import { Box, ThemeProvider } from "@mui/material";
 import Providers from "@/components/Providers";
+import GoogleAnalytics from "@/components/GoogleAnalytics/GoogleAnalytics";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -24,6 +25,7 @@ export default async function RootLayout({
 
   return (
       <html lang="en">
+        <GoogleAnalytics />
         <body className={inter.className}>
           <AppRouterCacheProvider>
             <ThemeProvider theme={theme}>

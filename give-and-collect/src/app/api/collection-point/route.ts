@@ -8,8 +8,13 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const { address, city, postalCode, latitude, longitude, description } = body;
 
-    if (!address || !city || !postalCode || !latitude || !longitude || !description) {
-      return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
+    // Convertir latitude et longitude en nombres flottants
+    const parsedLatitude = parseFloat(latitude);
+    const parsedLongitude = parseFloat(longitude);
+
+    // Assurez-vous que la conversion s'est bien passée
+    if (isNaN(parsedLatitude) || isNaN(parsedLongitude)) {
+      throw new Error('Invalid latitude or longitude');
     }
 
     const newCollectionPoint = await prisma.collectionPoint.create({
@@ -17,15 +22,14 @@ export async function POST(req: NextRequest) {
         address,
         city,
         postalCode,
-        latitude,
-        longitude,
+        latitude: parsedLatitude,
+        longitude: parsedLongitude,
         description,
       },
     });
 
     return NextResponse.json(newCollectionPoint, { status: 200 });
   } catch (error) {
-    console.error('Error creating collection point:', error);
     return NextResponse.json({ error: 'Collection point creation failed' }, { status: 500 });
   }
 }
@@ -35,6 +39,9 @@ export async function GET(req: NextRequest) {
     const collectionPoints = await prisma.collectionPoint.findMany({
       where: {
         isActive: true,
+      },
+      orderBy: {
+        id: 'desc', // Trie par ID en ordre décroissant (plus récent au plus ancien)
       },
     });
     return NextResponse.json({ data: collectionPoints }, { status: 200 });

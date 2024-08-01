@@ -23,6 +23,14 @@
     },
     "typeRoots": ["node_modules/@types", "src/types"]
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/types/**/*.d.ts", "src/**/*"],
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    "src/types/**/*.d.ts",
+    "src/**/*",
+    "node_modules/cypress/types/cypress-global-vars.d.ts",
+  ],
   "exclude": ["node_modules"]
 }

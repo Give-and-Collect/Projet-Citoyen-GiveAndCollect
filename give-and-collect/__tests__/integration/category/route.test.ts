@@ -61,17 +61,17 @@ describe('GET /api/category', () => {
 
     it('should return an error message with status 500 if there is a database connection error', async () => {
         (prisma.category.findMany as jest.Mock).mockRejectedValueOnce(new Error('Database connection error'));
-
+    
         const request = new NextRequest('http://localhost/api/category', {
             method: 'GET'
         });
-
+    
         const response = await GET(request);
         const json = await response.json();
-
+    
         expect(response.status).toBe(500);
         expect(json).toEqual({ error: 'Error fetching categories' });
-
+    
         expect(prisma.category.findMany).toHaveBeenCalled();
     });
 

@@ -8,7 +8,9 @@
     "start": "next start",
     "lint": "next lint",
     "test": "jest",
-    "test:watch": "jest --watch"
+    "test:watch": "jest --watch",
+    "cypress": "cypress run --headless",
+    "runHeaded": "./node_modules/.bin/cypress run --headed --browser chrome"
   },
   "dependencies": {
     "@date-io/date-fns": "^2.17.0",
@@ -28,7 +30,7 @@
     "@svgr/webpack": "^8.1.0",
     "@types/bcrypt": "^5.0.2",
     "@types/jsonwebtoken": "^9.0.6",
-    "bcrypt": "^5.1.1",
+    "bcryptjs": "^2.4.3",
     "chart.js": "^4.4.3",
     "date-fns": "^2.30.0",
     "dotenv": "^16.4.5",
@@ -41,13 +43,13 @@
     "react": "^18.3.1",
     "react-chartjs-2": "^5.2.0",
     "react-dom": "^18",
+    "react-hot-toast": "^2.4.1",
     "react-leaflet": "^4.2.1",
     "react-material-ui-carousel": "^3.4.2",
     "react-multi-carousel": "^2.8.5",
     "react-swipeable": "^7.0.1",
     "sanitize-html": "^2.13.0",
     "styled-components": "^6.1.11",
-    "sweetalert2": "^11.12.2",
     "ts-node": "^10.9.2",
     "validator": "^13.12.0"
   },
@@ -56,6 +58,7 @@
     "@testing-library/react": "^16.0.0",
     "@testing-library/user-event": "^14.5.2",
     "@types/bcrypt": "^5.0.2",
+    "@types/bcryptjs": "^2.4.6",
     "@types/jest": "^29.5.12",
     "@types/leaflet": "^1.9.12",
     "@types/node": "^20",
@@ -63,6 +66,7 @@
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "@types/validator": "^13.12.0",
+    "cypress": "^13.13.0",
     "eslint": "^8",
     "eslint-config-next": "14.2.3",
     "identity-obj-proxy": "^3.0.0",
@@ -72,7 +76,7 @@
     "postcss": "^8",
     "prisma": "^5.15.1",
     "tailwindcss": "^3.4.1",
-    "ts-jest": "^29.1.5",
+    "ts-jest": "^29.2.3",
     "typescript": "^5"
   }
 }

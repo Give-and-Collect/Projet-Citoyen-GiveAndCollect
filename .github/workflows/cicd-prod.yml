@@ -1,0 +1,56 @@
+on:
+  push:
+    branches:
+      - main
+
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: true
+
+jobs:
+  # Définir le job de build Docker
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ vars.ACTOR }}
+          password: ${{ secrets.TOKEN }}
+
+      - name: Build docker image with ghcr
+        uses: docker/build-push-action@v4
+        with:
+          push: true
+          tags: ghcr.io/${{ vars.ACTOR }}/test-cicd:latest
+          build-args: |
+            DATABASE_URL=${{ secrets.DATABASE_URL }}
+            NEXTAUTH_SECRET=${{ secrets.NEXTAUTH_SECRET }}
+            EMAIL_USER=${{ secrets.EMAIL_USER }}
+            EMAIL_PASS=${{ secrets.EMAIL_PASS }}
+            CYPRESS_EMAIL=${{ secrets.CYPRESS_EMAIL }}
+            CYPRESS_PASSWORD=${{ secrets.CYPRESS_PASSWORD }}
+            NEXTAUTH_URL=${{ secrets.NEXTAUTH_URL }}
+
+  deploy:
+    needs: docker
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: SSH to Server
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ vars.SSH_HOST }}
+          username: ubuntu
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            echo "Connected to the server via SSH"
+            sudo service docker start 
+            sudo docker compose down
+            sudo docker image rm ghcr.io/marina-ash/test-cicd:latest
+            sudo docker login ghcr.io -u ${{ vars.ACTOR }} -p ${{ secrets.TOKEN }}
+            sudo docker pull ghcr.io/${{ vars.ACTOR }}/test-cicd:latest
+            sudo docker compose up -d

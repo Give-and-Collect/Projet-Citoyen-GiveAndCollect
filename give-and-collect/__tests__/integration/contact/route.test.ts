@@ -58,18 +58,18 @@ describe('POST /api/contact', () => {
             subject: 'Test Subject',
             message: 'This is a test message.',
         };
-
+    
         const request = new NextRequest('http://localhost/api/contact', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(postData),
         });
-
+    
         process.env.EMAIL_USER = ''; // Simulate undefined EMAIL_USER environment variable
-
+    
         const response = await POST(request);
         const json = await response.json();
-
+    
         expect(response.status).toBe(500);
         expect(json.message).toBe('Email sending failed');
     });

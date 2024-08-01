@@ -1,0 +1,51 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        DATABASE_TEST_URL: ${DATABASE_TEST_URL}
+        NEXTAUTH_SECRET: ${NEXTAUTH_SECRET}
+        EMAIL_USER: ${EMAIL_USER}
+        EMAIL_PASS: ${EMAIL_PASS}
+        CYPRESS_EMAIL: ${CYPRESS_EMAIL}
+        CYPRESS_PASSWORD: ${CYPRESS_PASSWORD}
+        NEXTAUTH_URL: ${NEXTAUTH_URL}
+        DATABASE_URL: ${DATABASE_URL}
+        NEXT_PUBLIC_MEASUREMENT_ID: ${NEXT_PUBLIC_MEASUREMENT_ID}
+    environment:
+      DATABASE_TEST_URL: ${DATABASE_TEST_URL}
+      DATABASE_URL: ${DATABASE_URL}
+      NEXTAUTH_SECRET: ${NEXTAUTH_SECRET}
+      EMAIL_USER: ${EMAIL_USER}
+      EMAIL_PASS: ${EMAIL_PASS}
+      CYPRESS_EMAIL: ${CYPRESS_EMAIL}
+      CYPRESS_PASSWORD: ${CYPRESS_PASSWORD}
+      NEXTAUTH_URL: ${NEXTAUTH_URL}
+      NEXT_PUBLIC_MEASUREMENT_ID: ${NEXT_PUBLIC_MEASUREMENT_ID}
+    depends_on:
+      - postgres
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./give-and-collect:/app
+    env_file:
+      - ./give-and-collect/.env
+
+  postgres:
+    image: postgres:13
+    environment:
+      POSTGRES_USER: ${DATABASE_USER}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+      POSTGRES_DB: ${DATABASE_NAME}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    env_file:
+      - ./give-and-collect/.env
+
+volumes:
+  postgres_data:

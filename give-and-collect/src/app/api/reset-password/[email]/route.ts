@@ -2,7 +2,7 @@ import prisma from "@/utils/db";
 import { User } from "@prisma/client";
 import { NextResponse } from "next/server";
 import { NextRequest } from "next/server";
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 
 export async function GET(request: NextRequest, { params }: { params: { email: string } }) {
     const { email } = params;

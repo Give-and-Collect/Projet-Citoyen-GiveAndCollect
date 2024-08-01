@@ -15,6 +15,7 @@ import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import Image from 'next/image';
 import AnalyticsIcon from '@mui/icons-material/Analytics';
+import LocationOnIcon from '@mui/icons-material/LocationOn';
 import LogoutIcon from '@mui/icons-material/Logout';
 
 import { useTheme } from '@mui/material/styles';
@@ -260,6 +261,14 @@ function ResponsiveAppBar() {
                         <Typography textAlign="center" sx={{ display: 'flex', alignItems: 'center' }}>
                           <AnalyticsIcon sx={{ marginRight: '10px' }} />
                           <span>Statistiques</span>
+                        </Typography>
+                      </Link>
+                    </MenuItem>
+                    <MenuItem key={'CollectionPoint'} onClick={handleCloseUserMenu}>
+                      <Link href={"/admin/collection-point"}>
+                        <Typography textAlign="center" sx={{ display: 'flex', alignItems: 'center' }}>
+                          <LocationOnIcon  sx={{ marginRight: '10px' }} />
+                          <span>Points de collecte</span>
                         </Typography>
                       </Link>
                     </MenuItem>
